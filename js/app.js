@@ -228,9 +228,12 @@
       ticking = false;
     }
     window.addEventListener("scroll", function () {
-      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(function () { update(); updateDecor(); });
+      }
     }, { passive: true });
-    window.addEventListener("resize", update);
+    window.addEventListener("resize", function () { update(); updateDecor(); });
     update();
   }
 
@@ -272,10 +275,12 @@
       // 腿部（髋块 + 腿柱 + 外撇脚掌，模块拼接缝）
       '<g stroke="#17202E" stroke-width="1.7" stroke-linejoin="round">' +
       '<rect x="12" y="61" width="40" height="13" rx="4" fill="url(#l' + uid + ')"/>' +
+      '<g class="leg-l">' +
       '<rect x="13" y="70" width="16" height="38" rx="5" fill="url(#l' + uid + ')"/>' +
+      '<rect x="9.5" y="101" width="21.5" height="13" rx="2.5" fill="url(#l' + uid + ')"/></g>' +
+      '<g class="leg-r">' +
       '<rect x="35" y="70" width="16" height="38" rx="5" fill="url(#l' + uid + ')"/>' +
-      '<rect x="9.5" y="101" width="21.5" height="13" rx="2.5" fill="url(#l' + uid + ')"/>' +
-      '<rect x="33" y="101" width="21.5" height="13" rx="2.5" fill="url(#l' + uid + ')"/></g>' +
+      '<rect x="33" y="101" width="21.5" height="13" rx="2.5" fill="url(#l' + uid + ')"/></g></g>' +
       '<path d="M22 74.5 h20 M22 65.5 h20" stroke="#17202E" stroke-width="1" opacity=".35"/>' +
       // 颈柱（独立件 + 接缝）
       '<rect x="26" y="28" width="12" height="8" rx="2" fill="#E8B200" stroke="#A87C00" stroke-width="1.5"/>' +
@@ -307,20 +312,122 @@
   }
 
   var FIG_PRESETS = {
-    heroWave:  { cls: "bob", torso: "#E30613", legs: "#0B2A5B" },
+    heroWave:  { cls: "bob wave", torso: "#E30613", legs: "#0B2A5B" },
     heroBuild: { cls: "bob", torso: "#00A651", legs: "#1B2430", delay: ".9s" },
     walk1:     { cls: "walk", torso: "#FFC400", legs: "#0B2A5B" },
-    walk2:     { cls: "walk wave-left", torso: "#006DB7", legs: "#E30613", delay: ".25s" },
-    walk3:     { cls: "walk", torso: "#E30613", legs: "#006DB7", delay: ".5s" },
-    walk4:     { cls: "walk wave-left", torso: "#00A651", legs: "#0B2A5B", delay: ".75s" },
-    foot1:     { cls: "bob", torso: "#FFC400", legs: "#0B2A5B" },
-    foot2:     { cls: "bob", torso: "#E30613", legs: "#0B2A5B", delay: ".5s" }
+    walk2:     { cls: "walk", torso: "#006DB7", legs: "#E30613", delay: ".28s" },
+    walk3:     { cls: "walk", torso: "#E30613", legs: "#006DB7", delay: ".56s" },
+    walk4:     { cls: "walk", torso: "#00A651", legs: "#0B2A5B", delay: ".84s" },
+    foot1:     { cls: "bob wave-left", torso: "#FFC400", legs: "#0B2A5B" },
+    foot2:     { cls: "bob wave", torso: "#E30613", legs: "#0B2A5B", delay: ".5s" }
   };
   function initFigures() {
     $$(".fig-slot").forEach(function (slot) {
       var preset = FIG_PRESETS[slot.getAttribute("data-fig")];
       if (preset) slot.innerHTML = minifigSVG(preset);
     });
+  }
+
+  /* ============================================================
+     乐高笑脸生成器（过场随机图案 + 页面背景装饰）
+     ============================================================ */
+  function smileySVG(color, variant) {
+    var dark = shade(color, -0.28);
+    var eyes;
+    if (variant === "happy") {
+      eyes = '<path d="M28 42 q8-11 16 0 M56 42 q8-11 16 0" stroke="#262013" stroke-width="6.5" fill="none" stroke-linecap="round"/>';
+    } else if (variant === "wink") {
+      eyes = '<circle cx="36" cy="41" r="6.8" fill="#262013"/><path d="M56 43 q8-9 16 0" stroke="#262013" stroke-width="6.5" fill="none" stroke-linecap="round"/>';
+    } else {
+      eyes = '<circle cx="36" cy="41" r="6.8" fill="#262013"/><circle cx="64" cy="41" r="6.8" fill="#262013"/>';
+    }
+    var mouth;
+    if (variant === "tongue") {
+      mouth = '<path d="M32 58 q18 19 36 0" stroke="#262013" stroke-width="7" fill="none" stroke-linecap="round"/>' +
+        '<ellipse cx="50" cy="71" rx="8" ry="6" fill="#E30613" stroke="#A80009" stroke-width="2"/>';
+    } else if (variant === "grin") {
+      mouth = '<path d="M29 55 q21 25 42 0" stroke="#262013" stroke-width="7.5" fill="none" stroke-linecap="round"/>';
+    } else {
+      mouth = '<path d="M33 57 q17 18 34 0" stroke="#262013" stroke-width="7" fill="none" stroke-linecap="round"/>';
+    }
+    return '<svg viewBox="0 0 100 100">' +
+      '<circle cx="50" cy="50" r="45" fill="' + color + '" stroke="' + dark + '" stroke-width="5"/>' +
+      '<ellipse cx="33" cy="25" rx="16" ry="7" fill="#fff" opacity=".38" transform="rotate(-22 33 25)"/>' +
+      eyes + mouth + '</svg>';
+  }
+  var SMILEY_COLORS = ["#FFC400", "#FFB1B1", "#9FD8FF", "#A8E6A1", "#FFE9A0", "#C7B8FF"];
+  var SMILEY_VARIANTS = ["smile", "grin", "wink", "tongue", "happy"];
+  function rand(a, b) { return a + Math.random() * (b - a); }
+
+  // 每次过场随机生成不同构图的笑脸/积木群（不重复）
+  function spawnTransitionDecor() {
+    var host = $("#btSmileys");
+    var n = Math.round(rand(9, 15));
+    var html = "";
+    for (var i = 0; i < n; i++) {
+      var size = rand(36, 96);
+      var x = rand(1, 88), y = rand(2, 80);
+      var rot = rand(-26, 26).toFixed(1);
+      var inner = Math.random() < 0.72
+        ? smileySVG(SMILEY_COLORS[Math.floor(Math.random() * SMILEY_COLORS.length)],
+                    SMILEY_VARIANTS[Math.floor(Math.random() * SMILEY_VARIANTS.length)])
+        : '<div class="decor-brick" style="background:' + SMILEY_COLORS[Math.floor(Math.random() * 4)] + ';border-radius:12px"></div>';
+      html += '<div class="smiley" style="left:' + x.toFixed(1) + "%;top:" + y.toFixed(1) +
+        "%;width:" + size.toFixed(0) + "px;height:" + size.toFixed(0) + "px;--rot:" + rot +
+        "deg;--d:" + rand(0, 0.5).toFixed(2) + "s;--d2:" + rand(0, 0.38).toFixed(2) + 's">' + inner + "</div>";
+    }
+    host.innerHTML = html;
+  }
+
+  /* ============================================================
+     页面背景装饰（淡色漂浮积木/笑脸 + 滚动视差）
+     ============================================================ */
+  var decorItems = [];
+  function initDecor() {
+    var palette = ["#FFC400", "#E30613", "#006DB7", "#00A651", "#0B2A5B", "#7EC8FF"];
+    $$(".section").forEach(function (sec, si) {
+      var count = si === 0 ? 4 : 3;
+      for (var i = 0; i < count; i++) {
+        var wrap = document.createElement("div");
+        wrap.className = "decor";
+        var speed = rand(0.03, 0.1);
+        wrap.setAttribute("data-speed", speed.toFixed(3));
+        var right = Math.random() > 0.5;
+        wrap.style.top = rand(4, 82).toFixed(1) + "%";
+        if (right) { wrap.style.right = rand(1.5, 9).toFixed(1) + "%"; }
+        else { wrap.style.left = rand(1.5, 9).toFixed(1) + "%"; }
+        var size = rand(38, 86);
+        wrap.style.width = size.toFixed(0) + "px";
+        wrap.style.height = size.toFixed(0) + "px";
+        wrap.style.opacity = rand(0.16, 0.34).toFixed(2);
+        var inner = document.createElement("div");
+        inner.className = "decor-inner";
+        inner.style.setProperty("--r", rand(-14, 14).toFixed(1) + "deg");
+        inner.style.setProperty("--dur", rand(5.5, 10).toFixed(1) + "s");
+        inner.style.setProperty("--dd", rand(0, 3).toFixed(1) + "s");
+        if (Math.random() < 0.5) {
+          inner.innerHTML = smileySVG(palette[Math.floor(Math.random() * palette.length)],
+            SMILEY_VARIANTS[Math.floor(Math.random() * SMILEY_VARIANTS.length)]);
+        } else {
+          var b = document.createElement("div");
+          b.className = "decor-brick";
+          b.style.background = palette[Math.floor(Math.random() * palette.length)];
+          inner.appendChild(b);
+        }
+        wrap.appendChild(inner);
+        sec.insertBefore(wrap, sec.firstChild);
+        decorItems.push(wrap);
+      }
+    });
+  }
+  function updateDecor() {
+    var sy = window.scrollY;
+    for (var i = 0; i < decorItems.length; i++) {
+      var el = decorItems[i];
+      var sec = el.parentElement;
+      var rel = sy + window.innerHeight / 2 - (sec.offsetTop + sec.offsetHeight / 2);
+      el.style.transform = "translate3d(0," + (rel * el.getAttribute("data-speed")).toFixed(1) + "px,0)";
+    }
   }
 
   /* ============================================================
@@ -348,6 +455,7 @@
     bt.style.setProperty("--bt-c1", js.c1);
     bt.style.setProperty("--bt-c2", js.c2);
     $("#btLabelText").textContent = js.label;
+    spawnTransitionDecor(); // 每次随机构图的笑脸群
     void bt.offsetWidth; // 强制重排以重启动画
     bt.classList.add("in");
 
@@ -437,6 +545,7 @@
       .then(function (data) {
         render(data);
         initFigures();
+        initDecor();
         initWelcome();
         initReveal();
         initTrain();

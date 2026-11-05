@@ -628,47 +628,105 @@ a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 12 
 }
 
 /* ============================================================
-   动态乐高小人（渐变立体质感）
+   动态乐高小人（刚体关节式运动 · 参考真实 Minifigure 活动关节）
    ============================================================ */
 .minifig{width:62px;height:124px;overflow:visible;filter:drop-shadow(0 12px 14px rgba(11,42,91,.26))}
-.minifig .arm-l,.minifig .arm-r,.minifig .leg-l,.minifig .leg-r,.minifig .fig-head{transform-box:fill-box}
-.minifig .arm-l,.minifig .arm-r{transform-origin:50% 14%}
-.minifig .leg-l,.minifig .leg-r{transform-origin:50% 4%}
-.minifig .fig-head{transform-origin:50% 92%}
-/* 挥手：带回弹与预备动作 */
-.minifig .arm-r{animation:waveArm 2.4s cubic-bezier(.45,.05,.35,.95) infinite}
-.minifig.wave-left .arm-r{animation-name:waveArmL}
+/* 精确关节轴心（视图坐标）：肩48/16,42  髂21/43,71  颈32,34 */
+.minifig .arm-l,.minifig .arm-r,.minifig .leg-l,.minifig .leg-r,.minifig .fig-head{transform-box:view-box}
+.minifig .arm-l{transform-origin:16px 42px}
+.minifig .arm-r{transform-origin:48px 42px}
+.minifig .leg-l{transform-origin:21px 71px}
+.minifig .leg-r{transform-origin:43px 71px}
+.minifig .fig-head{transform-origin:32px 34px}
+
+/* — 待机身：整体一套呼吸周期（身体/头/臂同频反相，不再客自飘）— */
+.minifig.bob{animation:figBob 2.6s ease-in-out infinite}
+.minifig.bob .fig-head{animation:headBob 2.6s ease-in-out infinite}
+.minifig.bob .arm-l{animation:armIdleL 2.6s ease-in-out infinite}
+.minifig.bob .arm-r{animation:armIdleR 2.6s ease-in-out infinite}
+.minifig.bob.wave .arm-r{animation:waveArm 2.6s ease-in-out infinite}
+.minifig.bob.wave-left .arm-r{animation:waveArmL 2.6s ease-in-out infinite}
+@keyframes figBob{0%,100%{transform:translateY(0) rotate(-.6deg)}50%{transform:translateY(-7px) rotate(.6deg)}}
+@keyframes headBob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes armIdleL{0%,100%{transform:rotate(5deg)}50%{transform:rotate(-5deg)}}
+@keyframes armIdleR{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
 @keyframes waveArm{
   0%,100%{transform:rotate(0deg)}
-  14%{transform:rotate(11deg)}
-  40%{transform:rotate(-52deg)}
-  58%{transform:rotate(-26deg)}
-  80%{transform:rotate(-46deg)}
+  22%{transform:rotate(12deg)}
+  50%{transform:rotate(-52deg)}
+  72%{transform:rotate(-26deg)}
+  88%{transform:rotate(-46deg)}
 }
 @keyframes waveArmL{
   0%,100%{transform:rotate(0deg)}
-  14%{transform:rotate(-11deg)}
-  40%{transform:rotate(52deg)}
-  58%{transform:rotate(26deg)}
-  80%{transform:rotate(46deg)}
+  22%{transform:rotate(-12deg)}
+  50%{transform:rotate(52deg)}
+  72%{transform:rotate(26deg)}
+  88%{transform:rotate(46deg)}
 }
-/* 待机：浮动 + 头部微侧（呼吸感） */
-.minifig.bob{animation:figBob 3.2s ease-in-out infinite}
-.minifig.bob .fig-head{animation:headTilt 3.2s ease-in-out infinite}
-@keyframes figBob{0%,100%{transform:translateY(0) rotate(-.8deg)}50%{transform:translateY(-8px) rotate(1.1deg)}}
-@keyframes headTilt{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(2.4deg)}}
-/* 行走：腿部钟摆 + 身体起伏 + 头部随动 */
-.minifig.walk{animation:walkBob 1.15s cubic-bezier(.45,.05,.55,.95) infinite alternate}
-.minifig.walk .leg-l{animation:stepA 1.15s cubic-bezier(.45,.05,.55,.95) infinite alternate}
-.minifig.walk .leg-r{animation:stepB 1.15s cubic-bezier(.45,.05,.55,.95) infinite alternate}
-.minifig.walk .fig-head{animation:headWalk 1.15s cubic-bezier(.45,.05,.55,.95) infinite alternate}
-@keyframes stepA{from{transform:rotate(-19deg)}to{transform:rotate(19deg)}}
-@keyframes stepB{from{transform:rotate(19deg)}to{transform:rotate(-19deg)}}
-@keyframes walkBob{from{transform:translateY(0) rotate(-1.6deg)}to{transform:translateY(-6px) rotate(1.6deg)}}
-@keyframes headWalk{from{transform:rotate(1.8deg)}to{transform:rotate(-1.8deg)}}
+
+/* — 行走：刚体摆动步态（对侧手脚同相，头部反向稳定）— */
+.minifig.walk{animation:walkBob 1.15s ease-in-out infinite alternate}
+.minifig.walk .leg-l{animation:gaitLL 1.15s ease-in-out infinite alternate}
+.minifig.walk .leg-r{animation:gaitLR 1.15s ease-in-out infinite alternate}
+.minifig.walk .arm-l{animation:gaitAL 1.15s ease-in-out infinite alternate}
+.minifig.walk .arm-r{animation:gaitAR 1.15s ease-in-out infinite alternate}
+.minifig.walk .fig-head{animation:gaitHead 1.15s ease-in-out infinite alternate}
+@keyframes gaitLL{from{transform:rotate(-23deg)}to{transform:rotate(23deg)}}
+@keyframes gaitLR{from{transform:rotate(23deg)}to{transform:rotate(-23deg)}}
+@keyframes gaitAL{from{transform:rotate(19deg)}to{transform:rotate(-19deg)}}
+@keyframes gaitAR{from{transform:rotate(-19deg)}to{transform:rotate(19deg)}}
+@keyframes walkBob{from{transform:translateY(0) rotate(-1deg)}to{transform:translateY(-5px) rotate(1deg)}}
+@keyframes gaitHead{from{transform:rotate(1.8deg)}to{transform:rotate(-1.8deg)}}
 @media (prefers-reduced-motion:reduce){
-  .minifig .arm-r,.minifig.bob,.minifig.bob .fig-head,.minifig.walk,
-  .minifig.walk .leg-l,.minifig.walk .leg-r,.minifig.walk .fig-head{animation:none}
+  .minifig .arm-l,.minifig .arm-r,.minifig .leg-l,.minifig .leg-r,
+  .minifig .fig-head,.minifig.bob,.minifig.walk{animation:none}
+}
+
+/* ============================================================
+   过场笑脸 / 背景装饰元素
+   ============================================================ */
+.bt-smileys{position:absolute;inset:0;overflow:hidden}
+.bt-smileys .smiley{
+  position:absolute;opacity:0;transform:scale(.15) rotate(var(--rot,0deg));
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.22));
+}
+.bt-smileys .smiley svg{width:100%;height:100%;display:block}
+.brick-transition.in .bt-smileys .smiley{animation:smileyPop .72s cubic-bezier(.25,1.35,.4,1) forwards;animation-delay:var(--d,0s)}
+.brick-transition.out .bt-smileys .smiley{animation:smileyOut .68s cubic-bezier(.5,0,.7,.4) forwards;animation-delay:var(--d2,0s)}
+@keyframes smileyPop{
+  0%{opacity:0;transform:scale(.15) rotate(var(--rot))}
+  70%{opacity:1;transform:scale(1.14) rotate(var(--rot))}
+  100%{opacity:1;transform:scale(1) rotate(var(--rot))}
+}
+@keyframes smileyOut{
+  to{opacity:0;transform:scale(.35) rotate(calc(var(--rot) + 50deg)) translateY(-70px)}
+}
+
+/* 页面背景装饰（淡色漂浮积木/笑脸，视差） */
+.decor{position:absolute;z-index:0;pointer-events:none;will-change:transform}
+.decor-inner{animation:decorFloat var(--dur,7s) ease-in-out infinite alternate;animation-delay:var(--dd,0s)}
+.decor-inner svg{width:100%;height:100%;display:block}
+.decor-brick{
+  width:100%;height:100%;border-radius:9px;position:relative;
+  box-shadow:inset 0 -6px 0 rgba(0,0,0,.12);
+}
+.decor-brick::before,.decor-brick::after{
+  content:"";position:absolute;top:-8px;width:32%;height:36%;border-radius:7px 7px 2px 2px;background:inherit;filter:brightness(1.12);
+}
+.decor-brick::before{left:12%}
+.decor-brick::after{right:12%}
+@keyframes decorFloat{
+  from{transform:translateY(0) rotate(var(--r,0deg))}
+  to{transform:translateY(-20px) rotate(calc(var(--r,0deg) + 7deg))}
+}
+/* 内容层统一抬到装饰之上 */
+.section-head,.section-sub,.brick-card,.timeline,.skills-grid,.projects-grid,.edu-grid,
+.contact-wrap,.minifig-parade,.about-grid{position:relative;z-index:2}
+/* 白区乐高凸点纹理 */
+.content{
+  background-image:radial-gradient(circle at 22px 22px,rgba(11,42,91,.05) 5px,transparent 6px);
+  background-size:84px 84px;
 }
 
 /* 小人游行带 */
