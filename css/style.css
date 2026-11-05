@@ -504,22 +504,113 @@ a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 12 
 .footer-bricks i:nth-child(7){background:var(--green)}
 
 /* ============================================================
-   章节跳转积木过场
+   章节跳转积木过场（7 种变体 · 3D 透视 · 章节标题卡）
    ============================================================ */
-.brick-transition{position:fixed;inset:0;z-index:1500;display:flex;pointer-events:none}
-.brick-transition .bt-col{
-  flex:1;transform:translateY(-103%);position:relative;
-  box-shadow:inset -3px 0 0 rgba(0,0,0,.12);
+.brick-transition{position:fixed;inset:0;z-index:1500;pointer-events:none;perspective:1000px;overflow:hidden}
+.bt-layer{position:absolute;inset:0;display:flex}
+.bt-layer .bt-col,.bt-layer .bt-row,.bt-layer .bt-cell{position:relative}
+.bt-layer .bt-col::after,.bt-layer .bt-row::after,.bt-layer .bt-cell::after,.bt-half::after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(circle at 50% 14px,rgba(255,255,255,.26) 7px,transparent 8px);
+  background-size:34px 34px;opacity:.5;
 }
-.brick-transition .bt-col::after{
-  content:"";position:absolute;bottom:0;left:0;right:0;height:26px;
-  background-image:radial-gradient(circle at 50% 8px,rgba(255,255,255,.28) 6px,transparent 7px);
-  background-size:28px 26px;
+.brick-transition:not(.anim-rows) .bt-rows,
+.brick-transition:not(.anim-grid) .bt-grid,
+.brick-transition:not(.anim-curtain) .bt-curtain,
+.brick-transition:not(.anim-core) .bt-core{display:none}
+.brick-transition:not(.anim-rows):not(.anim-grid):not(.anim-curtain):not(.anim-core) .bt-cols{display:flex}
+.brick-transition.anim-rows .bt-cols,
+.brick-transition.anim-grid .bt-cols,
+.brick-transition.anim-curtain .bt-cols,
+.brick-transition.anim-core .bt-cols{display:none}
+
+/* — 竖列积木（rain 自上而下 / wave 自下而上 / diag 斜扫）— */
+.bt-cols .bt-col{flex:1;background:var(--bt-c1,#0B2A5B)}
+.bt-cols .bt-col:nth-child(even){background:var(--bt-c2,#FFC400)}
+.bt-cols .bt-col{transform:translateY(-106%) rotateX(-55deg);transform-origin:top center}
+@keyframes colDrop{to{transform:translateY(0) rotateX(0)}}
+@keyframes colDropOut{from{transform:translateY(0) rotateX(0)}to{transform:translateY(106%) rotateX(50deg)}}
+.anim-rain.in .bt-cols .bt-col{animation:colDrop .72s cubic-bezier(.5,.05,.2,1) forwards;animation-delay:calc(var(--i) * 55ms)}
+.anim-rain.out .bt-cols .bt-col{animation:colDropOut .85s cubic-bezier(.45,0,.3,1) forwards;animation-delay:calc(var(--i) * 55ms)}
+
+.anim-wave .bt-cols .bt-col{transform:translateY(106%) rotateX(55deg);transform-origin:bottom center}
+@keyframes colRise{to{transform:translateY(0) rotateX(0)}}
+@keyframes colRiseOut{from{transform:translateY(0) rotateX(0)}to{transform:translateY(-106%) rotateX(-50deg)}}
+.anim-wave.in .bt-cols .bt-col{animation:colRise .72s cubic-bezier(.5,.05,.2,1) forwards;animation-delay:calc(var(--i) * 55ms)}
+.anim-wave.out .bt-cols .bt-col{animation:colRiseOut .85s cubic-bezier(.45,0,.3,1) forwards;animation-delay:calc(var(--i) * 55ms)}
+
+.anim-diag .bt-cols .bt-col{transform:translate(-72%,-112%) skewX(-16deg);transform-origin:top left}
+@keyframes diagIn{to{transform:translate(0,0) skewX(-16deg)}}
+@keyframes diagOut{from{transform:translate(0,0) skewX(-16deg)}to{transform:translate(80%,-112%) skewX(-16deg)}}
+.anim-diag.in .bt-cols .bt-col{animation:diagIn .78s cubic-bezier(.5,.05,.2,1) forwards;animation-delay:calc(var(--i) * 55ms)}
+.anim-diag.out .bt-cols .bt-col{animation:diagOut .88s cubic-bezier(.45,0,.3,1) forwards;animation-delay:calc(var(--i) * 55ms)}
+
+/* — 横条积木（rows 左右交替滑入）— */
+.bt-rows{flex-direction:column}
+.bt-rows .bt-row{flex:1;background:var(--bt-c1,#0B2A5B)}
+.bt-rows .bt-row:nth-child(even){background:var(--bt-c2,#FFC400)}
+.bt-rows .bt-row{transform:translateX(-104%)}
+.bt-rows .bt-row:nth-child(even){transform:translateX(104%)}
+@keyframes rowInL{to{transform:translateX(0)}}
+@keyframes rowInR{to{transform:translateX(0)}}
+@keyframes rowOutL{from{transform:translateX(0)}to{transform:translateX(104%)}}
+@keyframes rowOutR{from{transform:translateX(0)}to{transform:translateX(-104%)}}
+.anim-rows.in .bt-rows .bt-row{animation:rowInL .74s cubic-bezier(.5,.05,.25,1) forwards;animation-delay:calc(var(--i) * 80ms)}
+.anim-rows.in .bt-rows .bt-row:nth-child(even){animation-name:rowInR}
+.anim-rows.out .bt-rows .bt-row{animation:rowOutL .86s cubic-bezier(.45,0,.3,1) forwards;animation-delay:calc(var(--i) * 80ms)}
+.anim-rows.out .bt-rows .bt-row:nth-child(even){animation-name:rowOutR}
+
+/* — 棋盘格积木（grid 3D 翻转弹入）— */
+.bt-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(4,1fr)}
+.bt-grid .bt-cell{background:var(--bt-c1,#006DB7)}
+.bt-grid .bt-cell.alt{background:var(--bt-c2,#0B2A5B)}
+.bt-grid .bt-cell{transform:scale(.2) rotateX(90deg);opacity:0;transform-origin:center}
+@keyframes cellIn{to{transform:scale(1) rotateX(0);opacity:1}}
+@keyframes cellOut{from{transform:scale(1) rotateX(0);opacity:1}to{transform:scale(.15) rotateY(95deg);opacity:0}}
+.anim-grid.in .bt-grid .bt-cell{animation:cellIn .6s cubic-bezier(.3,1.15,.4,1) forwards;animation-delay:calc(var(--i) * 48ms)}
+.anim-grid.out .bt-grid .bt-cell{animation:cellOut .72s cubic-bezier(.5,0,.35,1) forwards;animation-delay:calc(var(--i) * 48ms)}
+
+/* — 对开窗帘积木（curtain）— */
+.bt-curtain .bt-half{width:50.5%;height:100%;position:relative;background:var(--bt-c1,#E30613)}
+.bt-curtain .bt-half.r{background:var(--bt-c2,#FFC400)}
+.bt-curtain .bt-half.l{transform:translateX(-102%)}
+.bt-curtain .bt-half.r{transform:translateX(102%)}
+@keyframes halfL{to{transform:translateX(0)}}
+@keyframes halfLOut{from{transform:translateX(0)}to{transform:translateX(-102%)}}
+.anim-curtain.in .bt-half.l{animation:halfL .8s cubic-bezier(.5,.05,.25,1) forwards}
+.anim-curtain.in .bt-half.r{animation:halfL .8s cubic-bezier(.5,.05,.25,1) forwards}
+.anim-curtain.out .bt-half.l{animation:halfLOut .92s cubic-bezier(.45,0,.3,1) forwards}
+.anim-curtain.out .bt-half.r{animation:halfLOut .92s cubic-bezier(.45,0,.3,1) forwards}
+
+/* — 中心积木爆开（core）— */
+.bt-core{align-items:center;justify-content:center}
+.bt-core .bt-core-box{width:84px;height:56px;border-radius:14px;background:var(--bt-c1,#123A78);transform:scale(0) rotate(-8deg)}
+@keyframes coreIn{to{transform:scale(30) rotate(0)}}
+@keyframes coreOut{from{transform:scale(30) rotate(0)}to{transform:scale(0) rotate(10deg)}}
+.anim-core.in .bt-core-box{animation:coreIn .85s cubic-bezier(.5,.05,.2,1) forwards}
+.anim-core.out .bt-core-box{animation:coreOut .95s cubic-bezier(.45,0,.35,1) forwards}
+
+/* — 章节标题卡（互动感）— */
+.bt-label{
+  position:absolute;left:50%;top:50%;z-index:10;display:flex;align-items:center;gap:18px;
+  transform:translate(-50%,-50%) scale(.4) rotate(-6deg);opacity:0;
+  background:#fff;padding:20px 40px;border-radius:20px;
+  box-shadow:0 26px 70px rgba(0,0,0,.35);
+  font-family:var(--font-display);font-size:clamp(22px,3.4vw,38px);color:var(--navy);letter-spacing:6px;white-space:nowrap;
 }
-.brick-transition.in .bt-col{animation:btIn .42s cubic-bezier(.55,0,.25,1) forwards;animation-delay:calc(var(--i) * 36ms)}
-.brick-transition.out .bt-col{animation:btOut .52s cubic-bezier(.35,0,.2,1) forwards;animation-delay:calc(var(--i) * 36ms)}
-@keyframes btIn{from{transform:translateY(-103%)}to{transform:translateY(0)}}
-@keyframes btOut{from{transform:translateY(0)}to{transform:translateY(103%)}}
+.bt-label .bt-label-brick{
+  width:44px;height:32px;border-radius:9px;background:var(--bt-c1,#0B2A5B);position:relative;flex:none;
+  box-shadow:0 4px 0 rgba(0,0,0,.18);
+}
+.bt-label .bt-label-brick::before,.bt-label .bt-label-brick::after{
+  content:"";position:absolute;top:-8px;width:14px;height:8px;border-radius:5px 5px 2px 2px;background:inherit;filter:brightness(1.15);
+}
+.bt-label .bt-label-brick::before{left:6px}
+.bt-label .bt-label-brick::after{right:6px}
+@keyframes labelIn{to{transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1}}
+@keyframes labelOut{from{transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1}to{transform:translate(-50%,-50%) scale(.55) rotate(5deg);opacity:0}}
+.brick-transition.in .bt-label{animation:labelIn .55s .5s cubic-bezier(.25,1.35,.4,1) forwards}
+.brick-transition.out .bt-label{animation:labelOut .42s cubic-bezier(.5,0,.8,.4) forwards}
 
 /* 落位弹跳 */
 @keyframes popLand{
@@ -537,24 +628,48 @@ a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 12 
 }
 
 /* ============================================================
-   动态乐高小人
+   动态乐高小人（渐变立体质感）
    ============================================================ */
-.minifig{width:62px;height:120px;overflow:visible;filter:drop-shadow(0 10px 12px rgba(11,42,91,.22))}
-.minifig .arm-l,.minifig .arm-r,.minifig .leg-l,.minifig .leg-r{transform-box:fill-box}
-.minifig .arm-l,.minifig .arm-r{transform-origin:50% 12%}
-.minifig .leg-l,.minifig .leg-r{transform-origin:50% 6%}
-.minifig .arm-r{animation:waveArm 1.8s ease-in-out infinite}
+.minifig{width:62px;height:124px;overflow:visible;filter:drop-shadow(0 12px 14px rgba(11,42,91,.26))}
+.minifig .arm-l,.minifig .arm-r,.minifig .leg-l,.minifig .leg-r,.minifig .fig-head{transform-box:fill-box}
+.minifig .arm-l,.minifig .arm-r{transform-origin:50% 14%}
+.minifig .leg-l,.minifig .leg-r{transform-origin:50% 4%}
+.minifig .fig-head{transform-origin:50% 92%}
+/* 挥手：带回弹与预备动作 */
+.minifig .arm-r{animation:waveArm 2.4s cubic-bezier(.45,.05,.35,.95) infinite}
 .minifig.wave-left .arm-r{animation-name:waveArmL}
-@keyframes waveArm{0%,100%{transform:rotate(0)}30%{transform:rotate(-42deg)}55%{transform:rotate(-14deg)}75%{transform:rotate(-32deg)}}
-@keyframes waveArmL{0%,100%{transform:rotate(0)}30%{transform:rotate(42deg)}55%{transform:rotate(14deg)}75%{transform:rotate(32deg)}}
-.minifig.bob{animation:figBob 2.6s ease-in-out infinite}
-@keyframes figBob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-9px) rotate(1.4deg)}}
-.minifig.walk .leg-l{animation:stepA .8s ease-in-out infinite alternate}
-.minifig.walk .leg-r{animation:stepB .8s ease-in-out infinite alternate}
-@keyframes stepA{from{transform:rotate(-15deg)}to{transform:rotate(15deg)}}
-@keyframes stepB{from{transform:rotate(15deg)}to{transform:rotate(-15deg)}}
-.minifig.walk{animation:walkBob .8s ease-in-out infinite alternate}
-@keyframes walkBob{from{transform:translateY(0) rotate(-1.2deg)}to{transform:translateY(-5px) rotate(1.2deg)}}
+@keyframes waveArm{
+  0%,100%{transform:rotate(0deg)}
+  14%{transform:rotate(11deg)}
+  40%{transform:rotate(-52deg)}
+  58%{transform:rotate(-26deg)}
+  80%{transform:rotate(-46deg)}
+}
+@keyframes waveArmL{
+  0%,100%{transform:rotate(0deg)}
+  14%{transform:rotate(-11deg)}
+  40%{transform:rotate(52deg)}
+  58%{transform:rotate(26deg)}
+  80%{transform:rotate(46deg)}
+}
+/* 待机：浮动 + 头部微侧（呼吸感） */
+.minifig.bob{animation:figBob 3.2s ease-in-out infinite}
+.minifig.bob .fig-head{animation:headTilt 3.2s ease-in-out infinite}
+@keyframes figBob{0%,100%{transform:translateY(0) rotate(-.8deg)}50%{transform:translateY(-8px) rotate(1.1deg)}}
+@keyframes headTilt{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(2.4deg)}}
+/* 行走：腿部钟摆 + 身体起伏 + 头部随动 */
+.minifig.walk{animation:walkBob 1.15s cubic-bezier(.45,.05,.55,.95) infinite alternate}
+.minifig.walk .leg-l{animation:stepA 1.15s cubic-bezier(.45,.05,.55,.95) infinite alternate}
+.minifig.walk .leg-r{animation:stepB 1.15s cubic-bezier(.45,.05,.55,.95) infinite alternate}
+.minifig.walk .fig-head{animation:headWalk 1.15s cubic-bezier(.45,.05,.55,.95) infinite alternate}
+@keyframes stepA{from{transform:rotate(-19deg)}to{transform:rotate(19deg)}}
+@keyframes stepB{from{transform:rotate(19deg)}to{transform:rotate(-19deg)}}
+@keyframes walkBob{from{transform:translateY(0) rotate(-1.6deg)}to{transform:translateY(-6px) rotate(1.6deg)}}
+@keyframes headWalk{from{transform:rotate(1.8deg)}to{transform:rotate(-1.8deg)}}
+@media (prefers-reduced-motion:reduce){
+  .minifig .arm-r,.minifig.bob,.minifig.bob .fig-head,.minifig.walk,
+  .minifig.walk .leg-l,.minifig.walk .leg-r,.minifig.walk .fig-head{animation:none}
+}
 
 /* 小人游行带 */
 .minifig-parade{

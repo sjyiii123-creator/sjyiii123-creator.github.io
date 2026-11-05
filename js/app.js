@@ -235,8 +235,106 @@
   }
 
   /* ============================================================
-     积木过场跳转
+     乐高小人生成器（渐变立体质感 · 参考真实 Minifigure 结构）
      ============================================================ */
+  var figUid = 0;
+  function shade(hex, amt) {
+    var n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+    function f(v) { return Math.round(Math.min(255, Math.max(0, v + 255 * amt))); }
+    return "#" + ((1 << 24) + (f(r) << 16) + (f(g) << 8) + f(b)).toString(16).slice(1);
+  }
+  // 标准 C 型手爪：270° 圆弧 + 圆端点（开口朝 gapDeg 方向）
+  function clawPath(cx, cy, r, gapDeg) {
+    var a1 = (gapDeg + 45) * Math.PI / 180, a2 = (gapDeg + 315) * Math.PI / 180;
+    var x1 = (cx + r * Math.cos(a1)).toFixed(1), y1 = (cy + r * Math.sin(a1)).toFixed(1);
+    var x2 = (cx + r * Math.cos(a2)).toFixed(1), y2 = (cy + r * Math.sin(a2)).toFixed(1);
+    return "M" + x1 + " " + y1 + " A" + r + " " + r + " 0 1 1 " + x2 + " " + y2;
+  }
+  function minifigSVG(opt) {
+    var uid = "mf" + (++figUid);
+    var t = opt.torso, l = opt.legs;
+    var tL = shade(t, 0.2), tD = shade(t, -0.26), lL = shade(l, 0.2), lD = shade(l, -0.26);
+    // 硬塑料渐变：亮带 -> 本色 -> 暗部，过渡更硬朗
+    function grad(id, light, base, dark) {
+      return '<linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="0">' +
+        '<stop offset="0" stop-color="' + light + '"/><stop offset=".2" stop-color="' + light + '"/>' +
+        '<stop offset=".38" stop-color="' + base + '"/><stop offset=".72" stop-color="' + base + '"/>' +
+        '<stop offset="1" stop-color="' + dark + '"/></linearGradient>';
+    }
+    return '<svg class="minifig ' + (opt.cls || "") + '"' +
+      (opt.delay ? ' style="animation-delay:' + opt.delay + '"' : "") +
+      ' viewBox="0 0 64 128" aria-hidden="true"><defs>' +
+      grad("h" + uid, "#FFE9A0", "#FFC400", "#C78E00") +
+      grad("t" + uid, tL, t, tD) +
+      grad("l" + uid, lL, l, lD) +
+      '</defs>' +
+      '<ellipse cx="32" cy="123" rx="19" ry="4.6" fill="#0B2A5B" opacity=".2"/>' +
+      // 腿部（髋块 + 腿柱 + 外撇脚掌，模块拼接缝）
+      '<g stroke="#17202E" stroke-width="1.7" stroke-linejoin="round">' +
+      '<rect x="12" y="61" width="40" height="13" rx="4" fill="url(#l' + uid + ')"/>' +
+      '<rect x="13" y="70" width="16" height="38" rx="5" fill="url(#l' + uid + ')"/>' +
+      '<rect x="35" y="70" width="16" height="38" rx="5" fill="url(#l' + uid + ')"/>' +
+      '<rect x="9.5" y="101" width="21.5" height="13" rx="2.5" fill="url(#l' + uid + ')"/>' +
+      '<rect x="33" y="101" width="21.5" height="13" rx="2.5" fill="url(#l' + uid + ')"/></g>' +
+      '<path d="M22 74.5 h20 M22 65.5 h20" stroke="#17202E" stroke-width="1" opacity=".35"/>' +
+      // 颈柱（独立件 + 接缝）
+      '<rect x="26" y="28" width="12" height="8" rx="2" fill="#E8B200" stroke="#A87C00" stroke-width="1.5"/>' +
+      // 躯干（硬边圆肩梯形，接近真实 Minifigure 比例）
+      '<path d="M12.5 38.5 q0-7.5 7.5-7.5 h24 q7.5 0 7.5 7.5 l-2.2 25.5 q-.4 4-4.4 4 h-23.8 q-4 0-4.4-4 z" fill="url(#t' + uid + ')" stroke="#17202E" stroke-width="1.9" stroke-linejoin="round"/>' +
+      '<rect x="17" y="34" width="4" height="26" rx="2" fill="#fff" opacity=".38"/>' +
+      '<circle cx="15.5" cy="42" r="3.4" fill="#17202E" opacity=".2"/>' +
+      '<circle cx="48.5" cy="42" r="3.4" fill="#17202E" opacity=".2"/>' +
+      // 手臂 + 标准 C 型手爪（大开口）
+      '<g class="arm-l"><path d="M16 42 C9 44 5.5 50 5 57" fill="none" stroke="url(#t' + uid + ')" stroke-width="13" stroke-linecap="round"/>' +
+      '<path d="' + clawPath(5.2, 65, 6.2, 222) + '" fill="none" stroke="url(#h' + uid + ')" stroke-width="4.3" stroke-linecap="round"/></g>' +
+      '<g class="arm-r"><path d="M48 42 C55 44 58.5 50 59 57" fill="none" stroke="url(#t' + uid + ')" stroke-width="13" stroke-linecap="round"/>' +
+      '<path d="' + clawPath(58.8, 65, 6.2, 318) + '" fill="none" stroke="url(#h' + uid + ')" stroke-width="4.3" stroke-linecap="round"/></g>' +
+      // 头部（圆柱头：平直侧壁 + 顶部椭圆 + 独立凸点 + 硬高光）
+      '<g class="fig-head">' +
+      '<rect x="26.5" y="0" width="11" height="8" rx="2.5" fill="url(#h' + uid + ')" stroke="#A87C00" stroke-width="1.5"/>' +
+      '<ellipse cx="32" cy="1.6" rx="5" ry="1.7" fill="#FFE9A0" opacity=".6"/>' +
+      '<rect x="16" y="7" width="32" height="27" rx="7" fill="url(#h' + uid + ')" stroke="#A87C00" stroke-width="1.7"/>' +
+      '<ellipse cx="32" cy="7.4" rx="15.6" ry="3" fill="#FFE9A0" opacity=".5"/>' +
+      '<rect x="19.5" y="11" width="4.2" height="17" rx="2" fill="#fff" opacity=".5" transform="rotate(-5 21.6 19.5)"/>' +
+      // 印刷式平面五官
+      '<rect x="22.8" y="15.8" width="4.4" height="6.4" rx="2" fill="#262013"/>' +
+      '<rect x="36.8" y="15.8" width="4.4" height="6.4" rx="2" fill="#262013"/>' +
+      '<circle cx="26" cy="17.6" r="1.25" fill="#fff"/><circle cx="40" cy="17.6" r="1.25" fill="#fff"/>' +
+      '<path d="M21 12.2 q3-2 6-1" stroke="#262013" stroke-width="2.1" fill="none" stroke-linecap="round"/>' +
+      '<path d="M43 12.2 q-3-2-6-1" stroke="#262013" stroke-width="2.1" fill="none" stroke-linecap="round"/>' +
+      '<path d="M26 25 q6 5.5 12 0" stroke="#262013" stroke-width="2.8" fill="none" stroke-linecap="round"/>' +
+      '</g></svg>';
+  }
+
+  var FIG_PRESETS = {
+    heroWave:  { cls: "bob", torso: "#E30613", legs: "#0B2A5B" },
+    heroBuild: { cls: "bob", torso: "#00A651", legs: "#1B2430", delay: ".9s" },
+    walk1:     { cls: "walk", torso: "#FFC400", legs: "#0B2A5B" },
+    walk2:     { cls: "walk wave-left", torso: "#006DB7", legs: "#E30613", delay: ".25s" },
+    walk3:     { cls: "walk", torso: "#E30613", legs: "#006DB7", delay: ".5s" },
+    walk4:     { cls: "walk wave-left", torso: "#00A651", legs: "#0B2A5B", delay: ".75s" },
+    foot1:     { cls: "bob", torso: "#FFC400", legs: "#0B2A5B" },
+    foot2:     { cls: "bob", torso: "#E30613", legs: "#0B2A5B", delay: ".5s" }
+  };
+  function initFigures() {
+    $$(".fig-slot").forEach(function (slot) {
+      var preset = FIG_PRESETS[slot.getAttribute("data-fig")];
+      if (preset) slot.innerHTML = minifigSVG(preset);
+    });
+  }
+
+  /* ============================================================
+     积木过场跳转（每个章节专属动画 + 标题卡）
+     ============================================================ */
+  var jumpStyles = {
+    hero:       { anim: "rain",    label: "首页",     c1: "#0B2A5B", c2: "#FFC400" },
+    about:      { anim: "wave",    label: "关于我",   c1: "#FFC400", c2: "#E30613" },
+    experience: { anim: "rows",    label: "工作经历", c1: "#0B2A5B", c2: "#006DB7" },
+    skills:     { anim: "diag",    label: "技能",     c1: "#00A651", c2: "#FFC400" },
+    projects:   { anim: "grid",    label: "作品集",   c1: "#006DB7", c2: "#0B2A5B" },
+    education:  { anim: "core",    label: "教育背景", c1: "#123A78", c2: "#FFC400" },
+    contact:    { anim: "curtain", label: "联系方式", c1: "#E30613", c2: "#FFC400" }
+  };
   var transitioning = false;
   function brickJumpTo(targetId, navEl) {
     if (transitioning) return;
@@ -244,8 +342,12 @@
     if (!target) return;
     transitioning = true;
 
+    var js = jumpStyles[targetId] || jumpStyles.hero;
     var bt = $("#brickTransition");
-    bt.classList.remove("out");
+    bt.className = "brick-transition anim-" + js.anim;
+    bt.style.setProperty("--bt-c1", js.c1);
+    bt.style.setProperty("--bt-c2", js.c2);
+    $("#btLabelText").textContent = js.label;
     void bt.offsetWidth; // 强制重排以重启动画
     bt.classList.add("in");
 
@@ -255,13 +357,12 @@
       navEl.classList.add("jump");
     }
 
+    // 节奏：盖屏 ~1.2s → 落位 → 揭幕 ~1.1s（从容不迫）
     setTimeout(function () {
-      // 被积木遮住时瞬移，再揭开 → 视觉上是连续的过场
       window.scrollTo({ top: target.offsetTop - 70, behavior: "instant" });
       bt.classList.remove("in");
       bt.classList.add("out");
 
-      // 落位弹跳
       target.classList.remove("pop");
       void target.offsetWidth;
       target.classList.add("pop");
@@ -270,8 +371,8 @@
         bt.classList.remove("out");
         target.classList.remove("pop");
         transitioning = false;
-      }, 760);
-    }, 560);
+      }, 1150);
+    }, 1250);
   }
 
   /* ============================================================
@@ -335,6 +436,7 @@
       })
       .then(function (data) {
         render(data);
+        initFigures();
         initWelcome();
         initReveal();
         initTrain();
