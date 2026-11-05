@@ -3,257 +3,207 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>李正淼 · 算法工程师 | 个人简历</title>
-<meta name="description" content="算法工程师李正淼的个人简历：关于我、工作经历、技能、作品集、教育背景与联系方式。">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<title>李正淼 · 算法工程师 | LEGO-style Resume</title>
+<meta name="description" content="算法工程师李正淼的个人简历网站 —— 乐高积木风格，包含工作经历、技能、作品集与联系方式。">
+<link rel="icon" href="assets/brick.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=5">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<!-- 页面过场动画 -->
-<div id="intro" aria-hidden="true">
-  <div class="intro-panel intro-panel--a"></div>
-  <div class="intro-panel intro-panel--b"></div>
-  <div class="intro-panel intro-panel--c"></div>
-  <div class="intro-panel intro-panel--d"></div>
-  <div class="intro-logo">
-    <span class="intro-logo__zh">李正淼</span>
-    <span class="intro-logo__en">ALGORITHM ENGINEER · PORTFOLIO</span>
-  </div>
-</div>
-
-<!-- LEGO 手指光标 -->
-<div id="cursor" aria-hidden="true"><div class="cursor-hand"></div></div>
-<div id="cursor-dot" aria-hidden="true"></div>
-
-<!-- 顶部阅读进度条 -->
-<div id="progress" aria-hidden="true">
-  <div class="train">
-    <span class="smoke smoke--1"></span><span class="smoke smoke--2"></span><span class="smoke smoke--3"></span>
-    <svg class="train-svg" viewBox="0 0 92 30">
-      <g class="wagon">
-        <rect x="3" y="12" width="22" height="12" rx="3" fill="#00A94F"/><rect x="7" y="8" width="6" height="5" rx="2" fill="#00A94F"/><rect x="15" y="8" width="6" height="5" rx="2" fill="#00A94F"/>
-        <circle class="wheel" cx="10" cy="25.5" r="3" fill="#2B2B2B"/><circle class="wheel" cx="19" cy="25.5" r="3" fill="#2B2B2B"/>
+<!-- ============ 乐高小火车进度条 ============ -->
+<div class="train-track" id="trainTrack" aria-hidden="true">
+  <div class="train-rail"></div>
+  <div class="train-ties"></div>
+  <div class="lego-train" id="legoTrain">
+    <svg viewBox="0 0 150 56" class="train-svg">
+      <!-- 烟囱烟雾 -->
+      <g class="smoke">
+        <circle cx="20" cy="8" r="4"/><circle cx="29" cy="4" r="3"/><circle cx="36" cy="1" r="2.2"/>
       </g>
-      <g class="wagon">
-        <rect x="27" y="12" width="22" height="12" rx="3" fill="#006DB7"/><rect x="31" y="8" width="6" height="5" rx="2" fill="#006DB7"/><rect x="39" y="8" width="6" height="5" rx="2" fill="#006DB7"/>
-        <circle class="wheel" cx="34" cy="25.5" r="3" fill="#2B2B2B"/><circle class="wheel" cx="43" cy="25.5" r="3" fill="#2B2B2B"/>
-      </g>
-      <g class="loco">
-        <rect x="51" y="9" width="30" height="15" rx="3" fill="#E3000B"/>
-        <rect x="52" y="3" width="11" height="8" rx="2" fill="#E3000B"/><rect x="54" y="6" width="6" height="5" rx="1.5" fill="#FFD028"/>
-        <rect x="72" y="1" width="7" height="9" rx="2" fill="#2B2B2B"/>
-        <circle class="wheel" cx="57" cy="25.5" r="3.2" fill="#2B2B2B"/><circle class="wheel" cx="75" cy="25.5" r="3.2" fill="#2B2B2B"/>
+      <!-- 车头 -->
+      <rect x="14" y="16" width="44" height="22" rx="3" fill="#E30613" stroke="#8B0000" stroke-width="2"/>
+      <rect x="22" y="8" width="12" height="10" rx="2" fill="#E30613" stroke="#8B0000" stroke-width="2"/>
+      <rect x="10" y="20" width="8" height="14" rx="2" fill="#FFC400" stroke="#B8860B" stroke-width="2"/>
+      <rect x="40" y="21" width="12" height="10" rx="2" fill="#7EC8FF" stroke="#2A6FA8" stroke-width="2"/>
+      <!-- 车厢1 -->
+      <rect x="62" y="20" width="36" height="18" rx="3" fill="#FFC400" stroke="#B8860B" stroke-width="2"/>
+      <circle cx="72" cy="29" r="3.6" fill="#fff" stroke="#B8860B" stroke-width="1.6"/>
+      <circle cx="82" cy="29" r="3.6" fill="#fff" stroke="#B8860B" stroke-width="1.6"/>
+      <circle cx="92" cy="29" r="3.6" fill="#fff" stroke="#B8860B" stroke-width="1.6"/>
+      <!-- 车厢2 -->
+      <rect x="102" y="22" width="34" height="16" rx="3" fill="#00A651" stroke="#00622E" stroke-width="2"/>
+      <circle cx="112" cy="30" r="3.2" fill="#fff" stroke="#00622E" stroke-width="1.6"/>
+      <circle cx="122" cy="30" r="3.2" fill="#fff" stroke="#00622E" stroke-width="1.6"/>
+      <circle cx="132" cy="30" r="3.2" fill="#fff" stroke="#00622E" stroke-width="1.6"/>
+      <!-- 车轮 -->
+      <g class="wheels">
+        <circle class="wheel" cx="24" cy="43" r="7"/><circle class="wheel" cx="48" cy="43" r="7"/>
+        <circle class="wheel" cx="76" cy="43" r="6"/><circle class="wheel" cx="94" cy="43" r="6"/>
+        <circle class="wheel" cx="116" cy="43" r="5.6"/><circle class="wheel" cx="132" cy="43" r="5.6"/>
       </g>
     </svg>
+    <div class="train-percent" id="trainPercent">0%</div>
   </div>
 </div>
 
-<!-- 乐高积木过渡对话框 -->
-<div class="page-transition" id="pageTransition" aria-hidden="true">
-  <div class="pt-row pt-row--1"></div><div class="pt-row pt-row--2"></div>
-  <div class="pt-row pt-row--3"></div><div class="pt-row pt-row--4"></div>
+<!-- ============ 欢迎过场 ============ -->
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="brick-field" id="brickField"></div>
+  <div class="welcome-card">
+    <div class="welcome-studs"><i></i><i></i><i></i><i></i></div>
+    <p class="welcome-eyebrow" id="welcomeEyebrow">WELCOME</p>
+    <h1 class="welcome-title" id="welcomeTitle">欢迎来到我的积木世界</h1>
+    <p class="welcome-sub" id="welcomeSub">下滑开始探索 →</p>
+    <button class="welcome-btn" id="welcomeBtn">
+      <span class="btn-studs"><i></i><i></i><i></i><i></i></span>
+      <span id="welcomeBtnText">开始探索</span>
+    </button>
+  </div>
 </div>
 
-<!-- 侧边栏 -->
+<!-- ============ 侧边栏 ============ -->
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar__glow"></div>
-  <div class="sidebar__head">
-    <div class="avatar-wrap">
-      <div class="avatar-ring"></div>
-      <img class="avatar" src="assets/avatar.svg" alt="李正淼 头像">
+  <div class="sidebar-studs" aria-hidden="true"></div>
+  <div class="sidebar-inner">
+    <div class="avatar-brick">
+      <div class="avatar-studs"><i></i><i></i></div>
+      <div class="avatar-face" id="avatarText">李</div>
     </div>
-    <h1 class="sidebar__name" data-bind="meta.name">李正淼</h1>
-    <p class="sidebar__role" data-bind="meta.role">算法工程师</p>
-    <p class="sidebar__tagline" data-bind="meta.tagline"></p>
-  </div>
+    <h2 class="side-name" id="sideName">李正淼</h2>
+    <p class="side-title" id="sideTitle">算法工程师</p>
+    <p class="side-slogan" id="sideSlogan">Algorithm Engineer · LEGO Builder</p>
 
-  <nav class="nav" id="nav" aria-label="页面导航">
-    <a class="nav__item is-active" href="#welcome" data-nav="welcome"><span class="nav__ico" data-ico="home"></span>欢迎</a>
-    <a class="nav__item" href="#about" data-nav="about"><span class="nav__ico" data-ico="user"></span>关于我</a>
-    <a class="nav__item" href="#experience" data-nav="experience"><span class="nav__ico" data-ico="case"></span>工作经历</a>
-    <a class="nav__item" href="#skills" data-nav="skills"><span class="nav__ico" data-ico="star"></span>技能</a>
-    <a class="nav__item" href="#projects" data-nav="projects"><span class="nav__ico" data-ico="grid"></span>作品集</a>
-    <a class="nav__item" href="#education" data-nav="education"><span class="nav__ico" data-ico="book"></span>教育背景</a>
-    <a class="nav__item" href="#contact" data-nav="contact"><span class="nav__ico" data-ico="mail"></span>联系方式</a>
-  </nav>
+    <nav class="side-nav" id="sideNav">
+      <a href="#hero" class="nav-brick active" data-target="hero"><span class="nav-dot"></span>首页</a>
+      <a href="#about" class="nav-brick" data-target="about"><span class="nav-dot"></span>关于我</a>
+      <a href="#experience" class="nav-brick" data-target="experience"><span class="nav-dot"></span>工作经历</a>
+      <a href="#skills" class="nav-brick" data-target="skills"><span class="nav-dot"></span>技能</a>
+      <a href="#projects" class="nav-brick" data-target="projects"><span class="nav-dot"></span>作品集</a>
+      <a href="#education" class="nav-brick" data-target="education"><span class="nav-dot"></span>教育背景</a>
+      <a href="#contact" class="nav-brick" data-target="contact"><span class="nav-dot"></span>联系方式</a>
+    </nav>
 
-  <div class="sidebar__foot">
-    <div class="social" id="social"></div>
-    <p class="sidebar__copy">© <span id="year"></span> <span data-bind="meta.name">李正淼</span></p>
-    <a class="admin-link" href="admin/" title="仅站长可见入口">✦ 站长管理</a>
+    <div class="side-links" id="sideLinks"></div>
+    <button class="side-edit-btn" id="openAdmin" title="仅站长可编辑">🔧 站长入口</button>
+    <p class="side-hint">访客只读 · 可留言联系</p>
   </div>
 </aside>
 
-<!-- 移动端顶栏 -->
-<header class="topbar">
-  <button class="topbar__btn" id="menuBtn" aria-label="打开菜单"><span></span><span></span><span></span></button>
-  <span class="topbar__name" data-bind="meta.name">李正淼</span>
-  <a class="topbar__cta" href="#contact">联系我</a>
-</header>
-<div class="drawer-mask" id="drawerMask"></div>
-
-<!-- 内容区 -->
+<!-- ============ 主内容 ============ -->
 <main class="content" id="content">
 
-  <!-- 欢迎词 -->
-  <section class="hero section" id="welcome" data-section="welcome">
-    <div class="hero__orbs" aria-hidden="true">
-      <span class="orb orb--1"></span><span class="orb orb--2"></span>
-      <span class="orb orb--3"></span><span class="orb orb--4"></span>
-      <div class="hero__grid"></div>
-      <svg class="brick-cluster bc--1" viewBox="0 0 180 130">
-        <g fill="#006DB7"><rect x="12" y="62" width="152" height="48" rx="8"/><rect x="30" y="48" width="28" height="18" rx="7"/><rect x="74" y="48" width="28" height="18" rx="7"/><rect x="118" y="48" width="28" height="18" rx="7"/></g>
-        <g fill="#E3000B"><rect x="44" y="14" width="92" height="44" rx="8"/><rect x="60" width="28" height="18" rx="7"/><rect x="102" width="28" height="18" rx="7"/></g>
-      </svg>
-      <svg class="brick-cluster bc--2" viewBox="0 0 150 110">
-        <g fill="#FFD028"><rect x="16" y="52" width="112" height="42" rx="8"/><rect x="32" y="38" width="28" height="18" rx="7"/><rect x="84" y="38" width="28" height="18" rx="7"/></g>
-        <g fill="#00A94F"><rect x="70" y="12" width="62" height="38" rx="8"/><rect x="86" width="26" height="16" rx="7"/></g>
-      </svg>
-      <svg class="brick-cluster bc--3" viewBox="0 0 120 70">
-        <g fill="#F36F21"><rect x="10" y="20" width="100" height="38" rx="8"/><rect x="26" y="6" width="26" height="18" rx="7"/><rect x="68" y="6" width="26" height="18" rx="7"/></g>
-      </svg>
-      <svg class="minifig" viewBox="0 0 100 170" fill="currentColor">
-        <rect x="44" y="8" width="12" height="11" rx="4"/><rect x="35" y="16" width="30" height="27" rx="11"/>
-        <rect x="30" y="46" width="40" height="48" rx="9"/>
-        <rect x="23" y="52" width="15" height="34" rx="7.5"/><rect x="62" y="52" width="15" height="34" rx="7.5"/>
-        <circle cx="19" cy="90" r="8"/><circle cx="81" cy="90" r="8"/>
-        <rect x="34" y="94" width="14" height="40" rx="6"/><rect x="52" y="94" width="14" height="40" rx="6"/>
-        <rect x="31" y="130" width="19" height="13" rx="5"/><rect x="50" y="130" width="19" height="13" rx="5"/>
-      </svg>
+  <!-- Hero -->
+  <section class="hero section" id="hero">
+    <div class="hero-bricks" aria-hidden="true">
+      <div class="float-brick b1"></div><div class="float-brick b2"></div>
+      <div class="float-brick b3"></div><div class="float-brick b4"></div>
+      <div class="float-brick b5"></div>
     </div>
-    <div class="hero__inner">
-      <p class="hero__badge reveal"><span class="pulse-dot"></span><span data-bind="welcome.badge">欢迎来到我的个人主页</span><span class="hero__badge-sep">·</span><span class="hero__badge-en" data-bind="welcome.badgeEn">Welcome to my portfolio</span></p>
-      <h2 class="hero__title">
-        <span class="hero__line reveal" style="--d:.1s" data-bind="welcome.title">你好，我是李正淼</span>
-        <span class="hero__line hero__line--en reveal" style="--d:.2s" data-bind="welcome.titleEn">Hello, I'm Li Zhengmiao</span>
-        <span class="hero__line hero__line--grad reveal" style="--d:.32s" data-bind="welcome.highlight">一名热爱创造的算法工程师</span>
-        <span class="hero__line hero__line--en hero__line--en-grad reveal" style="--d:.42s" data-bind="welcome.highlightEn">An algorithm engineer who loves to create</span>
-      </h2>
-      <p class="hero__sub reveal" style="--d:.52s" data-bind="welcome.subtitle"></p>
-      <p class="hero__sub hero__sub--en reveal" style="--d:.6s" data-bind="welcome.subtitleEn"></p>
-      <p class="hero__roles reveal" style="--d:.7s">
-        <span class="hero__roles-label">我专注于 · I focus on</span>
-        <span class="type-wrap"><span id="roleRotator" class="type-text"></span><span class="type-caret"></span></span>
-      </p>
-      <div class="hero__cta reveal" style="--d:.82s">
-        <a class="btn btn--primary" id="ctaPrimary" href="#projects"><span data-bind="welcome.ctaPrimary.text">查看我的作品</span><span class="btn__arrow">→</span></a>
-        <a class="btn btn--ghost" id="ctaSecondary" href="#contact"><span data-bind="welcome.ctaSecondary.text">联系我</span></a>
+    <div class="hero-body">
+      <p class="hero-eyebrow reveal">HELLO, I'M</p>
+      <h1 class="hero-name reveal" id="heroName">李正淼</h1>
+      <h2 class="hero-role reveal" id="heroRole">算法工程师</h2>
+      <p class="hero-motto reveal" id="heroMotto">"把复杂的模型，拼成简单的积木"</p>
+      <div class="hero-cta reveal">
+        <a href="#projects" class="btn btn-yellow"><span class="btn-studs"><i></i><i></i><i></i><i></i></span>看看作品</a>
+        <a href="#contact" class="btn btn-navy"><span class="btn-studs"><i></i><i></i><i></i><i></i></span>联系我</a>
       </div>
-    </div>
-    <a class="scroll-hint" href="#about" aria-label="向下滚动">
-      <span class="scroll-hint__mouse"><span class="scroll-hint__wheel"></span></span>
-      <span class="scroll-hint__text">向下滚动 · Scroll</span>
-    </a>
-    <div class="hero__wave" aria-hidden="true">
-      <svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,64 C240,120 480,10 720,48 C960,86 1200,110 1440,52 L1440,120 L0,120 Z"></path></svg>
+      <div class="hero-stats reveal" id="heroStats"></div>
     </div>
   </section>
 
   <!-- 关于我 -->
-  <section class="section section--pad" id="about" data-section="about">
-    <div class="sec-head reveal">
-      <p class="sec-kicker" data-bind="about.subtitle">About Me</p>
-      <h2 class="sec-title" data-bind="about.title">关于我</h2>
-      <span class="sec-bar"></span>
+  <section class="section" id="about">
+    <div class="section-head reveal">
+      <span class="brick-icon red"></span>
+      <h2>关于我</h2>
+      <span class="head-line"></span>
     </div>
     <div class="about-grid">
-      <div class="about-text">
-        <p class="about-lead reveal" data-bind="about.lead"></p>
-        <div id="aboutParagraphs"></div>
-        <div class="about-stats" id="aboutStats"></div>
+      <div class="brick-card about-card reveal">
+        <div class="card-studs"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <p class="about-text" id="aboutText"></p>
       </div>
-      <div class="about-visual reveal" style="--d:.2s">
-        <div class="about-photo">
-          <div class="about-photo__frame"></div>
-          <img id="aboutImage" src="assets/avatar.svg" alt="李正淼">
-          <div class="about-photo__chip about-photo__chip--1">Python</div>
-          <div class="about-photo__chip about-photo__chip--2">PyTorch</div>
-          <div class="about-photo__chip about-photo__chip--3">LLM</div>
-        </div>
-      </div>
+      <div class="about-highlights" id="aboutHighlights"></div>
     </div>
   </section>
 
   <!-- 工作经历 -->
-  <section class="section section--pad section--wash" id="experience" data-section="experience">
-    <div class="sec-head reveal">
-      <p class="sec-kicker" data-bind="experience.subtitle">Experience</p>
-      <h2 class="sec-title" data-bind="experience.title">工作经历</h2>
-      <span class="sec-bar"></span>
+  <section class="section" id="experience">
+    <div class="section-head reveal">
+      <span class="brick-icon yellow"></span>
+      <h2>工作经历</h2>
+      <span class="head-line"></span>
     </div>
     <div class="timeline" id="timeline"></div>
   </section>
 
   <!-- 技能 -->
-  <section class="section section--pad" id="skills" data-section="skills">
-    <div class="sec-head reveal">
-      <p class="sec-kicker" data-bind="skills.subtitle">Skills</p>
-      <h2 class="sec-title" data-bind="skills.title">技能</h2>
-      <span class="sec-bar"></span>
+  <section class="section" id="skills">
+    <div class="section-head reveal">
+      <span class="brick-icon green"></span>
+      <h2>技能</h2>
+      <span class="head-line"></span>
     </div>
     <div class="skills-grid" id="skillsGrid"></div>
   </section>
 
   <!-- 作品集 -->
-  <section class="section section--pad section--wash" id="projects" data-section="projects">
-    <div class="sec-head reveal">
-      <p class="sec-kicker" data-bind="projects.subtitle">Selected Works</p>
-      <h2 class="sec-title" data-bind="projects.title">作品集</h2>
-      <span class="sec-bar"></span>
+  <section class="section" id="projects">
+    <div class="section-head reveal">
+      <span class="brick-icon blue"></span>
+      <h2>作品集</h2>
+      <span class="head-line"></span>
     </div>
+    <p class="section-sub reveal">6 个用积木拼出来的项目 · 悬停查看</p>
     <div class="projects-grid" id="projectsGrid"></div>
   </section>
 
   <!-- 教育背景 -->
-  <section class="section section--pad" id="education" data-section="education">
-    <div class="sec-head reveal">
-      <p class="sec-kicker" data-bind="education.subtitle">Education</p>
-      <h2 class="sec-title" data-bind="education.title">教育背景</h2>
-      <span class="sec-bar"></span>
+  <section class="section" id="education">
+    <div class="section-head reveal">
+      <span class="brick-icon navy"></span>
+      <h2>教育背景</h2>
+      <span class="head-line"></span>
     </div>
     <div class="edu-grid" id="eduGrid"></div>
   </section>
 
   <!-- 联系方式 -->
-  <section class="section section--pad" id="contact" data-section="contact">
-    <div class="contact-card">
-      <div class="contact-card__glow" aria-hidden="true"></div>
-      <div class="contact-bricks" aria-hidden="true">
-        <svg viewBox="0 0 120 62" fill="#fff"><rect x="8" y="20" width="104" height="36" rx="7"/><rect x="26" y="8" width="24" height="17" rx="7"/><rect x="70" y="8" width="24" height="17" rx="7"/></svg>
-        <svg viewBox="0 0 120 62" fill="#fff"><rect x="8" y="20" width="104" height="36" rx="7"/><rect x="26" y="8" width="24" height="17" rx="7"/><rect x="70" y="8" width="24" height="17" rx="7"/></svg>
-      </div>
-      <div class="sec-head sec-head--light reveal">
-        <p class="sec-kicker" data-bind="contact.subtitle">Get In Touch</p>
-        <h2 class="sec-title" data-bind="contact.title">联系方式</h2>
-        <span class="sec-bar"></span>
-      </div>
-      <p class="contact-intro reveal" data-bind="contact.intro"></p>
-      <div class="contact-grid" id="contactGrid"></div>
-      <div class="contact-form reveal" id="contactForm">
-        <h3 class="contact-form__title">给我留言</h3>
-        <p class="contact-form__hint">留下你的信息，我会尽快回复你。（本表单通过你的邮件客户端发送）</p>
-        <form id="msgForm">
-          <div class="field-row">
-            <label class="field"><span>你的称呼</span><input type="text" name="name" placeholder="怎么称呼你？" required></label>
-            <label class="field"><span>联系方式</span><input type="text" name="from" placeholder="邮箱 / 微信 / 电话" required></label>
-          </div>
-          <label class="field"><span>留言内容</span><textarea name="body" rows="4" placeholder="想聊些什么？" required></textarea></label>
-          <button class="btn btn--light" type="submit"><span>发送留言</span><span class="btn__arrow">→</span></button>
-        </form>
-      </div>
+  <section class="section" id="contact">
+    <div class="section-head reveal">
+      <span class="brick-icon red"></span>
+      <h2 id="contactTitle">联系方式</h2>
+      <span class="head-line"></span>
     </div>
-    <footer class="footer">
-      <p class="footer__text" data-bind="footer.text">用心写代码，用算法创造价值。</p>
-      <p class="footer__meta">© <span id="year2"></span> <span data-bind="meta.name">李正淼</span> · Designed with ♥</p>
-    </footer>
+    <div class="contact-wrap">
+      <div class="brick-card contact-card reveal">
+        <div class="card-studs"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <p class="contact-note" id="contactNote"></p>
+        <ul class="contact-list" id="contactList"></ul>
+        <p class="contact-readonly">🔒 本站为只读展示，内容仅站长可修改</p>
+      </div>
+      <form class="brick-card message-card reveal" id="messageForm">
+        <div class="card-studs"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <h3>给我留言</h3>
+        <label>你的称呼<input type="text" id="msgName" placeholder="怎么称呼你？" required></label>
+        <label>联系方式<input type="text" id="msgContact" placeholder="邮箱 / 微信 / 电话" required></label>
+        <label>留言内容<textarea id="msgBody" rows="4" placeholder="想聊点什么？" required></textarea></label>
+        <button type="submit" class="btn btn-red"><span class="btn-studs"><i></i><i></i><i></i><i></i></span>发送留言</button>
+        <p class="form-tip">点击后将调用你的邮件客户端发送给站长 📮</p>
+      </form>
+    </div>
   </section>
+
+  <footer class="footer">
+    <div class="footer-bricks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <p id="footerText"></p>
+  </footer>
 </main>
 
-<div class="toast" id="toast" role="status"></div>
-<script src="js/main.js?v=5"></script>
+<script src="js/app.js"></script>
 </body>
 </html>

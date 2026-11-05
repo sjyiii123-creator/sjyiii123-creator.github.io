@@ -1,0 +1,496 @@
+/* ============================================================
+   LEGO 简历 · 站长后台 admin.js
+   本地可视化编辑 + GitHub Token 发布（Token 仅存浏览器本地）
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var DEFAULT_PASS = "lego2026";
+  var LS = {
+    pass: "lego_admin_pass",
+    token: "lego_gh_token",
+    repo: "lego_gh_repo",
+    draft: "lego_draft"
+  };
+
+  var state = null;
+  var dirty = false;
+
+  /* ---------- 工具 ---------- */
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (m) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m];
+    });
+  }
+  function getPath(obj, path) {
+    return path.split(".").reduce(function (o, k) { return o == null ? o : o[k]; }, obj);
+  }
+  function setPath(obj, path, val) {
+    var keys = path.split(".");
+    var last = keys.pop();
+    var target = keys.reduce(function (o, k) { return o[k]; }, obj);
+    target[last] = val;
+    dirty = true;
+  }
+  function status(msg, kind, busy) {
+    var bar = $("#statusBar");
+    bar.className = "status " + (kind || "info");
+    bar.innerHTML = (busy ? '<span class="spinner"></span> ' : "") + esc(msg);
+  }
+  function b64utf8(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = "";
+    bytes.forEach(function (b) { bin += String.fromCharCode(b); });
+    return btoa(bin);
+  }
+
+  /* ---------- 表单小部件 ---------- */
+  function field(label, path, opts) {
+    opts = opts || {};
+    var v = esc(getPath(state, path));
+    var input;
+    if (opts.type === "textarea") {
+      input = '<textarea data-path="' + path + '" rows="' + (opts.rows || 3) + '">' + v + "</textarea>";
+    } else if (opts.type === "number") {
+      input = '<input type="number" data-path="' + path + '" value="' + v + '" min="' + (opts.min != null ? opts.min : 0) + '" max="' + (opts.max != null ? opts.max : 100) + '">';
+    } else {
+      input = '<input type="text" data-path="' + path + '" value="' + v + '" placeholder="' + esc(opts.ph || "") + '">';
+    }
+    return '<div class="field' + (opts.full ? " full" : "") + '"><label>' + esc(label) + "</label>" + input + "</div>";
+  }
+  function card(studsHtml, inner) {
+    return '<div class="card"><div class="card-studs">' + (studsHtml || "<i></i><i></i><i></i><i></i>") + "</div>" + inner + "</div>";
+  }
+  function itemCard(title, idx, section, inner) {
+    return '<div class="item-card"><h4>' + esc(title) + "</h4>" +
+      '<div class="item-actions">' +
+      '<button class="mini mini-up" data-act="up" data-sec="' + section + '" data-idx="' + idx + '">▲ 上移</button>' +
+      '<button class="mini mini-down" data-act="down" data-sec="' + section + '" data-idx="' + idx + '">▼ 下移</button>' +
+      '<button class="mini mini-del" data-act="del" data-sec="' + section + '" data-idx="' + idx + '">✕ 删除</button>' +
+      "</div>" + inner + "</div>";
+  }
+
+  /* ============================================================
+     各面板渲染
+     ============================================================ */
+  function renderProfile() {
+    $("#p-profile").innerHTML = card(null,
+      '<div class="grid">' +
+      field("姓名", "profile.name") +
+      field("职位头衔", "profile.title") +
+      field("座右铭", "profile.motto", { full: true }) +
+      field("侧边栏署名（英文）", "profile.sidebarSlogan") +
+      field("头像文字（1-2 字）", "profile.avatarText") +
+      field("页脚文字", "footer", { full: true }) +
+      "</div>");
+  }
+
+  function renderWelcome() {
+    $("#p-welcome").innerHTML = card(null,
+      '<div class="grid">' +
+      field("小标签（如 WELCOME）", "welcome.eyebrow") +
+      field("按钮文字", "welcome.button") +
+      field("欢迎标题", "welcome.title", { full: true }) +
+      field("副标题 / 引导语", "welcome.subtitle", { type: "textarea", rows: 2, full: true }) +
+      "</div>");
+  }
+
+  function renderAbout() {
+    $("#p-about").innerHTML =
+      card(null, '<div class="grid">' + field("章节标题", "about.title") +
+        field("自我介绍", "about.text", { type: "textarea", rows: 7, full: true }) + "</div>") +
+      '<div class="card"><div class="card-studs"><i></i><i></i><i></i></div><h4 style="margin-bottom:14px;color:var(--blue);letter-spacing:2px">亮点积木（也可作为首屏数字）</h4>' +
+      (state.about.highlights || []).map(function (h, i) {
+        return '<div class="list-row">' +
+          '<input type="text" data-path="about.highlights.' + i + '.icon" value="' + esc(h.icon) + '" style="max-width:88px" title="图标">' +
+          '<input type="text" data-path="about.highlights.' + i + '.text" value="' + esc(h.text) + '">' +
+          '<button class="mini mini-del" data-act="del" data-sec="about.highlights" data-idx="' + i + '">✕</button></div>';
+      }).join("") +
+      '<button class="add-btn" data-act="add" data-sec="about.highlights">＋ 添加亮点</button></div>';
+  }
+
+  function renderExp() {
+    $("#p-exp").innerHTML =
+      (state.experience || []).map(function (e, i) {
+        return itemCard((e.company || "未命名公司") + " · " + (e.role || ""), i, "experience",
+          '<div class="grid">' +
+          field("公司名称", "experience." + i + ".company") +
+          field("职位", "experience." + i + ".role") +
+          field("时间段", "experience." + i + ".period") +
+          field("城市", "experience." + i + ".location") +
+          field("一句话描述", "experience." + i + ".desc", { full: true }) +
+          "</div>" +
+          '<div class="field full" style="margin-top:12px"><label>工作要点（每行一条）</label>' +
+          '<textarea data-path="experience.' + i + '.bullets" data-lines="1" rows="4">' + esc((e.bullets || []).join("\n")) + "</textarea></div>" +
+          '<div class="field full" style="margin-top:12px"><label>标签（逗号分隔）</label>' +
+          '<input type="text" data-path="experience.' + i + '.tags" data-csv="1" value="' + esc((e.tags || []).join(", ")) + '"></div>');
+      }).join("") +
+      '<button class="add-btn" data-act="add" data-sec="experience">＋ 添加一份工作经历</button>';
+  }
+
+  function renderSkills() {
+    $("#p-skills").innerHTML =
+      (state.skills || []).map(function (g, gi) {
+        return itemCard(g.group || "未命名分组", gi, "skills",
+          '<div class="grid">' + field("分组名称", "skills." + gi + ".group", { full: true }) + "</div>" +
+          (g.items || []).map(function (s, si) {
+            return '<div class="bar-row">' +
+              '<input type="text" data-path="skills.' + gi + '.items.' + si + '.name" value="' + esc(s.name) + '">' +
+              '<input type="number" data-path="skills.' + gi + '.items.' + si + '.level" data-num="1" value="' + esc(s.level) + '" min="0" max="100">' +
+              '<div class="bar-mini"><span style="width:' + esc(s.level) + '%"></span></div>' +
+              '<button class="mini mini-del" data-act="del" data-sec="skills.' + gi + '.items" data-idx="' + si + '">✕</button></div>';
+          }).join("") +
+          '<button class="add-btn" data-act="add" data-sec="skills.' + gi + '.items">＋ 添加技能</button>');
+      }).join("") +
+      '<button class="add-btn" data-act="add" data-sec="skills">＋ 添加技能分组</button>';
+  }
+
+  function renderProjects() {
+    $("#p-projects").innerHTML =
+      (state.projects || []).map(function (p, i) {
+        return itemCard("项目 " + (i + 1) + " · " + (p.title || "未命名"), i, "projects",
+          '<div class="grid">' +
+          field("项目名称", "projects." + i + ".title", { full: true }) +
+          field("项目描述", "projects." + i + ".desc", { type: "textarea", rows: 3, full: true }) +
+          "</div>" +
+          '<div class="img-row" style="margin-top:12px">' +
+          '<img class="img-preview" src="' + esc(p.image) + '" alt="预览" onerror="this.style.opacity=.25">' +
+          '<div class="field" style="flex:1;min-width:220px"><label>图片（上传本地图片，或填写图片链接）</label>' +
+          '<input type="file" accept="image/*" data-upload="projects.' + i + '.image">' +
+          '<input type="text" data-path="projects.' + i + '.image" value="' + esc(p.image) + '" style="margin-top:8px"></div></div>' +
+          '<div class="field full" style="margin-top:12px"><label>标签（逗号分隔）</label>' +
+          '<input type="text" data-path="projects.' + i + '.tags" data-csv="1" value="' + esc((p.tags || []).join(", ")) + '"></div>' +
+          '<div class="field full" style="margin-top:12px"><label>项目链接（可留空）</label>' +
+          '<input type="text" data-path="projects.' + i + '.link" value="' + esc(p.link) + '"></div>');
+      }).join("") +
+      '<button class="add-btn" data-act="add" data-sec="projects">＋ 添加项目</button>';
+  }
+
+  function renderEdu() {
+    $("#p-edu").innerHTML =
+      (state.education || []).map(function (e, i) {
+        return itemCard(e.school || "未命名学校", i, "education",
+          '<div class="grid">' +
+          field("学校", "education." + i + ".school") +
+          field("学位", "education." + i + ".degree") +
+          field("专业", "education." + i + ".major") +
+          field("时间段", "education." + i + ".period") +
+          field("描述", "education." + i + ".desc", { type: "textarea", rows: 3, full: true }) +
+          "</div>");
+      }).join("") +
+      '<button class="add-btn" data-act="add" data-sec="education">＋ 添加教育经历</button>';
+  }
+
+  function renderContact() {
+    $("#p-contact").innerHTML = card(null,
+      '<div class="grid">' +
+      field("章节标题", "contact.title") +
+      field("说明文字", "contact.note") +
+      field("邮箱", "contact.email") +
+      field("电话", "contact.phone") +
+      field("微信号", "contact.wechat") +
+      field("GitHub 主页链接", "contact.github") +
+      field("所在地", "contact.location") +
+      "</div>" +
+      '<div class="note" style="margin-top:18px">🔒 访客打开网站时<b>只能查看并联系你</b>（发邮件 / 打电话 / 留言），没有任何编辑入口。只有在本后台输入密码 + Token 的你才能修改内容。</div>');
+  }
+
+  function renderSettings() {
+    var token = localStorage.getItem(LS.token) || "";
+    var repo = localStorage.getItem(LS.repo) || "";
+    $("#p-settings").innerHTML = card(null,
+      '<div class="grid">' +
+      '<div class="field full"><label>GitHub Token（只保存在本浏览器，不会上传）</label>' +
+      '<input type="password" id="setToken" value="' + esc(token) + '" placeholder="ghp_ 开头的 Token"></div>' +
+      '<div class="field full"><label>目标仓库（格式：用户名/仓库名）</label>' +
+      '<input type="text" id="setRepo" value="' + esc(repo) + '" placeholder="例如：lizhengmiao/lizhengmiao.github.io"></div>' +
+      "</div>" +
+      '<div style="display:flex;gap:12px;margin-top:18px;flex-wrap:wrap">' +
+      '<button class="btn btn-navy" id="btnSaveCfg">💾 保存配置</button>' +
+      '<button class="btn btn-yellow" id="btnVerify">🔍 验证 Token 并自动找仓库</button>' +
+      "</div>" +
+      '<div class="note" style="margin-top:20px"><b>发布机制：</b>点击底部「发布到 GitHub」后，本页面会通过 GitHub 官方 API 把最新内容写入仓库的 <code>data/content.json</code>，GitHub Pages 会在 1 分钟内自动更新线上简历。<br>' +
+      '<b>建议：</b>在 GitHub → Settings → Developer settings → Personal access tokens 创建专用 Token，只勾选 <code>repo</code> 权限，用完可随时撤销。</div>' +
+      '<div class="card" style="margin-top:22px"><div class="card-studs"><i></i><i></i><i></i></div>' +
+      '<h4 style="margin-bottom:12px;color:var(--blue);letter-spacing:2px">修改后台登录密码</h4>' +
+      '<div class="grid">' +
+      '<div class="field"><label>新密码</label><input type="password" id="newPass" placeholder="留空则不修改"></div>' +
+      '<div class="field"><label>确认新密码</label><input type="password" id="newPass2"></div></div>' +
+      '<button class="btn btn-navy" id="btnPass" style="margin-top:14px">更新密码</button></div>');
+    bindSettings();
+  }
+
+  /* ============================================================
+     渲染全部
+     ============================================================ */
+  function renderAll() {
+    renderProfile(); renderWelcome(); renderAbout(); renderExp();
+    renderSkills(); renderProjects(); renderEdu(); renderContact(); renderSettings();
+  }
+
+  /* ============================================================
+     交互绑定
+     ============================================================ */
+  function bindInputs() {
+    $("#panels").addEventListener("input", function (e) {
+      var t = e.target;
+      var path = t.getAttribute("data-path");
+      if (!path) return;
+      var val = t.value;
+      if (t.hasAttribute("data-lines")) val = val.split("\n").filter(function (s) { return s.trim(); });
+      else if (t.hasAttribute("data-csv")) val = val.split(/[,，]/).map(function (s) { return s.trim(); }).filter(Boolean);
+      else if (t.hasAttribute("data-num")) val = Number(val) || 0;
+      setPath(state, path, val);
+      // 技能进度条实时预览
+      var bar = t.parentElement && t.parentElement.querySelector(".bar-mini span");
+      if (bar && t.hasAttribute("data-num")) bar.style.width = Math.min(100, Math.max(0, val)) + "%";
+    });
+
+    $("#panels").addEventListener("change", function (e) {
+      var t = e.target;
+      var up = t.getAttribute("data-upload");
+      if (up && t.files && t.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          setPath(state, up, reader.result);
+          var img = t.closest(".img-row").querySelector(".img-preview");
+          if (img) img.src = reader.result;
+          var txt = t.parentElement.querySelector("input[type=text]");
+          if (txt) txt.value = "[已上传本地图片]";
+          status("图片已载入，记得点击「发布」保存", "ok");
+        };
+        reader.readAsDataURL(t.files[0]);
+      }
+    });
+
+    $("#panels").addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-act]");
+      if (!btn) return;
+      var act = btn.getAttribute("data-act");
+      var sec = btn.getAttribute("data-sec");
+      var idx = Number(btn.getAttribute("data-idx"));
+
+      if (act === "add") {
+        if (sec === "experience") state.experience.push({ company: "新公司", role: "职位", period: "2024.01 — 至今", location: "城市", desc: "", bullets: [], tags: [] });
+        else if (sec === "skills") state.skills.push({ group: "新分组", items: [{ name: "新技能", level: 80 }] });
+        else if (sec === "projects") state.projects.push({ title: "新项目", desc: "", image: "assets/projects/p1.svg", tags: [], link: "" });
+        else if (sec === "education") state.education.push({ school: "新学校", degree: "学位", major: "专业", period: "2016 — 2020", desc: "" });
+        else if (sec === "about.highlights") state.about.highlights.push({ icon: "⭐", text: "新亮点" });
+        else if (/\.items$/.test(sec)) getPath(state, sec).push({ name: "新技能", level: 80 });
+        dirty = true; renderAll();
+      } else if (act === "del") {
+        if (confirm("确定删除这一项吗？")) {
+          getPath(state, sec).splice(idx, 1);
+          dirty = true; renderAll();
+        }
+      } else if (act === "up" || act === "down") {
+        var arr = getPath(state, sec);
+        var j = act === "up" ? idx - 1 : idx + 1;
+        if (j >= 0 && j < arr.length) {
+          var tmp = arr[idx]; arr[idx] = arr[j]; arr[j] = tmp;
+          dirty = true; renderAll();
+        }
+      }
+    });
+  }
+
+  function bindTabs() {
+    $("#tabs").addEventListener("click", function (e) {
+      var tab = e.target.closest(".tab");
+      if (!tab) return;
+      $$(".tab").forEach(function (t) { t.classList.toggle("active", t === tab); });
+      $$(".panel").forEach(function (p) {
+        p.classList.toggle("active", p.getAttribute("data-panel") === tab.getAttribute("data-tab"));
+      });
+    });
+  }
+
+  function bindSettings() {
+    $("#btnSaveCfg").addEventListener("click", function () {
+      localStorage.setItem(LS.token, $("#setToken").value.trim());
+      localStorage.setItem(LS.repo, $("#setRepo").value.trim());
+      status("✅ 配置已保存到本浏览器", "ok");
+    });
+    $("#btnVerify").addEventListener("click", function () {
+      var token = $("#setToken").value.trim();
+      if (!token) { status("请先粘贴 Token", "err"); return; }
+      status("正在验证 Token…", "info", true);
+      fetch("https://api.github.com/user", { headers: { Authorization: "Bearer " + token, Accept: "application/vnd.github+json" } })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          if (!res.ok) { status("❌ Token 无效：" + (res.j.message || "验证失败"), "err"); return; }
+          var login = res.j.login;
+          status("✅ Token 有效，账号：" + login + "，正在查找仓库…", "info", true);
+          return fetch("https://api.github.com/user/repos?per_page=100&sort=pushed", {
+            headers: { Authorization: "Bearer " + token, Accept: "application/vnd.github+json" }
+          }).then(function (r) { return r.json(); }).then(function (repos) {
+            var candidates = [login + ".github.io", "resume", "resume-site"];
+            var found = null;
+            (repos || []).forEach(function (r) {
+              if (!found && candidates.indexOf(r.name) !== -1) found = r.full_name;
+            });
+            if (!found && repos && repos.length) found = repos[0].full_name;
+            if (found) {
+              $("#setRepo").value = found;
+              localStorage.setItem(LS.repo, found);
+              localStorage.setItem(LS.token, token);
+              status("✅ 已定位仓库：" + found + "（已保存配置）", "ok");
+            } else {
+              status("⚠ 未找到可用仓库，请手动填写「用户名/仓库名」", "err");
+            }
+          });
+        })
+        .catch(function (e) { status("网络错误：" + e.message, "err"); });
+    });
+    $("#btnPass").addEventListener("click", function () {
+      var a = $("#newPass").value, b = $("#newPass2").value;
+      if (!a) { status("新密码不能为空", "err"); return; }
+      if (a !== b) { status("两次输入的密码不一致", "err"); return; }
+      localStorage.setItem(LS.pass, a);
+      $("#newPass").value = ""; $("#newPass2").value = "";
+      status("✅ 登录密码已更新", "ok");
+    });
+  }
+
+  function bindTopbar() {
+    $("#btnDraft").addEventListener("click", function () {
+      localStorage.setItem(LS.draft, JSON.stringify(state));
+      dirty = false;
+      status("💾 草稿已保存在本浏览器（发布后才会同步到线上）", "ok");
+    });
+    $("#btnExport").addEventListener("click", function () {
+      var blob = new Blob([JSON.stringify(state, null, 2) + "\n"], { type: "application/json" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "content.json";
+      a.click();
+      status("已导出 content.json", "ok");
+    });
+    $("#btnLogout").addEventListener("click", function () {
+      if (dirty && !confirm("有未发布的修改，确定退出吗？")) return;
+      $("#app").style.display = "none";
+      $("#gate").style.display = "flex";
+      $("#gatePass").value = "";
+    });
+    $("#btnPublish").addEventListener("click", publish);
+    window.addEventListener("beforeunload", function (e) {
+      if (dirty) { e.preventDefault(); e.returnValue = ""; }
+    });
+  }
+
+  /* ============================================================
+     发布到 GitHub（Contents API）
+     ============================================================ */
+  function publish() {
+    var token = localStorage.getItem(LS.token) || "";
+    var repo = (localStorage.getItem(LS.repo) || "").trim();
+    if (!token) { status("❌ 请先到「发布设置」填写 GitHub Token", "err"); return; }
+    if (!/^[^/]+\/[^/]+$/.test(repo)) { status("❌ 请先在「发布设置」填写仓库（用户名/仓库名）", "err"); return; }
+
+    status("正在发布到 GitHub…", "info", true);
+    var path = "data/content.json";
+    var api = "https://api.github.com/repos/" + repo + "/contents/" + path;
+    var headers = { Authorization: "Bearer " + token, Accept: "application/vnd.github+json" };
+
+    fetch(api, { headers: headers })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (meta) {
+        var body = {
+          message: "update: resume content via admin panel",
+          content: b64utf8(JSON.stringify(state, null, 2) + "\n"),
+          branch: "main"
+        };
+        if (meta && meta.sha) body.sha = meta.sha;
+        return fetch(api, {
+          method: "PUT",
+          headers: Object.assign({ "Content-Type": "application/json" }, headers),
+          body: JSON.stringify(body)
+        });
+      })
+      .then(function (r) {
+        return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+      })
+      .then(function (res) {
+        if (res.ok) {
+          dirty = false;
+          localStorage.setItem(LS.draft, JSON.stringify(state));
+          status("🚀 发布成功！GitHub Pages 将在 1 分钟内更新线上简历", "ok");
+        } else if (res.j && res.j.message && /branch/i.test(res.j.message)) {
+          // 部分仓库默认分支是 master
+          retryMaster();
+        } else {
+          status("❌ 发布失败：" + (res.j && res.j.message ? res.j.message : "未知错误"), "err");
+        }
+      })
+      .catch(function (e) { status("网络错误：" + e.message, "err"); });
+
+    function retryMaster() {
+      status("尝试 master 分支…", "info", true);
+      fetch(api, { headers: headers })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (meta) {
+          var body = {
+            message: "update: resume content via admin panel",
+            content: b64utf8(JSON.stringify(state, null, 2) + "\n"),
+            branch: "master"
+          };
+          if (meta && meta.sha) body.sha = meta.sha;
+          return fetch(api, {
+            method: "PUT",
+            headers: Object.assign({ "Content-Type": "application/json" }, headers),
+            body: JSON.stringify(body)
+          });
+        })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          if (res.ok) { dirty = false; status("🚀 发布成功（master 分支）！", "ok"); }
+          else status("❌ 发布失败：" + (res.j && res.j.message ? res.j.message : "未知错误"), "err");
+        })
+        .catch(function (e) { status("网络错误：" + e.message, "err"); });
+    }
+  }
+
+  /* ============================================================
+     锁屏 / 启动
+     ============================================================ */
+  function gate() {
+    function tryLogin() {
+      var saved = localStorage.getItem(LS.pass) || DEFAULT_PASS;
+      if ($("#gatePass").value === saved) {
+        $("#gate").style.display = "none";
+        $("#app").style.display = "block";
+        start();
+      } else {
+        $("#gateErr").textContent = "密码错误，请重试";
+        $("#gatePass").value = "";
+        $("#gatePass").focus();
+      }
+    }
+    $("#gateBtn").addEventListener("click", tryLogin);
+    $("#gatePass").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") tryLogin();
+    });
+  }
+
+  function start() {
+    fetch("data/content.json?t=" + Date.now())
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        state = data;
+        var draft = localStorage.getItem(LS.draft);
+        if (draft && confirm("检测到上次未发布的草稿，是否恢复？\n（取消 = 使用线上最新内容）")) {
+          try { state = JSON.parse(draft); } catch (e) { /* 忽略坏草稿 */ }
+        }
+        renderAll();
+        bindInputs(); bindTabs(); bindTopbar();
+        status("✅ 就绪 — 修改后点击「发布」同步到线上", "info");
+      })
+      .catch(function (e) {
+        status("内容加载失败：" + e.message, "err");
+      });
+  }
+
+  gate();
+})();

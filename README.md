@@ -1,51 +1,59 @@
-# 李正淼 · 个人简历网站
+# 🧱 LEGO 风格简历网站 · 李正淼
 
-极简现代风个人简历站点：深蓝侧边栏 + 白色内容区，带滚动渐进动画、渐变过场动画、LEGO 手指光标、欢迎词首屏。
-访客只能浏览与留言；**只有站长可以在后台可视化编辑全部内容**。
+乐高积木风格的个人简历站点：深蓝侧边栏 + 白色内容区 + 小火车进度条 + 乐高小人手光标 + 欢迎词过场动画。
 
-## 目录结构
+## 📁 结构
 
 ```
-├── index.html          # 简历主页（访客可见）
-├── css/style.css       # 主样式（侧边栏 / 动画 / 光标）
-├── js/main.js          # 渲染 + 滚动动画 + LEGO 光标 + 打字机
-├── data/resume.json    # ★ 全部简历数据（后台编辑的就是它）
-├── assets/             # 头像、项目配图、LEGO 手指光标
-└── admin/              # ★ 站长后台（可视化编辑器）
-    ├── index.html
-    ├── admin.css
-    ├── admin.js
-    └── config.js       # 登录配置（Google / 口令 / 仓库）
+resume-site/
+├── index.html          # 前台（访客只读：浏览 + 联系）
+├── admin.html          # 后台可视化编辑器（仅站长）
+├── css/style.css       # 乐高主题样式 + 动画
+├── js/app.js           # 前台渲染 / 欢迎过场 / 火车进度条 / 滚动动画
+├── js/admin.js         # 后台表单编辑 + GitHub Token 发布
+├── data/content.json   # ★ 全站内容（后台编辑的就是它）
+└── assets/             # 光标、图标、6 张项目配图（SVG）
 ```
 
-## 部署（GitHub Pages）
+## 🚀 部署到 GitHub Pages
 
-1. 把整个目录推送到你的 `用户名.github.io` 仓库的 `main` 分支。
-2. 仓库 Settings → Pages → Source 选择 `main` 分支根目录。
-3. 访问 `https://用户名.github.io/`（主页）与 `https://用户名.github.io/admin/`（后台）。
+1. 新建仓库（推荐 `你的用户名.github.io`，即可直接用 `https://你的用户名.github.io` 访问；或任意仓库名，访问 `https://你的用户名.github.io/仓库名/`）
+2. 把 `resume-site/` 里所有文件推送到仓库根目录（保持 `index.html` 在根目录）
+3. 仓库 Settings → Pages → Source 选择 `main` 分支根目录，保存
+4. 等约 1 分钟，访问线上地址
 
-## 后台登录配置（admin/config.js）
+## 🔧 后台编辑（可视化）
 
-| 配置项 | 说明 |
-| --- | --- |
-| `googleClientId` | Google OAuth Client ID（推荐）。到 Google Cloud Console 创建「OAuth 客户端 ID（Web 应用）」，授权来源填 `https://用户名.github.io` |
-| `allowedEmails` | 允许登录的 Google 邮箱列表；留空表示任意 Google 账号可进入编辑界面 |
-| `adminPasscode` | 管理员口令（备用登录方式，**请务必改成你自己的强口令**） |
-| `repoOwner` / `repoName` / `branch` | 简历仓库信息；留空则自动使用 Token 对应账号的 `用户名.github.io` |
+1. 打开 `https://你的域名/admin.html`
+2. 输入登录密码（默认 `lego2026`，登录后可在「发布设置」里修改）
+3. 在左侧标签页里可视化编辑：个人资料 / 欢迎词 / 关于我 / 工作经历 / 技能 / 作品集 / 教育 / 联系方式
+   - 列表项支持 **添加 / 删除 / 上移下移**
+   - 作品集图片可 **上传本地图片**（自动打包进内容）或填图片链接
+4. 「发布设置」里粘贴 **GitHub Token**（建议只勾 `repo` 权限），点「验证 Token 并自动找仓库」
+5. 点底部 **🚀 发布到 GitHub** → 一分钟内线上更新
 
-> **安全模型**：进入后台界面需要身份验证；而**真正能改动线上内容**必须持有你的 GitHub Token（保存时调用 GitHub API 提交）。
-> Token 只存在你自己浏览器的 localStorage 中，不会被网站访客获取。
-> 如果想再加一层保险，把 `allowedEmails` 填成你的 Google 邮箱即可。
+### 安全模型
 
-## 内容编辑
+| 角色 | 能做什么 |
+|------|----------|
+| 访客 | 只能浏览 + 发邮件/打电话/微信联系，**无任何编辑入口** |
+| 站长 | 打开 admin.html → 密码 → 填 Token → 编辑并发布 |
 
-后台支持：欢迎词 / 关于我 / 工作经历 / 技能 / 作品集（含图片上传）/ 教育背景 / 联系方式 / 全局信息，
-所有列表支持添加、删除、上移下移排序，改完点「保存并发布」约 1 分钟内自动生效（Ctrl/Cmd + S 快捷保存）。
+- Token 只存在**你自己的浏览器 localStorage**，不写入代码、不上传第三方
+- 即使有人打开 admin.html，没有你的 Token 也无法改动线上内容
+- 也可「导出 JSON」手动覆盖 `data/content.json` 再 git push
 
-## 本地预览
+## 🎨 亮点
 
-```bash
-cd resume-site
-python3 -m http.server 8080
-# 打开 http://localhost:8080
-```
+- 欢迎过场：积木雨 + 欢迎词卡片，点击进入
+- 乐高小火车进度条：随滚动前进，车轮转动、烟囱冒烟
+- 乐高小人手光标（SVG cursor）
+- 积木卡片带凸点（studs）、悬停立体抬升
+- 滚动循序渐进显现（IntersectionObserver 错峰动画）
+- 技能条进入视口才填充
+- 移动端响应式（侧边栏自动置顶）
+
+## ✏️ 改内容的两种方式
+
+1. **后台**（推荐）：admin.html 可视化编辑 → 发布
+2. **直接改** `data/content.json` → git push
