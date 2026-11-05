@@ -3,14 +3,14 @@
     "name": "李正淼",
     "title": "算法工程师",
     "motto": "用算法把复杂的世界，变成可计算的问题",
-    "avatarText": "李",
+    "avatarText": "Lee",
     "sidebarSlogan": "Algorithm Engineer · LEGO Builder"
   },
   "welcome": {
-    "eyebrow": "WELCOME TO MY WORLD",
+    "eyebrow": "WELCOME TO MY LEGO WORLD",
     "title": "你好，我是李正淼",
     "subtitle": "一名热爱创造的算法工程师。我专注于推荐系统、大模型应用与机器学习工程化落地。喜欢把论文里的公式，变成线上真实跑着的服务；也喜欢把复杂的问题，拆成可以迭代验证的小步骤。 下滑开始探索 →",
-    "button": "开始探索"
+    "button": "开始探索吧"
   },
   "about": {
     "title": "关于我",
@@ -36,7 +36,7 @@
   },
   "experience": [
     {
-      "company": "星河智能科技有限公司",
+      "company": "青岛海信光",
       "role": "高级算法工程师 / 算法小组负责人",
       "period": "2022.07 — 至今",
       "location": "北京",
@@ -243,12 +243,12 @@
   ],
   "contact": {
     "title": "联系方式",
-    "note": "想聊算法、合作与机会？随时联系我，平均响应时间小于 24 小时——比大多数深度学习模型的收敛速度快一点，但不保证全局最优。",
+    "note": "想聊算法、合作与机会？随时联系我，平均响应时间小于 24 小时，比大多数深度学习模型的收敛速度快一点，但不保证全局最优。",
     "email": "17561924605@163.com",
     "phone": "+86 17561924605",
     "wechat": "JYAshuiM25",
     "github": "https://github.com/zhengmiao-li",
     "location": "辽宁-大连"
   },
-  "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume"
+  "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee"
 }
