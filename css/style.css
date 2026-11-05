@@ -76,7 +76,7 @@ body.custom-cursor textarea, body.custom-cursor label{cursor:none}
 /* ============ LEGO 手指光标 ============ */
 #cursor,#cursor-dot{position:fixed;top:0;left:0;pointer-events:none;z-index:998;opacity:0;transition:opacity .3s}
 body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
-#cursor{width:52px;height:52px;margin:-9px 0 0 -9px;transition:opacity .3s}
+#cursor{width:40px;height:40px;margin:-11px 0 0 -11px;transition:opacity .3s}
 .cursor-hand{
   width:100%;height:100%;
   background:url("../assets/cursor-hand.svg") center/contain no-repeat;
@@ -197,7 +197,10 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
 .section--pad{padding:96px clamp(28px,6vw,84px)}
 .section--wash::before{
   content:"";position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(180deg,transparent,var(--wash) 12%,var(--wash) 88%,transparent);
+  background-image:
+    radial-gradient(circle at 10px 10px,rgba(37,99,235,.055) 2.3px,rgba(37,99,235,0) 2.7px),
+    linear-gradient(180deg,transparent,var(--wash) 12%,var(--wash) 88%,transparent);
+  background-size:32px 32px,auto;
 }
 
 /* 分区标题 + 渐变条动画 */
@@ -268,6 +271,27 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
     linear-gradient(90deg,rgba(37,99,235,.05) 1px,transparent 1px);
   background-size:52px 52px;
   mask-image:radial-gradient(ellipse 90% 70% at 50% 40%,#000 20%,transparent 80%);
+}
+
+/* 乐高积木与玩偶装饰（克制） */
+.brick{
+  position:absolute;opacity:.22;color:#2563EB;
+  animation:brickFloat 15s ease-in-out infinite;
+}
+.brick--1{width:118px;left:66%;top:12%;--rot:-12deg}
+.brick--2{width:80px;left:7%;top:64%;color:#22D3EE;opacity:.18;--rot:9deg;animation-delay:-5s}
+.brick--3{width:62px;left:46%;top:84%;color:#7C3AED;opacity:.16;--rot:-7deg;animation-delay:-9s}
+.minifig{
+  position:absolute;width:216px;left:70%;top:30%;color:#2563EB;opacity:.07;
+  animation:minifigBob 17s ease-in-out infinite;
+}
+@keyframes brickFloat{
+  0%,100%{transform:translate(0,0) rotate(var(--rot,0deg))}
+  50%{transform:translate(11px,-17px) rotate(calc(var(--rot,0deg) + 4deg))}
+}
+@keyframes minifigBob{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-24px) rotate(2deg)}
 }
 .hero__inner{position:relative;max-width:820px}
 .hero__badge{
@@ -550,6 +574,10 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
   background-size:46px 46px;
   mask-image:radial-gradient(circle at 70% 20%,#000,transparent 72%);
 }
+.contact-bricks{position:absolute;right:-26px;bottom:-18px;width:300px;height:150px;pointer-events:none}
+.contact-bricks svg{position:absolute;opacity:.1}
+.contact-bricks svg:first-child{width:190px;right:16px;bottom:6px;transform:rotate(-8deg)}
+.contact-bricks svg:last-child{width:120px;right:170px;bottom:64px;transform:rotate(12deg);opacity:.07}
 .contact-intro{max-width:640px;font-size:15.6px;line-height:2;color:#B7C6DE;margin-bottom:34px}
 .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:16px;margin-bottom:38px}
 .contact-item{
@@ -623,6 +651,7 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
   .field-row{grid-template-columns:1fr}
   .hero__cta .btn{width:100%;justify-content:center}
   .hero{padding-left:20px;padding-right:20px}
+  .brick,.minifig{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important;scroll-behavior:auto}
