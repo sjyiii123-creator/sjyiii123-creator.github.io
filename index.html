@@ -9,13 +9,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.min.css?v=327f9b36">
 </head>
 <body>
+
+<!-- ============ 章节跳转积木过场 ============ -->
+<div class="brick-transition" id="brickTransition" aria-hidden="true">
+  <div class="bt-col" style="--i:0;background:#0B2A5B"></div>
+  <div class="bt-col" style="--i:1;background:#E30613"></div>
+  <div class="bt-col" style="--i:2;background:#FFC400"></div>
+  <div class="bt-col" style="--i:3;background:#006DB7"></div>
+  <div class="bt-col" style="--i:4;background:#00A651"></div>
+  <div class="bt-col" style="--i:5;background:#0B2A5B"></div>
+  <div class="bt-col" style="--i:6;background:#FFC400"></div>
+  <div class="bt-col" style="--i:7;background:#E30613"></div>
+</div>
 
 <!-- ============ 乐高小火车进度条 ============ -->
 <div class="train-track" id="trainTrack" aria-hidden="true">
   <div class="train-rail"></div>
+  <div class="rail-fill" id="railFill"></div>
   <div class="train-ties"></div>
   <div class="lego-train" id="legoTrain">
     <svg viewBox="0 0 150 56" class="train-svg">
@@ -102,6 +115,33 @@
       <div class="float-brick b3"></div><div class="float-brick b4"></div>
       <div class="float-brick b5"></div>
     </div>
+    <div class="hero-figs" aria-hidden="true">
+      <svg class="minifig bob" viewBox="0 0 64 124">
+        <g class="leg-l"><rect x="14" y="76" width="15" height="38" rx="5" fill="#0B2A5B"/><rect x="12" y="108" width="19" height="10" rx="4" fill="#071E42"/></g>
+        <g class="leg-r"><rect x="35" y="76" width="15" height="38" rx="5" fill="#0B2A5B"/><rect x="33" y="108" width="19" height="10" rx="4" fill="#071E42"/></g>
+        <rect x="11" y="66" width="42" height="13" rx="4" fill="#123A78"/>
+        <path d="M12 33 h40 l-3 34 h-34 z" fill="#E30613"/>
+        <g class="arm-l"><rect x="2" y="35" width="12" height="27" rx="6" fill="#E30613"/><circle cx="8" cy="65" r="7" fill="#FFC400"/></g>
+        <g class="arm-r"><rect x="50" y="35" width="12" height="27" rx="6" fill="#E30613"/><circle cx="56" cy="65" r="7" fill="#FFC400"/></g>
+        <rect x="15" y="7" width="34" height="28" rx="9" fill="#FFC400" stroke="#A87C00" stroke-width="1.6"/>
+        <rect x="27" y="0" width="10" height="9" rx="3" fill="#FFC400" stroke="#A87C00" stroke-width="1.6"/>
+        <circle cx="25" cy="19" r="2.8" fill="#0B2A5B"/><circle cx="39" cy="19" r="2.8" fill="#0B2A5B"/>
+        <path d="M25 27 q7 6 14 0" stroke="#0B2A5B" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div class="brick-prop"></div>
+      <svg class="minifig bob" style="animation-delay:.9s" viewBox="0 0 64 124">
+        <g class="leg-l"><rect x="14" y="76" width="15" height="38" rx="5" fill="#1B2430"/><rect x="12" y="108" width="19" height="10" rx="4" fill="#0B2A5B"/></g>
+        <g class="leg-r"><rect x="35" y="76" width="15" height="38" rx="5" fill="#1B2430"/><rect x="33" y="108" width="19" height="10" rx="4" fill="#0B2A5B"/></g>
+        <rect x="11" y="66" width="42" height="13" rx="4" fill="#0B2A5B"/>
+        <path d="M12 33 h40 l-3 34 h-34 z" fill="#00A651"/>
+        <g class="arm-l"><rect x="2" y="35" width="12" height="27" rx="6" fill="#00A651"/><circle cx="8" cy="65" r="7" fill="#FFC400"/></g>
+        <g class="arm-r"><rect x="50" y="35" width="12" height="27" rx="6" fill="#00A651"/><circle cx="56" cy="65" r="7" fill="#FFC400"/></g>
+        <rect x="15" y="7" width="34" height="28" rx="9" fill="#FFC400" stroke="#A87C00" stroke-width="1.6"/>
+        <rect x="27" y="0" width="10" height="9" rx="3" fill="#FFC400" stroke="#A87C00" stroke-width="1.6"/>
+        <circle cx="25" cy="19" r="2.8" fill="#0B2A5B"/><circle cx="39" cy="19" r="2.8" fill="#0B2A5B"/>
+        <path d="M25 27 q7 6 14 0" stroke="#0B2A5B" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
     <div class="hero-body">
       <p class="hero-eyebrow reveal">HELLO, I'M</p>
       <h1 class="hero-name reveal" id="heroName">李正淼</h1>
@@ -162,6 +202,63 @@
     <div class="projects-grid" id="projectsGrid"></div>
   </section>
 
+  <!-- 小人游行 -->
+  <div class="minifig-parade reveal" aria-hidden="true">
+    <div class="parade-sun"></div>
+    <div class="parade-ground"></div>
+    <svg class="minifig walk" viewBox="0 0 64 124">
+      <g class="leg-l"><rect x="14" y="76" width="15" height="38" rx="5" fill="#0B2A5B"/><rect x="12" y="108" width="19" height="10" rx="4" fill="#071E42"/></g>
+      <g class="leg-r"><rect x="35" y="76" width="15" height="38" rx="5" fill="#0B2A5B"/><rect x="33" y="108" width="19" height="10" rx="4" fill="#071E42"/></g>
+      <rect x="11" y="66" width="42" height="13" rx="4" fill="#123A78"/>
+      <path d="M12 33 h40 l-3 34 h-34 z" fill="#FFC400"/>
+      <g class="arm-l"><rect x="2" y="35" width="12" height="27" rx="6" fill="#FFC400"/><circle cx="8" cy="65" r="7" fill="#FFC400"/></g>
+      <g class="arm-r"><rect x="50" y="35" width="12" height="27" rx="6" fill="#FFC400"/><circle cx="56" cy="65" r="7" fill="#FFC400"/></g>
+      <rect x="15" y="7" width="34" height="28" rx="9" fill="#FFC400" stroke="#A87C00" stroke-width="1.6"/>
+      <rect x="27" y="0" width="10" height="9" rx="3" fill="#FFC400" stroke="#A87C00" stroke-width="1.6"/>
+      <circle cx="25" cy="19" r="2.8" fill="#0B2A5B"/><circle cx="39" cy="19" r="2.8" fill="#0B2A5B"/>
+      <path d="M25 27 q7 6 14 0" stroke="#0B2A5B" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div class="parade-brick" style="background:#E30613;box-shadow:0 5px 0 #A80009"></div>
+    <svg class="minifig walk wave-left" style="animation-delay:.25s" viewBox="0 0 64 124">
+      <g class="leg-l"><rect x="14" y="76" width="15" height="38" rx="5" fill="#E30613"/><rect x="12" y="108" width="19" height="10" rx="4" fill="#A80009"/></g>
+      <g class="leg-r"><rect x="35" y="76" width="15" height="38" rx="5" fill="#E30613"/><rect x="33" y="108" width="19" height="10" rx="4" fill="#A80009"/></g>
+      <rect x="11" y="66" width="42" height="13" rx="4" fill="#A80009"/>
+      <path d="M12 33 h40 l-3 34 h-34 z" fill="#006DB7"/>
+      <g class="arm-l"><rect x="2" y="35" width="12" height="27" rx="6" fill="#006DB7"/><circle cx="8" cy="65" r="7" fill="#FFC400"/></g>
+      <g class="arm-r"><rect x="50" y="35" width="12" height="27" rx="6" fill="#006DB7"/><circle cx="56" cy="65" r="7" fill="#FFC400"/></g>
+      <rect x="15" y="7" width="34" height="28" rx="9" fill="#FFC400" stroke="#A87C00" stroke-width="1.6"/>
+      <rect x="27" y="0" width="10" height="9" rx="3" fill="#FFC400" stroke="#A87C00" stroke-width="1.6"/>
+      <circle cx="25" cy="19" r="2.8" fill="#0B2A5B"/><circle cx="39" cy="19" r="2.8" fill="#0B2A5B"/>
+      <path d="M25 27 q7 6 14 0" stroke="#0B2A5B" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div class="parade-brick" style="background:#FFC400;box-shadow:0 5px 0 #D9A400"></div>
+    <svg class="minifig walk" style="animation-delay:.5s" viewBox="0 0 64 124">
+      <g class="leg-l"><rect x="14" y="76" width="15" height="38" rx="5" fill="#006DB7"/><rect x="12" y="108" width="19" height="10" rx="4" fill="#014A7D"/></g>
+      <g class="leg-r"><rect x="35" y="76" width="15" height="38" rx="5" fill="#006DB7"/><rect x="33" y="108" width="19" height="10" rx="4" fill="#014A7D"/></g>
+      <rect x="11" y="66" width="42" height="13" rx="4" fill="#014A7D"/>
+      <path d="M12 33 h40 l-3 34 h-34 z" fill="#E30613"/>
+      <g class="arm-l"><rect x="2" y="35" width="12" height="27" rx="6" fill="#E30613"/><circle cx="8" cy="65" r="7" fill="#FFC400"/></g>
+      <g class="arm-r"><rect x="50" y="35" width="12" height="27" rx="6" fill="#E30613"/><circle cx="56" cy="65" r="7" fill="#FFC400"/></g>
+      <rect x="15" y="7" width="34" height="28" rx="9" fill="#FFC400" stroke="#A87C00" stroke-width="1.6"/>
+      <rect x="27" y="0" width="10" height="9" rx="3" fill="#FFC400" stroke="#A87C00" stroke-width="1.6"/>
+      <circle cx="25" cy="19" r="2.8" fill="#0B2A5B"/><circle cx="39" cy="19" r="2.8" fill="#0B2A5B"/>
+      <path d="M25 27 q7 6 14 0" stroke="#0B2A5B" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div class="parade-brick" style="background:#00A651;box-shadow:0 5px 0 #00702F"></div>
+    <svg class="minifig walk wave-left" style="animation-delay:.75s" viewBox="0 0 64 124">
+      <g class="leg-l"><rect x="14" y="76" width="15" height="38" rx="5" fill="#0B2A5B"/><rect x="12" y="108" width="19" height="10" rx="4" fill="#071E42"/></g>
+      <g class="leg-r"><rect x="35" y="76" width="15" height="38" rx="5" fill="#0B2A5B"/><rect x="33" y="108" width="19" height="10" rx="4" fill="#071E42"/></g>
+      <rect x="11" y="66" width="42" height="13" rx="4" fill="#123A78"/>
+      <path d="M12 33 h40 l-3 34 h-34 z" fill="#00A651"/>
+      <g class="arm-l"><rect x="2" y="35" width="12" height="27" rx="6" fill="#00A651"/><circle cx="8" cy="65" r="7" fill="#FFC400"/></g>
+      <g class="arm-r"><rect x="50" y="35" width="12" height="27" rx="6" fill="#00A651"/><circle cx="56" cy="65" r="7" fill="#FFC400"/></g>
+      <rect x="15" y="7" width="34" height="28" rx="9" fill="#FFC400" stroke="#A87C00" stroke-width="1.6"/>
+      <rect x="27" y="0" width="10" height="9" rx="3" fill="#FFC400" stroke="#A87C00" stroke-width="1.6"/>
+      <circle cx="25" cy="19" r="2.8" fill="#0B2A5B"/><circle cx="39" cy="19" r="2.8" fill="#0B2A5B"/>
+      <path d="M25 27 q7 6 14 0" stroke="#0B2A5B" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+    </svg>
+  </div>
+
   <!-- 教育背景 -->
   <section class="section" id="education">
     <div class="section-head reveal">
@@ -200,10 +297,30 @@
 
   <footer class="footer">
     <div class="footer-bricks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="footer-figs" aria-hidden="true">
+      <svg class="minifig bob" viewBox="0 0 64 124">
+        <g class="leg-l"><rect x="14" y="76" width="15" height="38" rx="5" fill="#071E42"/></g><g class="leg-r"><rect x="35" y="76" width="15" height="38" rx="5" fill="#071E42"/></g>
+        <rect x="11" y="66" width="42" height="13" rx="4" fill="#0B2A5B"/>
+        <path d="M12 33 h40 l-3 34 h-34 z" fill="#FFC400"/>
+        <g class="arm-l"><rect x="2" y="35" width="12" height="27" rx="6" fill="#FFC400"/><circle cx="8" cy="65" r="7" fill="#FFC400"/></g>
+        <g class="arm-r"><rect x="50" y="35" width="12" height="27" rx="6" fill="#FFC400"/><circle cx="56" cy="65" r="7" fill="#FFC400"/></g>
+        <rect x="15" y="7" width="34" height="28" rx="9" fill="#FFC400"/><rect x="27" y="0" width="10" height="9" rx="3" fill="#FFC400"/>
+        <circle cx="25" cy="19" r="2.8" fill="#0B2A5B"/><circle cx="39" cy="19" r="2.8" fill="#0B2A5B"/><path d="M25 27 q7 6 14 0" stroke="#0B2A5B" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      </svg>
+      <svg class="minifig bob" style="animation-delay:.5s" viewBox="0 0 64 124">
+        <g class="leg-l"><rect x="14" y="76" width="15" height="38" rx="5" fill="#071E42"/></g><g class="leg-r"><rect x="35" y="76" width="15" height="38" rx="5" fill="#071E42"/></g>
+        <rect x="11" y="66" width="42" height="13" rx="4" fill="#0B2A5B"/>
+        <path d="M12 33 h40 l-3 34 h-34 z" fill="#E30613"/>
+        <g class="arm-l"><rect x="2" y="35" width="12" height="27" rx="6" fill="#E30613"/><circle cx="8" cy="65" r="7" fill="#FFC400"/></g>
+        <g class="arm-r"><rect x="50" y="35" width="12" height="27" rx="6" fill="#E30613"/><circle cx="56" cy="65" r="7" fill="#FFC400"/></g>
+        <rect x="15" y="7" width="34" height="28" rx="9" fill="#FFC400"/><rect x="27" y="0" width="10" height="9" rx="3" fill="#FFC400"/>
+        <circle cx="25" cy="19" r="2.8" fill="#0B2A5B"/><circle cx="39" cy="19" r="2.8" fill="#0B2A5B"/><path d="M25 27 q7 6 14 0" stroke="#0B2A5B" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
     <p id="footerText"></p>
   </footer>
 </main>
 
-<script src="js/app.js"></script>
+<script src="js/app.min.js?v=7e3a02dd"></script>
 </body>
 </html>

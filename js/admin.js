@@ -475,7 +475,7 @@
   }
 
   function start() {
-    fetch("data/content.json?t=" + Date.now())
+    fetch("data/content.json", { cache: "no-cache" })
       .then(function (r) { return r.json(); })
       .then(function (data) {
         state = data;

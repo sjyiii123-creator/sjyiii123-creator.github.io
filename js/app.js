@@ -84,7 +84,7 @@
       return '<article class="project-card reveal" style="--d:' + (i * 0.1).toFixed(2) + 's">' +
         '<div class="p-studs"><i></i><i></i><i></i></div>' +
         '<div class="p-img"><img src="' + esc(p.image) + '" alt="' + esc(p.title) +
-        '" loading="lazy" onerror="this.style.display=\'none\'">' +
+        '" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">' +
         '<span class="p-badge">PROJECT ' + String(i + 1).padStart(2, "0") + "</span></div>" +
         '<div class="p-body"><h3 class="p-title">' + esc(p.title) + "</h3>" +
         '<p class="p-desc">' + esc(p.desc) + "</p>" +
@@ -204,20 +204,25 @@
   }
 
   /* ============================================================
-     小火车进度条
+     小火车进度条（填满式：轨道随进度被积木覆盖）
      ============================================================ */
   function initTrain() {
     var train = $("#legoTrain");
     var percent = $("#trainPercent");
     var track = $("#trainTrack");
+    var fill = $("#railFill");
     var ticking = false;
 
     function update() {
       var doc = document.documentElement;
       var max = doc.scrollHeight - window.innerHeight;
       var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-      var w = track.clientWidth - 170;
-      train.style.left = (p * w - 10) + "px";
+      var w = track.clientWidth;
+      var tw = 150;
+      // 火车从最左行驶到最右，100% 时车尾贴住终点
+      train.style.left = (p * (w - tw)) + "px";
+      // 轨道被已走过的积木段完全覆盖：进度延伸到火车头，100% 时整条轨道填满
+      fill.style.width = Math.min(w, p * (w - tw) + tw) + "px";
       train.style.setProperty("--wheel-rot", (p * 2160) + "deg");
       percent.textContent = Math.round(p * 100) + "%";
       ticking = false;
@@ -227,6 +232,46 @@
     }, { passive: true });
     window.addEventListener("resize", update);
     update();
+  }
+
+  /* ============================================================
+     积木过场跳转
+     ============================================================ */
+  var transitioning = false;
+  function brickJumpTo(targetId, navEl) {
+    if (transitioning) return;
+    var target = document.getElementById(targetId);
+    if (!target) return;
+    transitioning = true;
+
+    var bt = $("#brickTransition");
+    bt.classList.remove("out");
+    void bt.offsetWidth; // 强制重排以重启动画
+    bt.classList.add("in");
+
+    if (navEl) {
+      navEl.classList.remove("jump");
+      void navEl.offsetWidth;
+      navEl.classList.add("jump");
+    }
+
+    setTimeout(function () {
+      // 被积木遮住时瞬移，再揭开 → 视觉上是连续的过场
+      window.scrollTo({ top: target.offsetTop - 70, behavior: "instant" });
+      bt.classList.remove("in");
+      bt.classList.add("out");
+
+      // 落位弹跳
+      target.classList.remove("pop");
+      void target.offsetWidth;
+      target.classList.add("pop");
+
+      setTimeout(function () {
+        bt.classList.remove("out");
+        target.classList.remove("pop");
+        transitioning = false;
+      }, 760);
+    }, 560);
   }
 
   /* ============================================================
@@ -249,15 +294,14 @@
       }, { threshold: 0.12, rootMargin: "-25% 0px -55% 0px" });
       sections.forEach(function (s) { navObs.observe(s); });
     }
-    links.forEach(function (l) {
-      l.addEventListener("click", function (e) {
-        e.preventDefault();
-        var t = document.getElementById(l.dataset.target);
-        if (t) {
-          window.scrollTo({ top: t.offsetTop - 70, behavior: "smooth" });
-          setActive(l.dataset.target);
-        }
-      });
+    // 侧边栏导航 + 页内锚点按钮 → 积木过场
+    document.addEventListener("click", function (e) {
+      var link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+      var id = link.getAttribute("href").slice(1);
+      if (!id) return;
+      e.preventDefault();
+      brickJumpTo(id, link.classList.contains("nav-brick") ? link : null);
     });
   }
 
@@ -284,7 +328,7 @@
      启动
      ============================================================ */
   function boot() {
-    fetch("data/content.json?t=" + Date.now())
+    fetch("data/content.json")
       .then(function (r) {
         if (!r.ok) throw new Error("content.json 加载失败");
         return r.json();

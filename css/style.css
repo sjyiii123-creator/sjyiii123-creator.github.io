@@ -33,10 +33,10 @@ body{
   color:var(--ink);
   background:var(--paper);
   overflow-x:hidden;
-  /* 乐高小人手指光标 */
-  cursor:url("../assets/cursor-hand.svg") 10 4, pointer;
+  /* 乐高小人手指光标（标准 C 型爪） */
+  cursor:url("../assets/cursor-hand.svg") 12 3, pointer;
 }
-a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 10 4, pointer}
+a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 12 3, pointer}
 ::selection{background:var(--yellow);color:var(--navy)}
 
 /* ============================================================
@@ -50,7 +50,12 @@ a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 10 
 }
 .train-rail{
   position:absolute;left:0;right:0;bottom:9px;height:5px;border-radius:4px;
-  background:repeating-linear-gradient(90deg,var(--navy) 0 26px,#2C4E88 26px 30px);
+  background:repeating-linear-gradient(90deg,#8FA9CE 0 26px,#B9C6DA 26px 30px);
+}
+.rail-fill{
+  position:absolute;left:0;bottom:9px;height:5px;width:0;border-radius:4px;
+  background:repeating-linear-gradient(90deg,var(--yellow) 0 26px,var(--yellow-dark) 26px 30px);
+  box-shadow:0 0 8px rgba(255,196,0,.5);
 }
 .train-ties{
   position:absolute;left:0;right:0;bottom:3px;height:6px;
@@ -497,6 +502,112 @@ a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 10 
 .footer-bricks i:nth-child(2){background:var(--yellow)}
 .footer-bricks i:nth-child(5){background:var(--red)}
 .footer-bricks i:nth-child(7){background:var(--green)}
+
+/* ============================================================
+   章节跳转积木过场
+   ============================================================ */
+.brick-transition{position:fixed;inset:0;z-index:1500;display:flex;pointer-events:none}
+.brick-transition .bt-col{
+  flex:1;transform:translateY(-103%);position:relative;
+  box-shadow:inset -3px 0 0 rgba(0,0,0,.12);
+}
+.brick-transition .bt-col::after{
+  content:"";position:absolute;bottom:0;left:0;right:0;height:26px;
+  background-image:radial-gradient(circle at 50% 8px,rgba(255,255,255,.28) 6px,transparent 7px);
+  background-size:28px 26px;
+}
+.brick-transition.in .bt-col{animation:btIn .42s cubic-bezier(.55,0,.25,1) forwards;animation-delay:calc(var(--i) * 36ms)}
+.brick-transition.out .bt-col{animation:btOut .52s cubic-bezier(.35,0,.2,1) forwards;animation-delay:calc(var(--i) * 36ms)}
+@keyframes btIn{from{transform:translateY(-103%)}to{transform:translateY(0)}}
+@keyframes btOut{from{transform:translateY(0)}to{transform:translateY(103%)}}
+
+/* 落位弹跳 */
+@keyframes popLand{
+  0%{transform:scale(.985) translateY(10px);opacity:.4}
+  55%{transform:scale(1.004) translateY(-3px);opacity:1}
+  100%{transform:scale(1) translateY(0);opacity:1}
+}
+.section.pop{animation:popLand .75s cubic-bezier(.25,1.1,.35,1)}
+.section.pop .section-head h2{animation:popLand .6s .08s cubic-bezier(.25,1.3,.35,1) both}
+.nav-brick.jump{animation:navJump .55s cubic-bezier(.25,1.4,.35,1)}
+@keyframes navJump{
+  0%{transform:translateX(7px) scale(1)}
+  40%{transform:translateX(10px) scale(1.1) rotate(-2deg)}
+  100%{transform:translateX(7px) scale(1)}
+}
+
+/* ============================================================
+   动态乐高小人
+   ============================================================ */
+.minifig{width:62px;height:120px;overflow:visible;filter:drop-shadow(0 10px 12px rgba(11,42,91,.22))}
+.minifig .arm-l,.minifig .arm-r,.minifig .leg-l,.minifig .leg-r{transform-box:fill-box}
+.minifig .arm-l,.minifig .arm-r{transform-origin:50% 12%}
+.minifig .leg-l,.minifig .leg-r{transform-origin:50% 6%}
+.minifig .arm-r{animation:waveArm 1.8s ease-in-out infinite}
+.minifig.wave-left .arm-r{animation-name:waveArmL}
+@keyframes waveArm{0%,100%{transform:rotate(0)}30%{transform:rotate(-42deg)}55%{transform:rotate(-14deg)}75%{transform:rotate(-32deg)}}
+@keyframes waveArmL{0%,100%{transform:rotate(0)}30%{transform:rotate(42deg)}55%{transform:rotate(14deg)}75%{transform:rotate(32deg)}}
+.minifig.bob{animation:figBob 2.6s ease-in-out infinite}
+@keyframes figBob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-9px) rotate(1.4deg)}}
+.minifig.walk .leg-l{animation:stepA .8s ease-in-out infinite alternate}
+.minifig.walk .leg-r{animation:stepB .8s ease-in-out infinite alternate}
+@keyframes stepA{from{transform:rotate(-15deg)}to{transform:rotate(15deg)}}
+@keyframes stepB{from{transform:rotate(15deg)}to{transform:rotate(-15deg)}}
+.minifig.walk{animation:walkBob .8s ease-in-out infinite alternate}
+@keyframes walkBob{from{transform:translateY(0) rotate(-1.2deg)}to{transform:translateY(-5px) rotate(1.2deg)}}
+
+/* 小人游行带 */
+.minifig-parade{
+  position:relative;height:170px;margin:10px clamp(24px,5vw,72px) -20px;
+  border-radius:16px;overflow:hidden;
+  background:linear-gradient(180deg,#EAF1FB 0%,#DCE6F3 100%);
+  box-shadow:inset 0 -4px 0 rgba(11,42,91,.1);
+  display:flex;align-items:flex-end;justify-content:space-around;
+  padding:0 clamp(10px,4vw,60px) 0;
+}
+.parade-ground{
+  position:absolute;left:0;right:0;bottom:0;height:34px;
+  background:repeating-linear-gradient(90deg,var(--navy) 0 34px,var(--navy-soft) 34px 40px);
+  box-shadow:0 -4px 0 rgba(11,42,91,.12);
+}
+.parade-ground::before{
+  content:"";position:absolute;top:-9px;left:0;right:0;height:10px;
+  background-image:radial-gradient(circle at 12px 4px,var(--navy) 5px,transparent 6px);
+  background-size:34px 10px;
+}
+.parade-brick{
+  width:64px;height:36px;border-radius:8px;position:relative;z-index:2;
+  box-shadow:0 5px 0 rgba(0,0,0,.18);
+}
+.parade-brick::before,.parade-brick::after{
+  content:"";position:absolute;top:-8px;width:18px;height:9px;border-radius:6px 6px 2px 2px;background:inherit;filter:brightness(1.1);
+}
+.parade-brick::before{left:9px}
+.parade-brick::after{right:9px}
+.minifig-parade .minifig{z-index:3;margin-bottom:26px}
+.parade-sun{
+  position:absolute;top:18px;right:30px;width:52px;height:52px;border-radius:50%;
+  background:var(--yellow);box-shadow:0 0 0 8px rgba(255,196,0,.25);
+  animation:sunSpin 14s linear infinite;
+}
+@keyframes sunSpin{to{transform:rotate(360deg)}}
+
+/* Hero 小人 */
+.hero-figs{position:absolute;right:clamp(20px,6vw,90px);bottom:40px;display:flex;align-items:flex-end;gap:26px;z-index:2}
+.hero-figs .brick-prop{
+  width:58px;height:34px;border-radius:8px;background:var(--red);position:relative;bottom:8px;
+  box-shadow:0 5px 0 var(--red-dark);
+}
+.hero-figs .brick-prop::before,.hero-figs .brick-prop::after{
+  content:"";position:absolute;top:-8px;width:16px;height:9px;border-radius:6px 6px 2px 2px;background:var(--red);filter:brightness(1.12);
+}
+.hero-figs .brick-prop::before{left:8px}
+.hero-figs .brick-prop::after{right:8px}
+@media (max-width:900px){.hero-figs{display:none}}
+
+/* 页脚小人 */
+.footer-figs{display:flex;justify-content:center;align-items:flex-end;gap:30px;margin-bottom:14px}
+.footer-figs .minifig{width:34px;height:66px;filter:none}
 
 /* ============================================================
    滚动显现动画（循序渐进）

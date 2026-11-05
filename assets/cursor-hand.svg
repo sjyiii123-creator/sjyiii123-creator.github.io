@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <!-- 乐高小人手臂 -->
-  <rect x="14" y="17" width="13" height="15" rx="6" fill="#FFC400" stroke="#A87C00" stroke-width="2.2" transform="rotate(-16 20 24)"/>
-  <!-- 乐高小人手爪（C 形夹手） -->
-  <path d="M14 3.5 C7.5 4.6 3.6 10.6 5.2 17 C6.6 22.4 12.2 25.6 17.6 23.8 L14.4 18.6 C11.8 19.3 9.6 17.8 9.1 15 C8.5 11.8 10.4 8.9 13.6 8.1 Z"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" width="34" height="34">
+  <!-- 乐高小人手臂（斜向右下） -->
+  <rect x="15.5" y="13.5" width="13" height="21" rx="6" fill="#FFC400" stroke="#A87C00" stroke-width="2.2" transform="rotate(45 22 24)"/>
+  <!-- 标准 C 型手爪：圆环开口朝左上，开口 80° -->
+  <path d="M13.22 3.03 A9 9 0 1 1 5.03 11.22 L9.82 11.63 A4.2 4.2 0 1 0 13.63 7.82 Z"
         fill="#FFC400" stroke="#A87C00" stroke-width="2.2" stroke-linejoin="round"/>
-  <path d="M8 9.5 C6 12 6 15.5 7.8 18" fill="none" stroke="#FFE58A" stroke-width="1.8" stroke-linecap="round"/>
-  <circle cx="19.5" cy="14" r="2.4" fill="#FFE58A"/>
+  <!-- 高光 -->
+  <path d="M6.2 8.6 A9 9 0 0 1 11.4 3.6" fill="none" stroke="#FFE58A" stroke-width="2" stroke-linecap="round"/>
 </svg>
