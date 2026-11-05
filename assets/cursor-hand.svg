@@ -1,18 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72">
   <defs>
-    <linearGradient id="y" x1="0.15" y1="0" x2="0.85" y2="1">
-      <stop offset="0%" stop-color="#FFD94F"/><stop offset="100%" stop-color="#F0B429"/>
-    </linearGradient>
     <filter id="ds" x="-25%" y="-25%" width="150%" height="150%">
-      <feDropShadow dx="0" dy="1.2" stdDeviation="1.1" flood-color="#0B1F3A" flood-opacity="0.22"/>
+      <feDropShadow dx="0" dy="1.2" stdDeviation="1" flood-color="#0B1F3A" flood-opacity="0.22"/>
     </filter>
   </defs>
   <g filter="url(#ds)">
-      <path d="M33 20.5 A12.5 12.5 0 1 1 20.5 33" stroke="#8A6400" stroke-width="14.9" stroke-linecap="round" fill="none"/>
-      <path d="M41 41 L50.5 50.5" stroke="#8A6400" stroke-width="17.9" stroke-linecap="round" fill="none"/>
-      <path d="M33 20.5 A12.5 12.5 0 1 1 20.5 33" stroke="url(#y)" stroke-width="10.5" stroke-linecap="round" fill="none"/>
-      <path d="M41 41 L50.5 50.5" stroke="url(#y)" stroke-width="13.5" stroke-linecap="round" fill="none"/>
+    <path d="M37.24 21.93 A12.5 12.5 0 1 1 21.93 37.24"
+          stroke="#FFD028" stroke-width="5.6" stroke-linecap="round" fill="none"/>
+    <path d="M40 40 L51 51" stroke="#E3000B" stroke-width="12" stroke-linecap="round" fill="none"/>
   </g>
-  <ellipse cx="41.5" cy="25.5" rx="4.6" ry="2.2" fill="#FFFFFF" opacity="0.42" transform="rotate(-38 41.5 25.5)"/>
-  <ellipse cx="25.5" cy="41.5" rx="4" ry="1.9" fill="#FFFFFF" opacity="0.2" transform="rotate(-38 25.5 41.5)"/>
 </svg>

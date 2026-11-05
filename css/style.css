@@ -52,9 +52,10 @@ body.custom-cursor textarea, body.custom-cursor label{cursor:none}
   position:absolute;inset:0;transform-origin:top;
   animation:panelOut 1s var(--ease) forwards;
 }
-.intro-panel--a{background:linear-gradient(135deg,#0B1F3A 0%,#12294B 100%);animation-delay:.75s}
-.intro-panel--b{background:linear-gradient(135deg,#12294B 0%,#2563EB 100%);animation-delay:.9s}
-.intro-panel--c{background:linear-gradient(135deg,#2563EB 0%,#22D3EE 100%);animation-delay:1.05s}
+.intro-panel--a{background:#0B1F3A;animation-delay:.72s}
+.intro-panel--b{background:#E3000B;animation-delay:.88s}
+.intro-panel--c{background:#FFD028;animation-delay:1.04s}
+.intro-panel--d{background:#006DB7;animation-delay:1.2s}
 @keyframes panelOut{
   0%{transform:scaleY(1)}
   100%{transform:scaleY(0)}
@@ -76,7 +77,7 @@ body.custom-cursor textarea, body.custom-cursor label{cursor:none}
 /* ============ LEGO 手指光标 ============ */
 #cursor,#cursor-dot{position:fixed;top:0;left:0;pointer-events:none;z-index:998;opacity:0;transition:opacity .3s}
 body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
-#cursor{width:40px;height:40px;margin:-11px 0 0 -11px;transition:opacity .3s}
+#cursor{width:40px;height:40px;margin:-13px 0 0 -13px;transition:opacity .3s}
 .cursor-hand{
   width:100%;height:100%;
   background:url("../assets/cursor-hand.svg") center/contain no-repeat;
@@ -91,19 +92,30 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
   background:var(--accent);opacity:.6;
 }
 
-/* ============ 阅读进度条（乐高积木条） ============ */
+/* ============ 阅读进度条（乐高积木拼接轨道） ============ */
 #progress{
-  position:fixed;top:0;left:0;height:10px;width:0;z-index:120;
-  background:linear-gradient(90deg,var(--accent),var(--accent-2) 55%,var(--violet));
-  border-radius:0 5px 5px 0;
-  box-shadow:0 2px 12px rgba(37,99,235,.38);
-  transition:width .18s var(--ease);
+  position:fixed;top:0;left:0;height:12px;width:0;z-index:120;
+  transition:width .25s var(--ease);
+  background-image:linear-gradient(90deg,#E3000B 0 22%,#FFD028 22% 46%,#00A94F 46% 70%,#006DB7 70% 100%);
+  background-size:100vw 100%;
 }
-#progress::after{
-  content:"";position:absolute;inset:0;border-radius:inherit;
-  background-image:radial-gradient(circle at 6.5px 5px,rgba(255,255,255,.42) 2.1px,rgba(255,255,255,0) 2.5px);
-  background-size:13px 10px;
+#progress::after{ /* 每块积木 = 2 颗凸点 + 接缝 */
+  content:"";position:absolute;inset:0;
+  background-image:
+    radial-gradient(circle at 8px 4px,rgba(255,255,255,.55) 2.2px,rgba(255,255,255,0) 2.6px),
+    radial-gradient(circle at 22px 4px,rgba(255,255,255,.55) 2.2px,rgba(255,255,255,0) 2.6px),
+    linear-gradient(90deg,rgba(0,0,0,.16) 0 2px,rgba(0,0,0,0) 2px);
+  background-size:30px 12px,30px 12px,30px 12px;
 }
+.progress-head{ /* 领头积木：轻微跳动 */
+  position:absolute;right:-8px;top:-5px;width:24px;height:20px;border-radius:5px;
+  background:#E3000B;box-shadow:0 3px 8px rgba(227,0,11,.35);
+  animation:headBob 1.1s ease-in-out infinite;
+}
+.progress-head i{position:absolute;top:-5px;width:9px;height:6px;border-radius:3px 3px 1px 1px;background:#E3000B}
+.progress-head i:first-child{left:3px}
+.progress-head i:last-child{right:3px}
+@keyframes headBob{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
 
 /* ============ 侧边栏 ============ */
 .sidebar{
@@ -198,9 +210,11 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
 .section--wash::before{
   content:"";position:absolute;inset:0;z-index:-1;
   background-image:
-    radial-gradient(circle at 10px 10px,rgba(37,99,235,.055) 2.3px,rgba(37,99,235,0) 2.7px),
+    radial-gradient(circle at 10px 8px,rgba(37,99,235,.05) 2.3px,rgba(37,99,235,0) 2.7px),
+    radial-gradient(circle at 26px 8px,rgba(37,99,235,.05) 2.3px,rgba(37,99,235,0) 2.7px),
+    linear-gradient(90deg,rgba(37,99,235,.05) 0 1px,rgba(37,99,235,0) 1px),
     linear-gradient(180deg,transparent,var(--wash) 12%,var(--wash) 88%,transparent);
-  background-size:32px 32px,auto;
+  background-size:32px 22px,32px 22px,32px 22px,auto;
 }
 
 /* 分区标题 + 渐变条动画 */
@@ -221,16 +235,22 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
 }
 .sec-bar::before{left:8px}
 .sec-bar::after{right:8px}
+/* 分区积木条：乐高配色轮换 */
+[data-section="about"] .sec-bar{background:linear-gradient(135deg,#E3000B,#FFD028)}
+[data-section="experience"] .sec-bar{background:linear-gradient(135deg,#F5B301,#00A94F)}
+[data-section="skills"] .sec-bar{background:linear-gradient(135deg,#00A94F,#006DB7)}
+[data-section="projects"] .sec-bar{background:linear-gradient(135deg,#006DB7,#22D3EE)}
+[data-section="education"] .sec-bar{background:linear-gradient(135deg,#F36F21,#E3000B)}
+[data-section="contact"] .sec-bar{background:linear-gradient(135deg,#FFD028,#22D3EE)}
 .reveal.in .sec-bar,.in .sec-bar{transform:scaleX(1)}
 .sec-head--light .sec-title{color:#fff}
 .sec-head--light .sec-kicker{color:#7FE3FF}
 
-/* 滚动渐进动画 */
+/* 滚动渐进动画（仅 transform/opacity，轻量不卡顿） */
 .reveal{
   opacity:0;transform:translateY(30px);
   transition:opacity 1s var(--ease),transform 1s var(--ease);
   transition-delay:var(--d,0s);
-  will-change:opacity,transform;
 }
 .reveal.in{opacity:1;transform:none}
 
@@ -273,16 +293,13 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
   mask-image:radial-gradient(ellipse 90% 70% at 50% 40%,#000 20%,transparent 80%);
 }
 
-/* 乐高积木与玩偶装饰（克制） */
-.brick{
-  position:absolute;opacity:.22;color:#2563EB;
-  animation:brickFloat 15s ease-in-out infinite;
-}
-.brick--1{width:118px;left:66%;top:12%;--rot:-12deg}
-.brick--2{width:80px;left:7%;top:64%;color:#22D3EE;opacity:.18;--rot:9deg;animation-delay:-5s}
-.brick--3{width:62px;left:46%;top:84%;color:#7C3AED;opacity:.16;--rot:-7deg;animation-delay:-9s}
+/* 乐高积木拼接装饰（克制） */
+.brick-cluster{position:absolute;animation:brickFloat 15s ease-in-out infinite}
+.bc--1{width:190px;left:64%;top:11%;opacity:.2;--rot:-10deg}
+.bc--2{width:150px;left:3%;top:62%;opacity:.18;--rot:8deg;animation-delay:-5s}
+.bc--3{width:108px;left:47%;top:84%;opacity:.16;--rot:-6deg;animation-delay:-9s}
 .minifig{
-  position:absolute;width:216px;left:70%;top:30%;color:#2563EB;opacity:.07;
+  position:absolute;width:210px;left:71%;top:32%;color:#F0B429;opacity:.12;
   animation:minifigBob 17s ease-in-out infinite;
 }
 @keyframes brickFloat{
@@ -369,14 +386,18 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
   display:flex;align-items:center;gap:12px;color:var(--muted);
 }
 .scroll-hint__mouse{
-  width:24px;height:38px;border-radius:14px;border:2px solid var(--muted);
-  display:flex;justify-content:center;padding-top:7px;
+  width:27px;height:15px;border-radius:4px;background:#FFD028;position:relative;
+  display:flex;justify-content:center;
+  box-shadow:inset 0 -3px 0 rgba(11,31,58,.13);
+  animation:brickDrop 2s ease-in-out infinite;
 }
-.scroll-hint__wheel{
-  width:4px;height:8px;border-radius:3px;background:var(--accent);
-  animation:wheel 1.6s ease-in-out infinite;
+.scroll-hint__mouse::before,.scroll-hint__mouse::after{
+  content:"";position:absolute;top:-4px;width:9px;height:5px;border-radius:3px 3px 1px 1px;background:#FFD028;
 }
-@keyframes wheel{0%{transform:translateY(0);opacity:1}70%{transform:translateY(11px);opacity:0}100%{opacity:0}}
+.scroll-hint__mouse::before{left:3px}
+.scroll-hint__mouse::after{right:3px}
+.scroll-hint__wheel{display:none}
+@keyframes brickDrop{0%,100%{transform:translateY(0)}55%{transform:translateY(7px)}}
 .scroll-hint__text{font-size:11.5px;letter-spacing:.32em}
 .hero__wave{position:absolute;left:0;right:0;bottom:-1px;line-height:0}
 .hero__wave svg{width:100%;height:64px}
@@ -435,6 +456,12 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
 .tl-item::after{
   content:"";position:absolute;left:-21px;top:31px;width:6px;height:6px;border-radius:50%;background:var(--accent-2);
 }
+.tl-item:nth-child(3n+1)::before{border-color:#E3000B}
+.tl-item:nth-child(3n+1)::after{background:#E3000B}
+.tl-item:nth-child(3n+2)::before{border-color:#F5B301}
+.tl-item:nth-child(3n+2)::after{background:#F5B301}
+.tl-item:nth-child(3n)::before{border-color:#00A94F}
+.tl-item:nth-child(3n)::after{background:#00A94F}
 .tl-card{
   background:var(--card);border:1px solid var(--line);border-radius:var(--r-l);
   padding:28px clamp(22px,3vw,34px);box-shadow:var(--shadow-s);
@@ -651,7 +678,7 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
   .field-row{grid-template-columns:1fr}
   .hero__cta .btn{width:100%;justify-content:center}
   .hero{padding-left:20px;padding-right:20px}
-  .brick,.minifig{display:none}
+  .brick-cluster,.minifig{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important;scroll-behavior:auto}

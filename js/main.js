@@ -315,11 +315,17 @@
       navItems.forEach((a) => a.addEventListener("click", close));
     }
 
-    // 进度条
+    // 进度条（rAF 节流，避免滚动卡顿）
     const progress = $("#progress");
+    let ticking = false;
     const onScroll = () => {
-      const h = document.documentElement.scrollHeight - window.innerHeight;
-      if (progress) progress.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + "%";
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        if (progress) progress.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + "%";
+        ticking = false;
+      });
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
