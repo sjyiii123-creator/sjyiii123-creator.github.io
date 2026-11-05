@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%" stop-color="#10261F"/><stop offset="100%" stop-color="#10B981" stop-opacity="0.55"/>
+</linearGradient>
+<linearGradient id="g2" x1="0" y1="1" x2="0" y2="0">
+  <stop offset="0%" stop-color="#10B981"/><stop offset="100%" stop-color="#A3E635"/>
+</linearGradient>
+<radialGradient id="glow" cx="0.85" cy="0.15" r="0.8">
+  <stop offset="0%" stop-color="#A3E635" stop-opacity="0.5"/><stop offset="100%" stop-color="#A3E635" stop-opacity="0"/>
+</radialGradient>
+</defs>
+<rect width="800" height="500" fill="url(#bg)"/>
+<rect width="800" height="500" fill="url(#glow)"/>
+<line x1="0" y1="0" x2="0" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="80" y1="0" x2="80" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="160" y1="0" x2="160" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="240" y1="0" x2="240" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="320" y1="0" x2="320" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="400" y1="0" x2="400" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="480" y1="0" x2="480" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="560" y1="0" x2="560" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="640" y1="0" x2="640" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="720" y1="0" x2="720" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="800" y1="0" x2="800" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="0" x2="800" y2="0" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="83" x2="800" y2="83" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="167" x2="800" y2="167" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="250" x2="800" y2="250" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="333" x2="800" y2="333" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="417" x2="800" y2="417" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="500" x2="800" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<rect x="170" y="110" width="460" height="290" rx="22" fill="none" stroke="#A3E635" stroke-width="4"/>
+<circle cx="400" cy="235" r="86" fill="none" stroke="#A3E635" stroke-width="4" opacity="0.85"/>
+<circle cx="400" cy="235" r="38" fill="#A3E635" opacity="0.9"/>
+<rect x="150" y="90" width="70" height="12" rx="6" fill="#A3E635"/><rect x="150" y="90" width="12" height="52" rx="6" fill="#A3E635"/>
+<rect x="580" y="90" width="70" height="12" rx="6" fill="#A3E635"/><rect x="638" y="90" width="12" height="52" rx="6" fill="#A3E635"/>
+<rect x="150" y="410" width="70" height="12" rx="6" fill="#A3E635"/><rect x="150" y="370" width="12" height="52" rx="6" fill="#A3E635"/>
+<rect x="580" y="410" width="70" height="12" rx="6" fill="#A3E635"/><rect x="638" y="370" width="12" height="52" rx="6" fill="#A3E635"/>
+<line x1="170" y1="130" x2="240" y2="130" stroke="#A3E635" stroke-width="4" opacity="0.5"/>
+<line x1="170" y1="174" x2="240" y2="174" stroke="#A3E635" stroke-width="4" opacity="0.5"/>
+<line x1="170" y1="218" x2="240" y2="218" stroke="#A3E635" stroke-width="4" opacity="0.5"/>
+<line x1="170" y1="262" x2="240" y2="262" stroke="#A3E635" stroke-width="4" opacity="0.5"/>
+<line x1="170" y1="306" x2="240" y2="306" stroke="#A3E635" stroke-width="4" opacity="0.5"/>
+<line x1="170" y1="350" x2="240" y2="350" stroke="#A3E635" stroke-width="4" opacity="0.5"/>
+<line x1="170" y1="394" x2="240" y2="394" stroke="#A3E635" stroke-width="4" opacity="0.5"/>
+<rect x="0" y="440" width="800" height="60" fill="#000000" opacity="0.18"/>
+<text x="40" y="478" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#FFFFFF" opacity="0.9">特征工程平台</text>
+</svg>

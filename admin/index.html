@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>简历后台 · 站长专用</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<script src="config.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<!-- ===== 登录 ===== -->
+<div class="login" id="loginView">
+  <div class="login__bg"><span class="lv lv--1"></span><span class="lv lv--2"></span><span class="lv lv--3"></span></div>
+  <div class="login__card">
+    <div class="login__logo">✦</div>
+    <h1 class="login__title">简历后台</h1>
+    <p class="login__sub">仅站长可编辑 · 访客只能查看</p>
+
+    <section class="step" id="stepAuth">
+      <h2 class="step__title"><span class="step__num">1</span>身份验证</h2>
+      <div id="googleBtnWrap" class="google-wrap">
+        <div id="g_id_onload"></div>
+        <div class="g_id_signin"></div>
+      </div>
+      <div class="divider" id="orDivider"><span>或使用管理员口令</span></div>
+      <label class="field">
+        <span>管理员口令</span>
+        <input type="password" id="passcode" placeholder="未配置 Google 登录时使用口令">
+      </label>
+      <button class="btn btn--ghost" id="passcodeBtn" type="button">验证口令</button>
+      <p class="login__status" id="authStatus">🔒 等待身份验证</p>
+    </section>
+
+    <section class="step step--locked" id="stepToken">
+      <h2 class="step__title"><span class="step__num">2</span>连接 GitHub</h2>
+      <label class="field">
+        <span>GitHub Personal Access Token（仅保存在你自己的浏览器中）</span>
+        <input type="password" id="ghToken" placeholder="ghp_... （需要 repo 权限）">
+      </label>
+      <button class="btn btn--primary" id="loginBtn" type="button"><span>进入后台</span><span class="btn__arrow">→</span></button>
+      <p class="login__status" id="tokenStatus"></p>
+    </section>
+    <a class="login__back" href="../">← 返回简历主页</a>
+  </div>
+</div>
+
+<!-- ===== 后台主界面 ===== -->
+<div class="app" id="appView" hidden>
+  <header class="topbar">
+    <div class="topbar__brand"><span class="topbar__logo">✦</span>简历后台<span class="topbar__sep">/</span><span class="topbar__who" id="whoami"></span></div>
+    <div class="topbar__actions">
+      <a class="btn btn--ghost btn--sm" href="../" target="_blank">预览网站 ↗</a>
+      <button class="btn btn--primary btn--sm" id="saveBtn" type="button"><span>保存并发布</span></button>
+      <button class="btn btn--plain btn--sm" id="logoutBtn" type="button">退出</button>
+    </div>
+    <div class="save-progress" id="saveProgress"></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidenav" id="sidenav">
+      <button class="sidenav__item is-active" data-tab="global">全局信息</button>
+      <button class="sidenav__item" data-tab="welcome">欢迎词</button>
+      <button class="sidenav__item" data-tab="about">关于我</button>
+      <button class="sidenav__item" data-tab="experience">工作经历</button>
+      <button class="sidenav__item" data-tab="skills">技能</button>
+      <button class="sidenav__item" data-tab="projects">作品集</button>
+      <button class="sidenav__item" data-tab="education">教育背景</button>
+      <button class="sidenav__item" data-tab="contact">联系方式</button>
+      <button class="sidenav__item sidenav__item--util" data-tab="json">高级 · JSON</button>
+      <div class="sidenav__tip">
+        <p>💡 所有修改点击「保存并发布」后约 1 分钟内自动生效到线上简历。</p>
+      </div>
+    </nav>
+
+    <main class="panel" id="panel"></main>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<script src="admin.js"></script>
+</body>
+</html>

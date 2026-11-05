@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%" stop-color="#2A1420"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.55"/>
+</linearGradient>
+<linearGradient id="g2" x1="0" y1="1" x2="0" y2="0">
+  <stop offset="0%" stop-color="#F43F5E"/><stop offset="100%" stop-color="#FBA94C"/>
+</linearGradient>
+<radialGradient id="glow" cx="0.85" cy="0.15" r="0.8">
+  <stop offset="0%" stop-color="#FBA94C" stop-opacity="0.5"/><stop offset="100%" stop-color="#FBA94C" stop-opacity="0"/>
+</radialGradient>
+</defs>
+<rect width="800" height="500" fill="url(#bg)"/>
+<rect width="800" height="500" fill="url(#glow)"/>
+<line x1="0" y1="0" x2="0" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="80" y1="0" x2="80" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="160" y1="0" x2="160" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="240" y1="0" x2="240" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="320" y1="0" x2="320" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="400" y1="0" x2="400" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="480" y1="0" x2="480" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="560" y1="0" x2="560" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="640" y1="0" x2="640" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="720" y1="0" x2="720" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="800" y1="0" x2="800" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="0" x2="800" y2="0" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="83" x2="800" y2="83" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="167" x2="800" y2="167" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="250" x2="800" y2="250" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="333" x2="800" y2="333" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="417" x2="800" y2="417" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<line x1="0" y1="500" x2="800" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+<polygon points="275.0,144.0 275.0,196.0 230.0,222.0 185.0,196.0 185.0,144.0 230.0,118.0" fill="#F43F5E" stroke="#FBA94C" stroke-width="3" opacity="0.9"/>
+<polygon points="390.0,144.0 390.0,196.0 345.0,222.0 300.0,196.0 300.0,144.0 345.0,118.0" fill="#F43F5E" stroke="#FBA94C" stroke-width="3" opacity="0.9"/>
+<polygon points="505.0,144.0 505.0,196.0 460.0,222.0 415.0,196.0 415.0,144.0 460.0,118.0" fill="#F43F5E" stroke="#FBA94C" stroke-width="3" opacity="0.9"/>
+<polygon points="332.0,242.0 332.0,294.0 287.0,320.0 242.0,294.0 242.0,242.0 287.0,216.0" fill="#F43F5E" stroke="#FBA94C" stroke-width="3" opacity="0.9"/>
+<polygon points="447.0,242.0 447.0,294.0 402.0,320.0 357.0,294.0 357.0,242.0 402.0,216.0" fill="#F43F5E" stroke="#FBA94C" stroke-width="3" opacity="0.9"/>
+<polygon points="562.0,144.0 562.0,196.0 517.0,222.0 472.0,196.0 472.0,144.0 517.0,118.0" fill="#F43F5E" stroke="#FBA94C" stroke-width="3" opacity="0.9"/>
+<polygon points="619.0,242.0 619.0,294.0 574.0,320.0 529.0,294.0 529.0,242.0 574.0,216.0" fill="#F43F5E" stroke="#FBA94C" stroke-width="3" opacity="0.9"/>
+<polygon points="390.0,340.0 390.0,392.0 345.0,418.0 300.0,392.0 300.0,340.0 345.0,314.0" fill="#F43F5E" stroke="#FBA94C" stroke-width="3" opacity="0.9"/>
+<polygon points="505.0,340.0 505.0,392.0 460.0,418.0 415.0,392.0 415.0,340.0 460.0,314.0" fill="#F43F5E" stroke="#FBA94C" stroke-width="3" opacity="0.9"/>
+<polygon points="424.5,255.0 424.5,281.0 402.0,294.0 379.5,281.0 379.5,255.0 402.0,242.0" fill="#FBA94C"/>
+<rect x="0" y="440" width="800" height="60" fill="#000000" opacity="0.18"/>
+<text x="40" y="478" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#FFFFFF" opacity="0.9">销量时序预测</text>
+</svg>

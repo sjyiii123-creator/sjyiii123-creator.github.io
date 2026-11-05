@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>李正淼 · 算法工程师 | 个人简历</title>
+<meta name="description" content="算法工程师李正淼的个人简历：关于我、工作经历、技能、作品集、教育背景与联系方式。">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- 页面过场动画 -->
+<div id="intro" aria-hidden="true">
+  <div class="intro-panel intro-panel--a"></div>
+  <div class="intro-panel intro-panel--b"></div>
+  <div class="intro-panel intro-panel--c"></div>
+  <div class="intro-logo">
+    <span class="intro-logo__zh">李正淼</span>
+    <span class="intro-logo__en">ALGORITHM ENGINEER · PORTFOLIO</span>
+  </div>
+</div>
+
+<!-- LEGO 手指光标 -->
+<div id="cursor" aria-hidden="true"><div class="cursor-hand"></div></div>
+<div id="cursor-dot" aria-hidden="true"></div>
+
+<!-- 顶部阅读进度条 -->
+<div id="progress" aria-hidden="true"></div>
+
+<!-- 侧边栏 -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar__glow"></div>
+  <div class="sidebar__head">
+    <div class="avatar-wrap">
+      <div class="avatar-ring"></div>
+      <img class="avatar" src="assets/avatar.svg" alt="李正淼 头像">
+    </div>
+    <h1 class="sidebar__name" data-bind="meta.name">李正淼</h1>
+    <p class="sidebar__role" data-bind="meta.role">算法工程师</p>
+    <p class="sidebar__tagline" data-bind="meta.tagline"></p>
+  </div>
+
+  <nav class="nav" id="nav" aria-label="页面导航">
+    <a class="nav__item is-active" href="#welcome" data-nav="welcome"><span class="nav__ico" data-ico="home"></span>欢迎</a>
+    <a class="nav__item" href="#about" data-nav="about"><span class="nav__ico" data-ico="user"></span>关于我</a>
+    <a class="nav__item" href="#experience" data-nav="experience"><span class="nav__ico" data-ico="case"></span>工作经历</a>
+    <a class="nav__item" href="#skills" data-nav="skills"><span class="nav__ico" data-ico="star"></span>技能</a>
+    <a class="nav__item" href="#projects" data-nav="projects"><span class="nav__ico" data-ico="grid"></span>作品集</a>
+    <a class="nav__item" href="#education" data-nav="education"><span class="nav__ico" data-ico="book"></span>教育背景</a>
+    <a class="nav__item" href="#contact" data-nav="contact"><span class="nav__ico" data-ico="mail"></span>联系方式</a>
+  </nav>
+
+  <div class="sidebar__foot">
+    <div class="social" id="social"></div>
+    <p class="sidebar__copy">© <span id="year"></span> <span data-bind="meta.name">李正淼</span></p>
+    <a class="admin-link" href="admin/" title="仅站长可见入口">✦ 站长管理</a>
+  </div>
+</aside>
+
+<!-- 移动端顶栏 -->
+<header class="topbar">
+  <button class="topbar__btn" id="menuBtn" aria-label="打开菜单"><span></span><span></span><span></span></button>
+  <span class="topbar__name" data-bind="meta.name">李正淼</span>
+  <a class="topbar__cta" href="#contact">联系我</a>
+</header>
+<div class="drawer-mask" id="drawerMask"></div>
+
+<!-- 内容区 -->
+<main class="content" id="content">
+
+  <!-- 欢迎词 -->
+  <section class="hero section" id="welcome" data-section="welcome">
+    <div class="hero__orbs" aria-hidden="true">
+      <span class="orb orb--1"></span><span class="orb orb--2"></span>
+      <span class="orb orb--3"></span><span class="orb orb--4"></span>
+      <div class="hero__grid"></div>
+    </div>
+    <div class="hero__inner">
+      <p class="hero__badge reveal"><span class="pulse-dot"></span><span data-bind="welcome.badge">欢迎来到我的个人主页</span></p>
+      <h2 class="hero__title">
+        <span class="hero__line reveal" style="--d:.1s" data-bind="welcome.title">你好，我是李正淼</span>
+        <span class="hero__line hero__line--grad reveal" style="--d:.25s" data-bind="welcome.highlight">一名热爱创造的算法工程师</span>
+      </h2>
+      <p class="hero__sub reveal" style="--d:.4s" data-bind="welcome.subtitle"></p>
+      <p class="hero__roles reveal" style="--d:.55s">
+        <span class="hero__roles-label">我专注于</span>
+        <span class="type-wrap"><span id="roleRotator" class="type-text"></span><span class="type-caret"></span></span>
+      </p>
+      <div class="hero__cta reveal" style="--d:.7s">
+        <a class="btn btn--primary" id="ctaPrimary" href="#projects"><span data-bind="welcome.ctaPrimary.text">查看我的作品</span><span class="btn__arrow">→</span></a>
+        <a class="btn btn--ghost" id="ctaSecondary" href="#contact"><span data-bind="welcome.ctaSecondary.text">联系我</span></a>
+      </div>
+    </div>
+    <a class="scroll-hint" href="#about" aria-label="向下滚动">
+      <span class="scroll-hint__mouse"><span class="scroll-hint__wheel"></span></span>
+      <span class="scroll-hint__text">向下滚动</span>
+    </a>
+    <div class="hero__wave" aria-hidden="true">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,64 C240,120 480,10 720,48 C960,86 1200,110 1440,52 L1440,120 L0,120 Z"></path></svg>
+    </div>
+  </section>
+
+  <!-- 关于我 -->
+  <section class="section section--pad" id="about" data-section="about">
+    <div class="sec-head reveal">
+      <p class="sec-kicker" data-bind="about.subtitle">About Me</p>
+      <h2 class="sec-title" data-bind="about.title">关于我</h2>
+      <span class="sec-bar"></span>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p class="about-lead reveal" data-bind="about.lead"></p>
+        <div id="aboutParagraphs"></div>
+        <div class="about-stats" id="aboutStats"></div>
+      </div>
+      <div class="about-visual reveal" style="--d:.2s">
+        <div class="about-photo">
+          <div class="about-photo__frame"></div>
+          <img id="aboutImage" src="assets/avatar.svg" alt="李正淼">
+          <div class="about-photo__chip about-photo__chip--1">Python</div>
+          <div class="about-photo__chip about-photo__chip--2">PyTorch</div>
+          <div class="about-photo__chip about-photo__chip--3">LLM</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 工作经历 -->
+  <section class="section section--pad section--wash" id="experience" data-section="experience">
+    <div class="sec-head reveal">
+      <p class="sec-kicker" data-bind="experience.subtitle">Experience</p>
+      <h2 class="sec-title" data-bind="experience.title">工作经历</h2>
+      <span class="sec-bar"></span>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <!-- 技能 -->
+  <section class="section section--pad" id="skills" data-section="skills">
+    <div class="sec-head reveal">
+      <p class="sec-kicker" data-bind="skills.subtitle">Skills</p>
+      <h2 class="sec-title" data-bind="skills.title">技能</h2>
+      <span class="sec-bar"></span>
+    </div>
+    <div class="skills-grid" id="skillsGrid"></div>
+  </section>
+
+  <!-- 作品集 -->
+  <section class="section section--pad section--wash" id="projects" data-section="projects">
+    <div class="sec-head reveal">
+      <p class="sec-kicker" data-bind="projects.subtitle">Selected Works</p>
+      <h2 class="sec-title" data-bind="projects.title">作品集</h2>
+      <span class="sec-bar"></span>
+    </div>
+    <div class="projects-grid" id="projectsGrid"></div>
+  </section>
+
+  <!-- 教育背景 -->
+  <section class="section section--pad" id="education" data-section="education">
+    <div class="sec-head reveal">
+      <p class="sec-kicker" data-bind="education.subtitle">Education</p>
+      <h2 class="sec-title" data-bind="education.title">教育背景</h2>
+      <span class="sec-bar"></span>
+    </div>
+    <div class="edu-grid" id="eduGrid"></div>
+  </section>
+
+  <!-- 联系方式 -->
+  <section class="section section--pad" id="contact" data-section="contact">
+    <div class="contact-card">
+      <div class="contact-card__glow" aria-hidden="true"></div>
+      <div class="sec-head sec-head--light reveal">
+        <p class="sec-kicker" data-bind="contact.subtitle">Get In Touch</p>
+        <h2 class="sec-title" data-bind="contact.title">联系方式</h2>
+        <span class="sec-bar"></span>
+      </div>
+      <p class="contact-intro reveal" data-bind="contact.intro"></p>
+      <div class="contact-grid" id="contactGrid"></div>
+      <div class="contact-form reveal" id="contactForm">
+        <h3 class="contact-form__title">给我留言</h3>
+        <p class="contact-form__hint">留下你的信息，我会尽快回复你。（本表单通过你的邮件客户端发送）</p>
+        <form id="msgForm">
+          <div class="field-row">
+            <label class="field"><span>你的称呼</span><input type="text" name="name" placeholder="怎么称呼你？" required></label>
+            <label class="field"><span>联系方式</span><input type="text" name="from" placeholder="邮箱 / 微信 / 电话" required></label>
+          </div>
+          <label class="field"><span>留言内容</span><textarea name="body" rows="4" placeholder="想聊些什么？" required></textarea></label>
+          <button class="btn btn--light" type="submit"><span>发送留言</span><span class="btn__arrow">→</span></button>
+        </form>
+      </div>
+    </div>
+    <footer class="footer">
+      <p class="footer__text" data-bind="footer.text">用心写代码，用算法创造价值。</p>
+      <p class="footer__meta">© <span id="year2"></span> <span data-bind="meta.name">李正淼</span> · Designed with ♥</p>
+    </footer>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+<script src="js/main.js"></script>
+</body>
+</html>
