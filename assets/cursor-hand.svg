@@ -1,9 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" width="34" height="34">
-  <!-- 乐高小人手臂（斜向右下） -->
-  <rect x="15.5" y="13.5" width="13" height="21" rx="6" fill="#FFC400" stroke="#A87C00" stroke-width="2.2" transform="rotate(45 22 24)"/>
-  <!-- 标准 C 型手爪：圆环开口朝左上，开口 80° -->
-  <path d="M13.22 3.03 A9 9 0 1 1 5.03 11.22 L9.82 11.63 A4.2 4.2 0 1 0 13.63 7.82 Z"
-        fill="#FFC400" stroke="#A87C00" stroke-width="2.2" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- 乐高小人手爪光标：C 型爪口朝左上（点击热点 5,5），手臂斜向右下 -->
+  <defs>
+    <linearGradient id="armG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFE58A"/>
+      <stop offset=".45" stop-color="#FFC400"/>
+      <stop offset="1" stop-color="#D9A400"/>
+    </linearGradient>
+    <linearGradient id="ringG" x1="1" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#D9A400"/>
+      <stop offset=".5" stop-color="#FFC400"/>
+      <stop offset="1" stop-color="#FFE58A"/>
+    </linearGradient>
+  </defs>
+  <!-- 手臂（圆柱，斜 45° 接入爪环外缘） -->
+  <path d="M18 18 L27 27" stroke="#B8860B" stroke-width="10.6" stroke-linecap="round" fill="none"/>
+  <path d="M18 18 L27 27" stroke="url(#armG)" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <!-- C 型爪环：260° 圆弧，开口 100° 朝左上，圆端收口 -->
+  <path d="M13.1 5.63 A6.9 6.9 0 1 1 5.63 13.1" stroke="#B8860B" stroke-width="7.2" stroke-linecap="round" fill="none"/>
+  <path d="M13.1 5.63 A6.9 6.9 0 1 1 5.63 13.1" stroke="url(#ringG)" stroke-width="4.6" stroke-linecap="round" fill="none"/>
   <!-- 高光 -->
-  <path d="M6.2 8.6 A9 9 0 0 1 11.4 3.6" fill="none" stroke="#FFE58A" stroke-width="2" stroke-linecap="round"/>
+  <path d="M12.2 7.6 A5.4 5.4 0 0 1 16.4 11.2" stroke="#FFF3C4" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".85"/>
+  <path d="M20.4 20.4 L24.8 24.8" stroke="#FFF3C4" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".7"/>
 </svg>

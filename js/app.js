@@ -265,7 +265,7 @@
         '<stop offset="1" stop-color="' + dark + '"/></linearGradient>';
     }
     return '<svg class="minifig ' + (opt.cls || "") + '"' +
-      (opt.delay ? ' style="animation-delay:' + opt.delay + '"' : "") +
+      (opt.delay ? ' style="--fig-delay:' + opt.delay + '"' : "") +
       ' viewBox="0 0 64 128" aria-hidden="true"><defs>' +
       grad("h" + uid, "#FFE9A0", "#FFC400", "#C78E00") +
       grad("t" + uid, tL, t, tD) +
@@ -289,11 +289,11 @@
       '<rect x="17" y="34" width="4" height="26" rx="2" fill="#fff" opacity=".38"/>' +
       '<circle cx="15.5" cy="42" r="3.4" fill="#17202E" opacity=".2"/>' +
       '<circle cx="48.5" cy="42" r="3.4" fill="#17202E" opacity=".2"/>' +
-      // 手臂 + 标准 C 型手爪（大开口）
+      // 手臂 + 手腕关节 + 标准 C 型手爪（大开口）
       '<g class="arm-l"><path d="M16 42 C9 44 5.5 50 5 57" fill="none" stroke="url(#t' + uid + ')" stroke-width="13" stroke-linecap="round"/>' +
-      '<path d="' + clawPath(5.2, 65, 6.2, 222) + '" fill="none" stroke="url(#h' + uid + ')" stroke-width="4.3" stroke-linecap="round"/></g>' +
+      '<g class="hand-l"><path d="' + clawPath(5.2, 65, 6.2, 222) + '" fill="none" stroke="url(#h' + uid + ')" stroke-width="4.3" stroke-linecap="round"/></g></g>' +
       '<g class="arm-r"><path d="M48 42 C55 44 58.5 50 59 57" fill="none" stroke="url(#t' + uid + ')" stroke-width="13" stroke-linecap="round"/>' +
-      '<path d="' + clawPath(58.8, 65, 6.2, 318) + '" fill="none" stroke="url(#h' + uid + ')" stroke-width="4.3" stroke-linecap="round"/></g>' +
+      '<g class="hand-r"><path d="' + clawPath(58.8, 65, 6.2, 318) + '" fill="none" stroke="url(#h' + uid + ')" stroke-width="4.3" stroke-linecap="round"/></g></g>' +
       // 头部（圆柱头：平直侧壁 + 顶部椭圆 + 独立凸点 + 硬高光）
       '<g class="fig-head">' +
       '<rect x="26.5" y="0" width="11" height="8" rx="2.5" fill="url(#h' + uid + ')" stroke="#A87C00" stroke-width="1.5"/>' +
@@ -403,7 +403,7 @@
         var inner = document.createElement("div");
         inner.className = "decor-inner";
         inner.style.setProperty("--r", rand(-14, 14).toFixed(1) + "deg");
-        inner.style.setProperty("--dur", rand(5.5, 10).toFixed(1) + "s");
+        inner.style.setProperty("--dur", rand(7, 12).toFixed(1) + "s");
         inner.style.setProperty("--dd", rand(0, 3).toFixed(1) + "s");
         if (Math.random() < 0.5) {
           inner.innerHTML = smileySVG(palette[Math.floor(Math.random() * palette.length)],
@@ -465,7 +465,7 @@
       navEl.classList.add("jump");
     }
 
-    // 节奏：盖屏 ~1.2s → 落位 → 揭幕 ~1.1s（从容不迫）
+    // 节奏：盖屏 ~1.05s → 落位 → 揭幕 ~1s（缓动连续，总时长更短更顺）
     setTimeout(function () {
       window.scrollTo({ top: target.offsetTop - 70, behavior: "instant" });
       bt.classList.remove("in");
@@ -479,8 +479,8 @@
         bt.classList.remove("out");
         target.classList.remove("pop");
         transitioning = false;
-      }, 1150);
-    }, 1250);
+      }, 1250);
+    }, 1100);
   }
 
   /* ============================================================
