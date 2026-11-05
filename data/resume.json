@@ -11,10 +11,20 @@
   },
   "welcome": {
     "badge": "欢迎来到我的个人主页",
+    "badgeEn": "Welcome to my portfolio",
     "title": "你好，我是李正淼",
+    "titleEn": "Hello, I'm Li Zhengmiao",
     "highlight": "一名热爱创造的算法工程师",
+    "highlightEn": "An algorithm engineer who loves to create",
     "subtitle": "我专注于推荐系统、大模型应用与机器学习工程化落地。喜欢把论文里的公式，变成线上真实跑着的服务；也喜欢把复杂的问题，拆成可以迭代验证的小步骤。",
-    "roles": ["算法工程师", "推荐系统", "大模型应用", "机器学习工程化", "数据驱动决策"],
+    "subtitleEn": "I specialize in recommender systems, LLM applications and productionizing machine learning — turning formulas from papers into services that run in the real world.",
+    "roles": [
+      "算法工程师 · Algorithm Engineer",
+      "推荐系统 · Recommender Systems",
+      "大模型应用 · LLM Applications",
+      "机器学习工程化 · ML Engineering",
+      "数据驱动决策 · Data-Driven Decisions"
+    ],
     "ctaPrimary": { "text": "查看我的作品", "href": "#projects" },
     "ctaSecondary": { "text": "联系我", "href": "#contact" }
   },

@@ -80,17 +80,20 @@
       <div class="hero__grid"></div>
     </div>
     <div class="hero__inner">
-      <p class="hero__badge reveal"><span class="pulse-dot"></span><span data-bind="welcome.badge">欢迎来到我的个人主页</span></p>
+      <p class="hero__badge reveal"><span class="pulse-dot"></span><span data-bind="welcome.badge">欢迎来到我的个人主页</span><span class="hero__badge-sep">·</span><span class="hero__badge-en" data-bind="welcome.badgeEn">Welcome to my portfolio</span></p>
       <h2 class="hero__title">
         <span class="hero__line reveal" style="--d:.1s" data-bind="welcome.title">你好，我是李正淼</span>
-        <span class="hero__line hero__line--grad reveal" style="--d:.25s" data-bind="welcome.highlight">一名热爱创造的算法工程师</span>
+        <span class="hero__line hero__line--en reveal" style="--d:.2s" data-bind="welcome.titleEn">Hello, I'm Li Zhengmiao</span>
+        <span class="hero__line hero__line--grad reveal" style="--d:.32s" data-bind="welcome.highlight">一名热爱创造的算法工程师</span>
+        <span class="hero__line hero__line--en hero__line--en-grad reveal" style="--d:.42s" data-bind="welcome.highlightEn">An algorithm engineer who loves to create</span>
       </h2>
-      <p class="hero__sub reveal" style="--d:.4s" data-bind="welcome.subtitle"></p>
-      <p class="hero__roles reveal" style="--d:.55s">
-        <span class="hero__roles-label">我专注于</span>
+      <p class="hero__sub reveal" style="--d:.52s" data-bind="welcome.subtitle"></p>
+      <p class="hero__sub hero__sub--en reveal" style="--d:.6s" data-bind="welcome.subtitleEn"></p>
+      <p class="hero__roles reveal" style="--d:.7s">
+        <span class="hero__roles-label">我专注于 · I focus on</span>
         <span class="type-wrap"><span id="roleRotator" class="type-text"></span><span class="type-caret"></span></span>
       </p>
-      <div class="hero__cta reveal" style="--d:.7s">
+      <div class="hero__cta reveal" style="--d:.82s">
         <a class="btn btn--primary" id="ctaPrimary" href="#projects"><span data-bind="welcome.ctaPrimary.text">查看我的作品</span><span class="btn__arrow">→</span></a>
         <a class="btn btn--ghost" id="ctaSecondary" href="#contact"><span data-bind="welcome.ctaSecondary.text">联系我</span></a>
       </div>
