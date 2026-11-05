@@ -388,6 +388,37 @@
     tick();
   }
 
+  /* ---------- 乐高积木过渡对话框（点击跳转时播放） ---------- */
+  function bindTransitions() {
+    const overlay = $("#pageTransition");
+    if (!overlay) return;
+    let busy = false;
+    document.addEventListener("click", (e) => {
+      const a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a || busy) return;
+      const id = a.getAttribute("href");
+      if (!id || id.length < 2) return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      busy = true;
+      overlay.classList.remove("run");
+      void overlay.offsetWidth; // 重置动画
+      overlay.classList.add("run");
+      const jump = () => {
+        const offset = window.innerWidth <= 1024 ? 62 : 0;
+        const top = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
+        if (history.replaceState) history.replaceState(null, "", id);
+      };
+      setTimeout(jump, 250);   // 积木幕布合拢瞬间完成跳转
+      setTimeout(() => {
+        overlay.classList.remove("run");
+        busy = false;
+      }, 640);                  // 幕布拉开，展示目标板块
+    });
+  }
+
   /* ---------- 页面过场 ---------- */
   function initIntro() {
     setTimeout(() => document.body.classList.add("intro-done"), 2300);
@@ -409,6 +440,7 @@
     initRoleRotator((data.welcome && data.welcome.roles) || []);
     initReveal();
     initNav();
+    bindTransitions();
     initCursor();
     initIntro();
     const y = String(new Date().getFullYear());
@@ -428,6 +460,7 @@
       console.error("简历数据加载失败:", err);
       toast("简历数据加载失败，请刷新重试");
       initNav();
+      bindTransitions();
       initCursor();
       initIntro();
     });

@@ -107,15 +107,51 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
     linear-gradient(90deg,rgba(0,0,0,.16) 0 2px,rgba(0,0,0,0) 2px);
   background-size:30px 12px,30px 12px,30px 12px;
 }
-.progress-head{ /* 领头积木：轻微跳动 */
-  position:absolute;right:-8px;top:-5px;width:24px;height:20px;border-radius:5px;
-  background:#E3000B;box-shadow:0 3px 8px rgba(227,0,11,.35);
-  animation:headBob 1.1s ease-in-out infinite;
+/* 乐高小火车（随阅读进度在轨道上行驶） */
+.train{
+  position:absolute;right:-4px;top:-23px;width:88px;height:30px;pointer-events:none;
+  filter:drop-shadow(0 3px 4px rgba(11,31,58,.22));
 }
-.progress-head i{position:absolute;top:-5px;width:9px;height:6px;border-radius:3px 3px 1px 1px;background:#E3000B}
-.progress-head i:first-child{left:3px}
-.progress-head i:last-child{right:3px}
-@keyframes headBob{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
+.train-svg{width:88px;height:29px;display:block}
+.wheel{transform-box:fill-box;transform-origin:center;animation:wheelSpin .9s linear infinite}
+@keyframes wheelSpin{to{transform:rotate(360deg)}}
+.smoke{
+  position:absolute;top:-4px;width:7px;height:7px;border-radius:50%;
+  background:rgba(255,255,255,.9);opacity:0;animation:puff 1.6s ease-out infinite;
+}
+.smoke--1{left:70px}
+.smoke--2{left:70px;animation-delay:.55s}
+.smoke--3{left:70px;animation-delay:1.1s}
+@keyframes puff{
+  0%{transform:translate(0,0) scale(.5);opacity:0}
+  22%{opacity:.85}
+  100%{transform:translate(-15px,-24px) scale(1.5);opacity:0}
+}
+
+/* ============ 乐高积木过渡对话框 ============ */
+.page-transition{position:fixed;inset:0;z-index:300;pointer-events:none;display:none}
+.page-transition.run{display:block}
+.pt-row{
+  position:absolute;left:0;right:0;height:25.2%;
+  transform:translateX(-101%);
+  animation:ptIn .24s cubic-bezier(.2,.8,.25,1) forwards,ptOut .3s cubic-bezier(.5,0,.75,.2) .26s forwards;
+}
+.pt-row::after{ /* 积木凸点 */
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(circle at 14px 6px,rgba(255,255,255,.28) 3.4px,rgba(255,255,255,0) 4px),
+    linear-gradient(90deg,rgba(0,0,0,.12) 0 2px,rgba(0,0,0,0) 2px);
+  background-size:28px 12px,28px 12px;
+  background-repeat:repeat-x;background-position:0 bottom;
+}
+.pt-row--1{top:0;background:#E3000B}
+.pt-row--2{top:25%;background:#FFD028}
+.pt-row--3{top:50%;background:#00A94F}
+.pt-row--4{top:75%;background:#006DB7}
+.pt-row--2,.pt-row--4{transform:translateX(101%);animation-name:ptInR,ptOutR}
+@keyframes ptIn{to{transform:translateX(0)}}
+@keyframes ptOut{to{transform:translateX(101%)}}
+@keyframes ptInR{from{transform:translateX(101%)}to{transform:translateX(0)}}
+@keyframes ptOutR{to{transform:translateX(-101%)}}
 
 /* ============ 侧边栏 ============ */
 .sidebar{
@@ -128,14 +164,19 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
   padding:38px 28px 26px;overflow-y:auto;z-index:100;
 }
 .sidebar__glow{
-  position:absolute;inset:0;pointer-events:none;opacity:.5;
+  position:absolute;inset:0;pointer-events:none;opacity:.85;
   background-image:
-    linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
-  background-size:44px 44px;
+    radial-gradient(circle at 22px 22px,rgba(255,255,255,.055) 6.5px,rgba(255,255,255,0) 7.6px),
+    radial-gradient(circle at 22px 22px,rgba(255,255,255,.075) 2.4px,rgba(255,255,255,0) 3.1px);
+  background-size:44px 44px,44px 44px;
   mask-image:radial-gradient(circle at 50% 20%,#000 0%,transparent 75%);
 }
-.sidebar__head{position:relative;text-align:center;padding-bottom:26px;border-bottom:1px solid rgba(255,255,255,.09)}
+.sidebar__head{position:relative;text-align:center;padding-bottom:30px;border-bottom:0}
+.sidebar__head::after{ /* 积木凸点分隔线 */
+  content:"";position:absolute;left:0;right:0;bottom:2px;height:8px;
+  background-image:radial-gradient(circle at 10px 4px,rgba(255,255,255,.16) 2.7px,rgba(255,255,255,0) 3.3px);
+  background-size:20px 8px;
+}
 .avatar-wrap{position:relative;width:112px;height:112px;margin:0 auto 16px}
 .avatar{
   width:104px;height:104px;border-radius:50%;object-fit:cover;position:relative;z-index:2;
@@ -168,11 +209,25 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
   color:#fff;background:linear-gradient(100deg,rgba(37,99,235,.34),rgba(34,211,238,.12));
   box-shadow:inset 0 0 0 1px rgba(143,211,255,.18);
 }
+.nav__item.is-active .nav__ico{background:rgba(34,211,238,.34)}
 .nav__item.is-active::before{transform:scaleY(1)}
-.nav__ico{width:18px;height:18px;flex:0 0 18px;opacity:.9}
-.nav__ico svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav__ico{
+  width:28px;height:20px;flex:0 0 28px;border-radius:6px;display:grid;place-items:center;
+  background:rgba(255,255,255,.1);position:relative;transition:background .3s var(--ease);
+}
+.nav__ico::before,.nav__ico::after{
+  content:"";position:absolute;top:-3.5px;width:8px;height:4px;border-radius:2px 2px 1px 1px;background:rgba(255,255,255,.14);
+}
+.nav__ico::before{left:4px}
+.nav__ico::after{right:4px}
+.nav__ico svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 
-.sidebar__foot{padding-top:22px;border-top:1px solid rgba(255,255,255,.09);text-align:center}
+.sidebar__foot{position:relative;padding-top:26px;border-top:0;text-align:center}
+.sidebar__foot::before{ /* 积木凸点分隔线 */
+  content:"";position:absolute;left:0;right:0;top:2px;height:8px;
+  background-image:radial-gradient(circle at 10px 4px,rgba(255,255,255,.14) 2.7px,rgba(255,255,255,0) 3.3px);
+  background-size:20px 8px;
+}
 .social{display:flex;justify-content:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 .social a{
   display:inline-flex;align-items:center;justify-content:center;
@@ -180,7 +235,10 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
   background:rgba(255,255,255,.08);color:#BFD0E8;transition:all .3s var(--ease);
 }
 .social a:hover{background:rgba(34,211,238,.22);color:#fff;transform:translateY(-3px)}
-.sidebar__copy{font-size:11.5px;color:#7B8CA8;letter-spacing:.04em}
+.sidebar__copy{
+  font-size:11.5px;color:#9FB2CE;letter-spacing:.04em;
+  background:rgba(255,255,255,.07);border-radius:9px;padding:7px 12px;display:inline-block;
+}
 .admin-link{
   display:inline-block;margin-top:10px;font-size:11px;color:#6E80A0;
   letter-spacing:.12em;opacity:.55;transition:all .3s var(--ease);
@@ -293,8 +351,8 @@ body.custom-cursor #cursor,body.custom-cursor #cursor-dot{opacity:1}
   mask-image:radial-gradient(ellipse 90% 70% at 50% 40%,#000 20%,transparent 80%);
 }
 
-/* 乐高积木拼接装饰（克制） */
-.brick-cluster{position:absolute;animation:brickFloat 15s ease-in-out infinite}
+/* 乐高积木拼接装饰（克制 + 轻立体） */
+.brick-cluster{position:absolute;animation:brickFloat 15s ease-in-out infinite;filter:drop-shadow(0 8px 12px rgba(11,31,58,.12))}
 .bc--1{width:190px;left:64%;top:11%;opacity:.2;--rot:-10deg}
 .bc--2{width:150px;left:3%;top:62%;opacity:.18;--rot:8deg;animation-delay:-5s}
 .bc--3{width:108px;left:47%;top:84%;opacity:.16;--rot:-6deg;animation-delay:-9s}
