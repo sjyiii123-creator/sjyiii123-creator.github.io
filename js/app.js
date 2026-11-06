@@ -1,13 +1,13 @@
 /* ============================================================
-   LEGO-style Resume · app.js
-   内容渲染 + 欢迎过场 + 小火车进度条 + 滚动动画
+   LEGO-style Resume · app.js (Studio ABS Lighting & Transition Edition)
+   真实乐高小人手部关节 + 全章节/子分类积木拼装过场加载动画
    ============================================================ */
 (function () {
   "use strict";
 
   var C = null;
+  var TONES = ["tone-red", "tone-yellow", "tone-blue", "tone-green"];
 
-  /* ---------- 工具 ---------- */
   function $(sel, root) { return (root || document).querySelector(sel); }
   function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
   function esc(s) {
@@ -16,45 +16,75 @@
     });
   }
 
+  function parseHighlightStat(h) {
+    var raw = String(h && h.text ? h.text : "").trim();
+    var m = raw.match(/^([0-9]+\+?(?:\s*[篇项个年万%]+)?)(?:\s+|$)(.*)$/);
+    if (m && m[1] && m[2]) {
+      return { num: m[1].replace(/\s+/g, ""), label: m[2].trim() };
+    }
+    var m2 = raw.match(/^([0-9]+\+?)(.*)$/);
+    if (m2 && m2[1] && m2[2]) {
+      return { num: m2[1], label: m2[2].trim() };
+    }
+    return { num: h.icon || "🧱", label: raw };
+  }
+
+  function formatEduDesc(desc) {
+    var lines = String(desc || "").split(/\n+/).map(function (s) { return s.trim(); }).filter(Boolean);
+    if (!lines.length) return "";
+    if (lines.length === 1) return '<p class="edu-desc">' + esc(lines[0]) + "</p>";
+    return '<ul class="edu-list">' + lines.map(function (line) {
+      var idx = line.indexOf("：");
+      if (idx === -1) idx = line.indexOf(":");
+      if (idx > 0 && idx < 10) {
+        var k = line.slice(0, idx + 1);
+        var v = line.slice(idx + 1);
+        return "<li><b>" + esc(k) + "</b>" + esc(v) + "</li>";
+      }
+      return "<li>" + esc(line) + "</li>";
+    }).join("") + "</ul>";
+  }
+
+  /* ---------- 通用局部拼装过场加载器（切换子标签时触发） ---------- */
+  function runStageLoader(loaderId, hostId, renderFn) {
+    var loader = document.getElementById(loaderId);
+    var host = document.getElementById(hostId);
+    if (!loader || !host) {
+      renderFn();
+      return;
+    }
+    host.style.opacity = "0";
+    host.style.transform = "translateY(10px)";
+    loader.classList.add("active");
+    setTimeout(function () {
+      renderFn();
+      loader.classList.remove("active");
+      host.style.transition = "opacity .38s ease, transform .38s cubic-bezier(.2,1,.3,1)";
+      host.style.opacity = "1";
+      host.style.transform = "translateY(0)";
+      $$(".reveal", host).forEach(function (el) {
+        el.classList.add("in");
+      });
+      $$(".skill-fill", host).forEach(function (f) {
+        f.style.width = "0%";
+        setTimeout(function () {
+          f.style.width = (f.getAttribute("data-level") || 0) + "%";
+        }, 40);
+      });
+    }, 360);
+  }
+
   /* ============================================================
-     渲染
+     各章节渲染与子模块交互
      ============================================================ */
-  function render(data) {
-    C = data;
-
-    // 侧边栏 / Hero
-    $("#sideName").textContent = data.profile.name;
-    $("#sideTitle").textContent = data.profile.title;
-    $("#sideSlogan").textContent = data.profile.sidebarSlogan || "";
-    $("#avatarText").textContent = data.profile.avatarText || data.profile.name.charAt(0);
-    $("#heroName").textContent = data.profile.name;
-    $("#heroRole").textContent = data.profile.title;
-    $("#heroMotto").textContent = '"' + (data.profile.motto || "") + '"';
-    document.title = data.profile.name + " · " + data.profile.title + " | LEGO-style Resume";
-
-    // 欢迎词
-    $("#welcomeEyebrow").textContent = data.welcome.eyebrow;
-    $("#welcomeTitle").textContent = data.welcome.title;
-    $("#welcomeSub").textContent = data.welcome.subtitle;
-    $("#welcomeBtnText").textContent = data.welcome.button;
-
-    // Hero 统计积木
-    var stats = (data.about.highlights || []).slice(0, 4);
-    $("#heroStats").innerHTML = stats.map(function (h) {
-      return '<div class="stat-brick reveal"><div class="stat-num">' + esc(h.icon) +
-        '</div><div class="stat-label">' + esc(h.text) + "</div></div>";
-    }).join("");
-
-    // 关于我
-    $("#aboutText").textContent = data.about.text;
-    $("#aboutHighlights").innerHTML = (data.about.highlights || []).map(function (h, i) {
-      return '<div class="highlight-brick reveal" style="--d:' + (i * 0.12).toFixed(2) + 's">' +
-        '<div class="h-icon">' + esc(h.icon) + "</div><span>" + esc(h.text) + "</span></div>";
-    }).join("");
-
-    // 工作经历
-    $("#timeline").innerHTML = (data.experience || []).map(function (e, i) {
-      return '<article class="time-card reveal" style="--d:' + (i * 0.15).toFixed(2) + 's">' +
+  function renderExperienceList(filterIdx) {
+    var list = (C.experience || []).filter(function (_, i) {
+      return filterIdx === -1 || i === filterIdx;
+    });
+    $("#timeline").innerHTML = list.map(function (e, i) {
+      var tone = TONES[i % TONES.length];
+      return '<article class="time-card ' + tone + ' reveal" style="--d:' + (i * 0.12).toFixed(2) + 's">' +
+        '<div class="card-studs"><i></i><i></i><i></i><i></i><i></i></div>' +
         '<div class="time-head"><h3 class="time-company">' + esc(e.company) + "</h3>" +
         '<span class="time-role">' + esc(e.role) + "</span>" +
         '<span class="time-period">' + esc(e.period) + "</span></div>" +
@@ -67,52 +97,239 @@
           return '<span class="tag">' + esc(t) + "</span>";
         }).join("") + "</div></article>";
     }).join("");
+  }
 
-    // 技能
-    $("#skillsGrid").innerHTML = (data.skills || []).map(function (g, gi) {
-      return '<div class="skill-group reveal" style="--d:' + (gi * 0.14).toFixed(2) + 's"><h3>' +
-        esc(g.group) + "</h3>" + (g.items || []).map(function (s) {
+  function renderSkillsList(filterIdx) {
+    var skillTones = ["tone-blue", "tone-red", "tone-green", "tone-yellow"];
+    var list = (C.skills || []).filter(function (_, i) {
+      return filterIdx === -1 || i === filterIdx;
+    });
+    $("#skillsGrid").innerHTML = list.map(function (g, gi) {
+      var tone = skillTones[gi % skillTones.length];
+      return '<div class="skill-group ' + tone + ' reveal" style="--d:' + (gi * 0.12).toFixed(2) + 's">' +
+        '<div class="card-studs"><i></i><i></i><i></i><i></i></div>' +
+        "<h3>" + esc(g.group) + "</h3>" + (g.items || []).map(function (s) {
           return '<div class="skill-item"><div class="skill-top"><span class="skill-name">' +
             esc(s.name) + '</span><span class="skill-val">' + esc(s.level) +
             '%</span></div><div class="skill-bar"><div class="skill-fill" data-level="' +
             esc(s.level) + '"></div></div></div>';
         }).join("") + "</div>";
     }).join("");
+  }
 
-    // 作品集
-    $("#projectsGrid").innerHTML = (data.projects || []).map(function (p, i) {
-      return '<article class="project-card reveal" style="--d:' + (i * 0.1).toFixed(2) + 's">' +
-        '<div class="p-studs"><i></i><i></i><i></i></div>' +
+  function matchProjectCategory(p, cat) {
+    if (!cat || cat === "all") return true;
+    var str = (p.title + " " + p.desc + " " + (p.tags || []).join(" ")).toLowerCase();
+    if (cat === "llm") return /llm|rag|问答|多模态|视觉|bert|nlp/.test(str);
+    if (cat === "rec") return /推荐|搜索|排序|召回|ctr/.test(str);
+    if (cat === "data") return /时序|预测|特征|mlops|平台|供应链/.test(str);
+    return true;
+  }
+
+  function renderProjectsList(cat) {
+    var all = C.projects || [];
+    var list = all.map(function (p, idx) { return { p: p, idx: idx }; }).filter(function (item) {
+      return matchProjectCategory(item.p, cat);
+    });
+    $("#projectsGrid").innerHTML = list.map(function (item, i) {
+      var p = item.p;
+      var origIdx = item.idx;
+      var tone = TONES[origIdx % TONES.length];
+      return '<article class="project-card ' + tone + ' reveal" data-proj-idx="' + origIdx + '" style="--d:' + (i * 0.09).toFixed(2) + 's">' +
+        '<div class="p-studs"><i></i><i></i><i></i><i></i></div>' +
         '<div class="p-img"><img src="' + esc(p.image) + '" alt="' + esc(p.title) +
-        '" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">' +
-        '<span class="p-badge">PROJECT ' + String(i + 1).padStart(2, "0") + "</span></div>" +
+        '" loading="lazy" decoding="async">' +
+        '<span class="p-badge">SET #' + String(10260 + origIdx + 1) + "</span></div>" +
         '<div class="p-body"><h3 class="p-title">' + esc(p.title) + "</h3>" +
         '<p class="p-desc">' + esc(p.desc) + "</p>" +
         '<div class="tag-row">' + (p.tags || []).map(function (t) {
           return '<span class="tag">' + esc(t) + "</span>";
         }).join("") + "</div>" +
-        (p.link ? '<a class="p-link" href="' + esc(p.link) + '" target="_blank" rel="noopener">查看项目</a>' : "") +
+        '<span class="p-link">查看项目说明书</span>' +
         "</div></article>";
     }).join("");
+  }
 
-    // 教育
-    $("#eduGrid").innerHTML = (data.education || []).map(function (e, i) {
-      return '<article class="brick-card edu-card reveal" style="--d:' + (i * 0.14).toFixed(2) + 's">' +
-        '<div class="card-studs"><i></i><i></i><i></i><i></i></div>' +
+  function renderEducationList(filterIdx) {
+    var eduTones = ["tone-blue", "tone-yellow", "tone-red", "tone-green"];
+    var list = (C.education || []).filter(function (_, i) {
+      return filterIdx === -1 || i === filterIdx;
+    });
+    $("#eduGrid").innerHTML = list.map(function (e, i) {
+      var tone = eduTones[i % eduTones.length];
+      return '<article class="brick-card edu-card ' + tone + ' reveal" style="--d:' + (i * 0.12).toFixed(2) + 's">' +
+        '<div class="card-studs"><i></i><i></i><i></i><i></i><i></i></div>' +
         '<span class="edu-deg">' + esc(e.degree) + "</span>" +
         '<span class="edu-period">' + esc(e.period) + "</span>" +
         '<h3 class="edu-school">' + esc(e.school) + "</h3>" +
-        '<p class="edu-major">' + esc(e.major) + "</p>" +
-        '<p class="edu-desc">' + esc(e.desc) + "</p></article>";
+        '<p class="edu-major">🧱 ' + esc(e.major) + "</p>" +
+        formatEduDesc(e.desc) + "</article>";
+    }).join("");
+  }
+
+  function initSubTabs() {
+    // 1. 工作经历子切换栏
+    var expTabsEl = $("#expTabs");
+    if (expTabsEl && C.experience) {
+      var expHtml = '<button type="button" class="sub-tab active" data-exp="-1">全部履历 (' + C.experience.length + ')</button>';
+      C.experience.forEach(function (e, i) {
+        expHtml += '<button type="button" class="sub-tab" data-exp="' + i + '">' + esc(e.company) + "</button>";
+      });
+      expTabsEl.innerHTML = expHtml;
+      expTabsEl.addEventListener("click", function (ev) {
+        var btn = ev.target.closest(".sub-tab");
+        if (!btn) return;
+        $$(".sub-tab", expTabsEl).forEach(function (b) { b.classList.toggle("active", b === btn); });
+        var idx = Number(btn.getAttribute("data-exp"));
+        runStageLoader("expLoader", "timeline", function () { renderExperienceList(idx); });
+      });
+    }
+
+    // 2. 技能分组子切换栏
+    var skillTabsEl = $("#skillTabs");
+    if (skillTabsEl && C.skills) {
+      var skHtml = '<button type="button" class="sub-tab active" data-sk="-1">全栈技能总览</button>';
+      C.skills.forEach(function (g, i) {
+        skHtml += '<button type="button" class="sub-tab" data-sk="' + i + '">' + esc(g.group) + "</button>";
+      });
+      skillTabsEl.innerHTML = skHtml;
+      skillTabsEl.addEventListener("click", function (ev) {
+        var btn = ev.target.closest(".sub-tab");
+        if (!btn) return;
+        $$(".sub-tab", skillTabsEl).forEach(function (b) { b.classList.toggle("active", b === btn); });
+        var idx = Number(btn.getAttribute("data-sk"));
+        runStageLoader("skillLoader", "skillsGrid", function () { renderSkillsList(idx); });
+      });
+    }
+
+    // 3. 作品集分类子切换栏
+    var projTabsEl = $("#projTabs");
+    if (projTabsEl && C.projects) {
+      projTabsEl.innerHTML =
+        '<button type="button" class="sub-tab active" data-cat="all">全部作品 (' + C.projects.length + ')</button>' +
+        '<button type="button" class="sub-tab" data-cat="llm">大模型与多模态</button>' +
+        '<button type="button" class="sub-tab" data-cat="rec">推荐与搜索排序</button>' +
+        '<button type="button" class="sub-tab" data-cat="data">时序预测与数据平台</button>';
+      projTabsEl.addEventListener("click", function (ev) {
+        var btn = ev.target.closest(".sub-tab");
+        if (!btn) return;
+        $$(".sub-tab", projTabsEl).forEach(function (b) { b.classList.toggle("active", b === btn); });
+        var cat = btn.getAttribute("data-cat");
+        runStageLoader("projLoader", "projectsGrid", function () { renderProjectsList(cat); });
+      });
+    }
+
+    // 4. 教育背景子切换栏
+    var eduTabsEl = $("#eduTabs");
+    if (eduTabsEl && C.education) {
+      var eduHtml = '<button type="button" class="sub-tab active" data-edu="-1">本硕完整学历 (' + C.education.length + ')</button>';
+      C.education.forEach(function (e, i) {
+        eduHtml += '<button type="button" class="sub-tab" data-edu="' + i + '">' + esc(e.degree + " · " + e.school) + "</button>";
+      });
+      eduTabsEl.innerHTML = eduHtml;
+      eduTabsEl.addEventListener("click", function (ev) {
+        var btn = ev.target.closest(".sub-tab");
+        if (!btn) return;
+        $$(".sub-tab", eduTabsEl).forEach(function (b) { b.classList.toggle("active", b === btn); });
+        var idx = Number(btn.getAttribute("data-edu"));
+        runStageLoader("eduLoader", "eduGrid", function () { renderEducationList(idx); });
+      });
+    }
+
+    // 5. 点击作品卡片打开“乐高工程说明书”加载过场弹窗
+    var projGrid = $("#projectsGrid");
+    var pmBackdrop = $("#projModalBackdrop");
+    var pmClose = $("#pmClose");
+    var pmLoader = $("#pmLoader");
+    var pmContent = $("#pmContent");
+    if (projGrid && pmBackdrop) {
+      projGrid.addEventListener("click", function (ev) {
+        var card = ev.target.closest(".project-card");
+        if (!card) return;
+        var idx = Number(card.getAttribute("data-proj-idx"));
+        var p = (C.projects || [])[idx];
+        if (!p) return;
+        pmBackdrop.classList.add("open");
+        pmContent.style.display = "none";
+        pmLoader.classList.add("active");
+        setTimeout(function () {
+          $("#pmImg").src = p.image;
+          $("#pmImg").alt = p.title;
+          $("#pmSet").textContent = "LEGO SET #" + String(10260 + idx + 1);
+          $("#pmTitle").textContent = p.title;
+          $("#pmDesc").textContent = p.desc;
+          $("#pmTags").innerHTML = (p.tags || []).map(function (t) {
+            return '<span class="tag">' + esc(t) + "</span>";
+          }).join("");
+          pmLoader.classList.remove("active");
+          pmContent.style.display = "block";
+        }, 380);
+      });
+      pmClose.addEventListener("click", function () { pmBackdrop.classList.remove("open"); });
+      pmBackdrop.addEventListener("click", function (ev) {
+        if (ev.target === pmBackdrop) pmBackdrop.classList.remove("open");
+      });
+    }
+  }
+
+  function render(data) {
+    C = data;
+
+    $("#sideName").textContent = data.profile.name;
+    $("#sideTitle").textContent = data.profile.title;
+    $("#sideSlogan").textContent = data.profile.sidebarSlogan || "";
+    var avTxt = data.profile.avatarText || data.profile.name.charAt(0);
+    var avEl = $("#avatarText");
+    avEl.textContent = avTxt;
+    avEl.style.fontSize = avTxt.length >= 3 ? "32px" : (avTxt.length === 2 ? "38px" : "44px");
+
+    $("#heroName").textContent = data.profile.name;
+    $("#heroRoleText").textContent = data.profile.title;
+    $("#heroMotto").textContent = "\u201C" + (data.profile.motto || "") + "\u201D";
+    document.title = data.profile.name + " · " + data.profile.title + " | LEGO-style Resume";
+
+    $("#welcomeEyebrow").textContent = data.welcome.eyebrow;
+    $("#welcomeTitle").textContent = data.welcome.title;
+    $("#welcomeSub").textContent = data.welcome.subtitle;
+    $("#welcomeBtnText").textContent = data.welcome.button;
+
+    var statTargets = ["experience", "projects", "education", "skills"];
+    var stats = (data.about.highlights || []).slice(0, 4);
+    $("#heroStats").innerHTML = stats.map(function (h, i) {
+      var tone = TONES[i % TONES.length];
+      var parsed = parseHighlightStat(h);
+      var jumpTarget = statTargets[i % statTargets.length];
+      return '<div class="stat-brick ' + tone + ' reveal" data-jump="' + jumpTarget + '" title="点击跳转到对应模块" style="--d:' + (i * 0.08).toFixed(2) + 's">' +
+        '<div class="card-studs"><i></i><i></i><i></i></div>' +
+        '<div class="stat-head"><span class="stat-icon">' + esc(h.icon) + '</span>' +
+        '<span class="stat-num">' + esc(parsed.num) + '</span></div>' +
+        '<div class="stat-label">' + esc(parsed.label) + "</div></div>";
     }).join("");
 
-    // 联系
+    if ($("#aboutTitle") && data.about.title) $("#aboutTitle").textContent = data.about.title;
+    var paras = String(data.about.text || "").split(/\n\s*\n|\n/).map(function (p) { return p.trim(); }).filter(Boolean);
+    $("#aboutText").innerHTML = paras.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
+
+    $("#aboutHighlights").innerHTML = (data.about.highlights || []).map(function (h, i) {
+      var tone = TONES[i % TONES.length];
+      var jumpTarget = statTargets[i % statTargets.length];
+      return '<div class="highlight-brick ' + tone + ' reveal" data-jump="' + jumpTarget + '" title="点击查看对应模块详情" style="--d:' + (i * 0.12).toFixed(2) + 's">' +
+        '<div class="card-studs"><i></i><i></i><i></i></div>' +
+        '<div class="h-icon">' + esc(h.icon) + "</div><span>" + esc(h.text) + "</span></div>";
+    }).join("");
+
+    renderExperienceList(-1);
+    renderSkillsList(-1);
+    renderProjectsList("all");
+    renderEducationList(-1);
+    initSubTabs();
+
     $("#contactTitle").textContent = data.contact.title;
     $("#contactNote").textContent = data.contact.note;
     var items = [
       { icon: "✉️", label: data.contact.email, href: "mailto:" + data.contact.email },
       { icon: "📞", label: data.contact.phone, href: "tel:" + String(data.contact.phone).replace(/[^+\d]/g, "") },
-      { icon: "💬", label: data.contact.wechat ? "微信 " + data.contact.wechat : "" },
+      { icon: "💬", label: data.contact.wechat ? "微信：" + data.contact.wechat : "" },
       { icon: "🐙", label: data.contact.github, href: data.contact.github },
       { icon: "📍", label: data.contact.location }
     ].filter(function (it) { return it.label; });
@@ -122,10 +339,8 @@
           : "<span>" + esc(it.label) + "</span>") + "</li>";
     }).join("");
 
-    // 页脚
     $("#footerText").textContent = data.footer;
 
-    // 侧边栏链接
     $("#sideLinks").innerHTML =
       (data.contact.github ? '<a href="' + esc(data.contact.github) + '" target="_blank" rel="noopener" title="GitHub">GH</a>' : "") +
       '<a href="mailto:' + esc(data.contact.email) + '" title="Email">✉</a>' +
@@ -138,14 +353,18 @@
   function initWelcome() {
     var overlay = $("#welcomeOverlay");
     var field = $("#brickField");
-    var colors = ["#0B2A5B", "#123A78", "#071E42", "#0A2450"];
+    var colors = [
+      "#123A78", "#0E2D60", "#E62432", "#123A78",
+      "#FFCA1A", "#0A224A", "#1273C4", "#163E7A",
+      "#10AC5E", "#0E2D60", "#1B4B94", "#FFCA1A"
+    ];
     var count = 12 * 8;
     var frag = document.createDocumentFragment();
     for (var i = 0; i < count; i++) {
       var b = document.createElement("div");
       b.className = "brick-cell";
-      b.style.background = colors[i % colors.length];
-      b.style.animationDelay = (Math.random() * 0.7).toFixed(2) + "s";
+      b.style.background = colors[(i * 7 + Math.floor(i / 12)) % colors.length];
+      b.style.animationDelay = (Math.random() * 0.55).toFixed(2) + "s";
       frag.appendChild(b);
     }
     field.appendChild(frag);
@@ -158,17 +377,14 @@
       setTimeout(function () {
         overlay.classList.add("hidden");
         overlay.style.display = "none";
-      }, 900);
-      // 只播放首屏入场，其余板块交给滚动渐进显示（保留下滑时的过场体验）
+      }, 780);
       revealHero();
     }
 
     $("#welcomeBtn").addEventListener("click", enter);
-    // 点击卡片外任意区域也可进入
     overlay.addEventListener("click", function (e) {
       if (e.target === overlay || e.target === field) enter();
     });
-    // “下滑开始探索”：滚轮 / 触摸 / 键盘都能真正进入（修复提示与行为不一致的 bug）
     overlay.addEventListener("wheel", enter, { passive: true });
     overlay.addEventListener("touchstart", enter, { passive: true });
     var keyEnter = function (e) {
@@ -180,14 +396,13 @@
     document.addEventListener("keydown", keyEnter);
 
     document.body.style.overflow = "hidden";
-    // 9 秒后自动放行，避免卡住
     setTimeout(function () {
       if (!overlay.classList.contains("out")) enter();
-    }, 9000);
+    }, 7500);
   }
 
   /* ============================================================
-     滚动显现（循序渐进）
+     滚动显现与章节重播动效
      ============================================================ */
   var observer = null;
   function initReveal() {
@@ -196,14 +411,12 @@
       entries.forEach(function (en) {
         if (en.isIntersecting) {
           en.target.classList.add("in");
-          // 技能条进入视口再填充
           $$(".skill-fill", en.target).forEach(function (fill) {
             fill.style.width = (fill.getAttribute("data-level") || 0) + "%";
           });
-          observer.unobserve(en.target);
         }
       });
-    }, { threshold: 0.16, rootMargin: "0px 0px -8% 0px" });
+    }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
     $$(".reveal").forEach(function (el) { observer.observe(el); });
   }
   function revealAll() {
@@ -214,18 +427,37 @@
       });
     });
   }
-  // 只揭示首屏（保留其余板块的滚动渐进动画）
   function revealHero() {
     $$(".hero .reveal").forEach(function (el) {
       el.classList.add("in");
+    });
+  }
+
+  /* 每次通过导航切换到目标章节时，重播该章节内部卡片与能量条的拼装入场动画 */
+  function replaySectionReveal(sectionEl) {
+    if (!sectionEl) return;
+    var items = $$(".reveal", sectionEl);
+    items.forEach(function (el) {
+      el.style.transition = "none";
+      el.classList.remove("in");
       $$(".skill-fill", el).forEach(function (f) {
+        f.style.transition = "none";
+        f.style.width = "0%";
+      });
+    });
+    void sectionEl.offsetWidth;
+    items.forEach(function (el) {
+      el.style.transition = "";
+      el.classList.add("in");
+      $$(".skill-fill", el).forEach(function (f) {
+        f.style.transition = "";
         f.style.width = (f.getAttribute("data-level") || 0) + "%";
       });
     });
   }
 
   /* ============================================================
-     小火车进度条（填满式：轨道随进度被积木覆盖）
+     小火车进度条
      ============================================================ */
   function initTrain() {
     var train = $("#legoTrain");
@@ -239,11 +471,10 @@
       var max = doc.scrollHeight - window.innerHeight;
       var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
       var w = track.clientWidth;
-      var tw = 150;
-      // 火车从最左行驶到最右，100% 时车尾贴住终点
-      train.style.left = (p * (w - tw)) + "px";
-      // 轨道被已走过的积木段完全覆盖：进度延伸到火车头，100% 时整条轨道填满
-      fill.style.width = Math.min(w, p * (w - tw) + tw) + "px";
+      var tw = 168;
+      var x = Math.max(0, p * (w - tw));
+      train.style.left = x + "px";
+      fill.style.width = Math.min(w, x + tw - 12) + "px";
       train.style.setProperty("--wheel-rot", (p * 2160) + "deg");
       percent.textContent = Math.round(p * 100) + "%";
       ticking = false;
@@ -259,7 +490,7 @@
   }
 
   /* ============================================================
-     乐高小人生成器（渐变立体质感 · 参考真实 Minifigure 结构）
+     真实比例乐高小人生成器（手腕圆柱插销 + 开口朝下内倾 C 型手爪 + 无溢出视图框）
      ============================================================ */
   var figUid = 0;
   function shade(hex, amt) {
@@ -267,80 +498,87 @@
     function f(v) { return Math.round(Math.min(255, Math.max(0, v + 255 * amt))); }
     return "#" + ((1 << 24) + (f(r) << 16) + (f(g) << 8) + f(b)).toString(16).slice(1);
   }
-  // 标准 C 型手爪：270° 圆弧 + 圆端点（开口朝 gapDeg 方向）
+  /* 标准 C 型乐高夹爪：264° 圆弧，开口朝向 gapDeg（左手约 76° 朝下偏右，右手约 104° 朝下偏左） */
   function clawPath(cx, cy, r, gapDeg) {
-    var a1 = (gapDeg + 45) * Math.PI / 180, a2 = (gapDeg + 315) * Math.PI / 180;
-    var x1 = (cx + r * Math.cos(a1)).toFixed(1), y1 = (cy + r * Math.sin(a1)).toFixed(1);
-    var x2 = (cx + r * Math.cos(a2)).toFixed(1), y2 = (cy + r * Math.sin(a2)).toFixed(1);
+    var a1 = (gapDeg + 48) * Math.PI / 180;
+    var a2 = (gapDeg + 312) * Math.PI / 180;
+    var x1 = (cx + r * Math.cos(a1)).toFixed(2), y1 = (cy + r * Math.sin(a1)).toFixed(2);
+    var x2 = (cx + r * Math.cos(a2)).toFixed(2), y2 = (cy + r * Math.sin(a2)).toFixed(2);
     return "M" + x1 + " " + y1 + " A" + r + " " + r + " 0 1 1 " + x2 + " " + y2;
   }
   function minifigSVG(opt) {
     var uid = "mf" + (++figUid);
     var t = opt.torso, l = opt.legs;
-    var tL = shade(t, 0.2), tD = shade(t, -0.26), lL = shade(l, 0.2), lD = shade(l, -0.26);
-    // 硬塑料渐变：亮带 -> 本色 -> 暗部，过渡更硬朗
+    var tL = shade(t, 0.16), tD = shade(t, -0.2), lL = shade(l, 0.16), lD = shade(l, -0.2);
     function grad(id, light, base, dark) {
       return '<linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="0">' +
-        '<stop offset="0" stop-color="' + light + '"/><stop offset=".2" stop-color="' + light + '"/>' +
-        '<stop offset=".38" stop-color="' + base + '"/><stop offset=".72" stop-color="' + base + '"/>' +
-        '<stop offset="1" stop-color="' + dark + '"/></linearGradient>';
+        '<stop offset="0" stop-color="' + light + '"/><stop offset=".28" stop-color="' + base + '"/>' +
+        '<stop offset=".75" stop-color="' + base + '"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>';
     }
+    var clawL = clawPath(9.4, 64.8, 4.3, 76);
+    var clawR = clawPath(54.6, 64.8, 4.3, 104);
+    /* viewBox="-14 -10 92 140" 留足挥手和投影边界，绝不裁切或溢出 */
     return '<svg class="minifig ' + (opt.cls || "") + '"' +
       (opt.delay ? ' style="--fig-delay:' + opt.delay + '"' : "") +
-      ' viewBox="0 0 64 128" aria-hidden="true"><defs>' +
-      grad("h" + uid, "#FFE9A0", "#FFC400", "#C78E00") +
+      ' viewBox="-14 -10 92 140" aria-hidden="true"><defs>' +
+      grad("h" + uid, "#FFE885", "#FFCA1A", "#CFA000") +
       grad("t" + uid, tL, t, tD) +
       grad("l" + uid, lL, l, lD) +
       '</defs>' +
-      '<ellipse cx="32" cy="123" rx="19" ry="4.6" fill="#0B2A5B" opacity=".2"/>' +
-      // 腿部（髋块 + 腿柱 + 外撇脚掌，模块拼接缝）
-      '<g stroke="#17202E" stroke-width="1.7" stroke-linejoin="round">' +
-      '<rect x="12" y="61" width="40" height="13" rx="4" fill="url(#l' + uid + ')"/>' +
+      '<ellipse cx="32" cy="122" rx="18" ry="4" fill="#0B2A5B" opacity=".14"/>' +
+      // 腿部与髋部
+      '<g stroke="#172234" stroke-width="1.4" stroke-linejoin="round">' +
+      '<rect x="13" y="61" width="38" height="12" rx="3.5" fill="url(#l' + uid + ')"/>' +
       '<g class="leg-l">' +
-      '<rect x="13" y="70" width="16" height="38" rx="5" fill="url(#l' + uid + ')"/>' +
-      '<rect x="9.5" y="101" width="21.5" height="13" rx="2.5" fill="url(#l' + uid + ')"/></g>' +
+      '<rect x="13.5" y="70" width="15.5" height="37" rx="4.5" fill="url(#l' + uid + ')"/>' +
+      '<rect x="10.5" y="100" width="20" height="12" rx="2.5" fill="url(#l' + uid + ')"/></g>' +
       '<g class="leg-r">' +
-      '<rect x="35" y="70" width="16" height="38" rx="5" fill="url(#l' + uid + ')"/>' +
-      '<rect x="33" y="101" width="21.5" height="13" rx="2.5" fill="url(#l' + uid + ')"/></g></g>' +
-      '<path d="M22 74.5 h20 M22 65.5 h20" stroke="#17202E" stroke-width="1" opacity=".35"/>' +
-      // 颈柱（独立件 + 接缝）
-      '<rect x="26" y="28" width="12" height="8" rx="2" fill="#E8B200" stroke="#A87C00" stroke-width="1.5"/>' +
-      // 躯干（硬边圆肩梯形，接近真实 Minifigure 比例）
-      '<path d="M12.5 38.5 q0-7.5 7.5-7.5 h24 q7.5 0 7.5 7.5 l-2.2 25.5 q-.4 4-4.4 4 h-23.8 q-4 0-4.4-4 z" fill="url(#t' + uid + ')" stroke="#17202E" stroke-width="1.9" stroke-linejoin="round"/>' +
-      '<rect x="17" y="34" width="4" height="26" rx="2" fill="#fff" opacity=".38"/>' +
-      '<circle cx="15.5" cy="42" r="3.4" fill="#17202E" opacity=".2"/>' +
-      '<circle cx="48.5" cy="42" r="3.4" fill="#17202E" opacity=".2"/>' +
-      // 手臂 + 手腕关节 + 标准 C 型手爪（大开口）
-      '<g class="arm-l"><path d="M16 42 C9 44 5.5 50 5 57" fill="none" stroke="url(#t' + uid + ')" stroke-width="13" stroke-linecap="round"/>' +
-      '<g class="hand-l"><path d="' + clawPath(5.2, 65, 6.2, 222) + '" fill="none" stroke="url(#h' + uid + ')" stroke-width="4.3" stroke-linecap="round"/></g></g>' +
-      '<g class="arm-r"><path d="M48 42 C55 44 58.5 50 59 57" fill="none" stroke="url(#t' + uid + ')" stroke-width="13" stroke-linecap="round"/>' +
-      '<g class="hand-r"><path d="' + clawPath(58.8, 65, 6.2, 318) + '" fill="none" stroke="url(#h' + uid + ')" stroke-width="4.3" stroke-linecap="round"/></g></g>' +
-      // 头部（圆柱头：平直侧壁 + 顶部椭圆 + 独立凸点 + 硬高光）
+      '<rect x="35" y="70" width="15.5" height="37" rx="4.5" fill="url(#l' + uid + ')"/>' +
+      '<rect x="33.5" y="100" width="20" height="12" rx="2.5" fill="url(#l' + uid + ')"/></g></g>' +
+      // 颈柱
+      '<rect x="26.5" y="28" width="11" height="7" rx="2" fill="#E5AE00" stroke="#A67B00" stroke-width="1.2"/>' +
+      // 左手臂（先绘制手臂底层或与躯干自然衔接，带塑形袖口、手腕插销与朝下 C 型夹爪）
+      '<g class="arm-l">' +
+      '<path d="M17.5 34.5 C11.5 35.5 7.8 42.5 6.2 55.2 L14.4 57.2 L18 42 Z" fill="url(#t' + uid + ')" stroke="#172234" stroke-width="1.4" stroke-linejoin="round"/>' +
+      '<g class="hand-l">' +
+      '<rect x="8.3" y="55.8" width="3.8" height="5.2" rx="1.2" transform="rotate(10 10.2 58)" fill="url(#h' + uid + ')" stroke="#A67B00" stroke-width="1.1"/>' +
+      '<path d="' + clawL + '" fill="none" stroke="#A67B00" stroke-width="4.5" stroke-linecap="round"/>' +
+      '<path d="' + clawL + '" fill="none" stroke="url(#h' + uid + ')" stroke-width="3.1" stroke-linecap="round"/>' +
+      '</g></g>' +
+      // 右手臂（带塑形袖口、手腕插销与朝下 C 型夹爪）
+      '<g class="arm-r">' +
+      '<path d="M46.5 34.5 C52.5 35.5 56.2 42.5 57.8 55.2 L49.6 57.2 L46 42 Z" fill="url(#t' + uid + ')" stroke="#172234" stroke-width="1.4" stroke-linejoin="round"/>' +
+      '<g class="hand-r">' +
+      '<rect x="51.9" y="55.8" width="3.8" height="5.2" rx="1.2" transform="rotate(-10 53.8 58)" fill="url(#h' + uid + ')" stroke="#A67B00" stroke-width="1.1"/>' +
+      '<path d="' + clawR + '" fill="none" stroke="#A67B00" stroke-width="4.5" stroke-linecap="round"/>' +
+      '<path d="' + clawR + '" fill="none" stroke="url(#h' + uid + ')" stroke-width="3.1" stroke-linecap="round"/>' +
+      '</g></g>' +
+      // 躯干（置于双臂肩部内侧之上，使肩部转轴自然贴合）
+      '<path d="M13.5 38 q0-7 7-7 h23 q7 0 7 7 l-2 25 q-.4 3.8-4 3.8 h-23 q-3.6 0-4-3.8 z" fill="url(#t' + uid + ')" stroke="#172234" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '<rect x="17.5" y="34.5" width="3.5" height="24" rx="1.7" fill="#fff" opacity=".32"/>' +
+      // 头部
       '<g class="fig-head">' +
-      '<rect x="26.5" y="0" width="11" height="8" rx="2.5" fill="url(#h' + uid + ')" stroke="#A87C00" stroke-width="1.5"/>' +
-      '<ellipse cx="32" cy="1.6" rx="5" ry="1.7" fill="#FFE9A0" opacity=".6"/>' +
-      '<rect x="16" y="7" width="32" height="27" rx="7" fill="url(#h' + uid + ')" stroke="#A87C00" stroke-width="1.7"/>' +
-      '<ellipse cx="32" cy="7.4" rx="15.6" ry="3" fill="#FFE9A0" opacity=".5"/>' +
-      '<rect x="19.5" y="11" width="4.2" height="17" rx="2" fill="#fff" opacity=".5" transform="rotate(-5 21.6 19.5)"/>' +
-      // 印刷式平面五官
-      '<rect x="22.8" y="15.8" width="4.4" height="6.4" rx="2" fill="#262013"/>' +
-      '<rect x="36.8" y="15.8" width="4.4" height="6.4" rx="2" fill="#262013"/>' +
-      '<circle cx="26" cy="17.6" r="1.25" fill="#fff"/><circle cx="40" cy="17.6" r="1.25" fill="#fff"/>' +
-      '<path d="M21 12.2 q3-2 6-1" stroke="#262013" stroke-width="2.1" fill="none" stroke-linecap="round"/>' +
-      '<path d="M43 12.2 q-3-2-6-1" stroke="#262013" stroke-width="2.1" fill="none" stroke-linecap="round"/>' +
-      '<path d="M26 25 q6 5.5 12 0" stroke="#262013" stroke-width="2.8" fill="none" stroke-linecap="round"/>' +
+      '<rect x="26.5" y="0.5" width="11" height="7.5" rx="2.2" fill="url(#h' + uid + ')" stroke="#A67B00" stroke-width="1.3"/>' +
+      '<rect x="16.5" y="7" width="31" height="26.5" rx="7" fill="url(#h' + uid + ')" stroke="#A67B00" stroke-width="1.4"/>' +
+      '<rect x="20" y="10.5" width="3.8" height="16" rx="1.9" fill="#fff" opacity=".45"/>' +
+      '<rect x="23" y="15.8" width="4.2" height="6" rx="2" fill="#231F18"/>' +
+      '<rect x="36.8" y="15.8" width="4.2" height="6" rx="2" fill="#231F18"/>' +
+      '<circle cx="25.8" cy="17.5" r="1.2" fill="#fff"/><circle cx="39.6" cy="17.5" r="1.2" fill="#fff"/>' +
+      '<path d="M21.5 12.4 q2.8-1.8 5.6-.8" stroke="#231F18" stroke-width="1.9" fill="none" stroke-linecap="round"/>' +
+      '<path d="M42.5 12.4 q-2.8-1.8-5.6-.8" stroke="#231F18" stroke-width="1.9" fill="none" stroke-linecap="round"/>' +
+      '<path d="M26.2 24.8 q5.8 5 11.6 0" stroke="#231F18" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
       '</g></svg>';
   }
 
   var FIG_PRESETS = {
-    heroWave:  { cls: "bob wave", torso: "#E30613", legs: "#0B2A5B" },
-    heroBuild: { cls: "bob", torso: "#00A651", legs: "#1B2430", delay: ".9s" },
-    walk1:     { cls: "walk", torso: "#FFC400", legs: "#0B2A5B" },
-    walk2:     { cls: "walk", torso: "#006DB7", legs: "#E30613", delay: ".28s" },
-    walk3:     { cls: "walk", torso: "#E30613", legs: "#006DB7", delay: ".56s" },
-    walk4:     { cls: "walk", torso: "#00A651", legs: "#0B2A5B", delay: ".84s" },
-    foot1:     { cls: "bob wave-left", torso: "#FFC400", legs: "#0B2A5B" },
-    foot2:     { cls: "bob wave", torso: "#E30613", legs: "#0B2A5B", delay: ".5s" }
+    heroWave:  { cls: "bob wave", torso: "#E62432", legs: "#0B2A5B" },
+    heroBuild: { cls: "bob", torso: "#10AC5E", legs: "#1B2638", delay: ".9s" },
+    walk1:     { cls: "walk", torso: "#FFCA1A", legs: "#0B2A5B" },
+    walk2:     { cls: "walk", torso: "#1273C4", legs: "#E62432", delay: ".28s" },
+    walk3:     { cls: "walk", torso: "#E62432", legs: "#1273C4", delay: ".56s" },
+    walk4:     { cls: "walk", torso: "#10AC5E", legs: "#0B2A5B", delay: ".84s" },
+    foot1:     { cls: "bob wave-left", torso: "#FFCA1A", legs: "#0B2A5B" },
+    foot2:     { cls: "bob wave", torso: "#E62432", legs: "#0B2A5B", delay: ".5s" }
   };
   function initFigures() {
     $$(".fig-slot").forEach(function (slot) {
@@ -350,84 +588,76 @@
   }
 
   /* ============================================================
-     乐高笑脸生成器（过场随机图案 + 页面背景装饰）
+     乐高笑脸生成器与背景微装饰
      ============================================================ */
   function smileySVG(color, variant) {
-    var dark = shade(color, -0.28);
+    var dark = shade(color, -0.22);
     var eyes;
     if (variant === "happy") {
-      eyes = '<path d="M28 42 q8-11 16 0 M56 42 q8-11 16 0" stroke="#262013" stroke-width="6.5" fill="none" stroke-linecap="round"/>';
+      eyes = '<path d="M28 42 q8-11 16 0 M56 42 q8-11 16 0" stroke="#231F18" stroke-width="6" fill="none" stroke-linecap="round"/>';
     } else if (variant === "wink") {
-      eyes = '<circle cx="36" cy="41" r="6.8" fill="#262013"/><path d="M56 43 q8-9 16 0" stroke="#262013" stroke-width="6.5" fill="none" stroke-linecap="round"/>';
+      eyes = '<circle cx="36" cy="41" r="6.4" fill="#231F18"/><path d="M56 43 q8-9 16 0" stroke="#231F18" stroke-width="6" fill="none" stroke-linecap="round"/>';
     } else {
-      eyes = '<circle cx="36" cy="41" r="6.8" fill="#262013"/><circle cx="64" cy="41" r="6.8" fill="#262013"/>';
+      eyes = '<circle cx="36" cy="41" r="6.4" fill="#231F18"/><circle cx="64" cy="41" r="6.4" fill="#231F18"/>';
     }
-    var mouth;
-    if (variant === "tongue") {
-      mouth = '<path d="M32 58 q18 19 36 0" stroke="#262013" stroke-width="7" fill="none" stroke-linecap="round"/>' +
-        '<ellipse cx="50" cy="71" rx="8" ry="6" fill="#E30613" stroke="#A80009" stroke-width="2"/>';
-    } else if (variant === "grin") {
-      mouth = '<path d="M29 55 q21 25 42 0" stroke="#262013" stroke-width="7.5" fill="none" stroke-linecap="round"/>';
-    } else {
-      mouth = '<path d="M33 57 q17 18 34 0" stroke="#262013" stroke-width="7" fill="none" stroke-linecap="round"/>';
-    }
+    var mouth = '<path d="M33 57 q17 17 34 0" stroke="#231F18" stroke-width="6.5" fill="none" stroke-linecap="round"/>';
     return '<svg viewBox="0 0 100 100">' +
-      '<circle cx="50" cy="50" r="45" fill="' + color + '" stroke="' + dark + '" stroke-width="5"/>' +
-      '<ellipse cx="33" cy="25" rx="16" ry="7" fill="#fff" opacity=".38" transform="rotate(-22 33 25)"/>' +
+      '<circle cx="50" cy="50" r="45" fill="' + color + '" stroke="' + dark + '" stroke-width="4"/>' +
+      '<ellipse cx="33" cy="25" rx="15" ry="6.5" fill="#fff" opacity=".36" transform="rotate(-22 33 25)"/>' +
       eyes + mouth + '</svg>';
   }
-  var SMILEY_COLORS = ["#FFC400", "#FFB1B1", "#9FD8FF", "#A8E6A1", "#FFE9A0", "#C7B8FF"];
-  var SMILEY_VARIANTS = ["smile", "grin", "wink", "tongue", "happy"];
+  var SMILEY_COLORS = ["#FFCA1A", "#E62432", "#1273C4", "#10AC5E", "#FFE885"];
+  var SMILEY_VARIANTS = ["smile", "wink", "happy"];
   function rand(a, b) { return a + Math.random() * (b - a); }
 
-  // 每次过场随机生成不同构图的笑脸/积木群（不重复）
   function spawnTransitionDecor() {
     var host = $("#btSmileys");
-    var n = Math.round(rand(9, 15));
+    var n = Math.round(rand(7, 11));
     var html = "";
     for (var i = 0; i < n; i++) {
-      var size = rand(36, 96);
-      var x = rand(1, 88), y = rand(2, 80);
-      var rot = rand(-26, 26).toFixed(1);
-      var inner = Math.random() < 0.72
+      var isSmiley = Math.random() < 0.65;
+      var w = isSmiley ? rand(42, 72) : rand(52, 76);
+      var h = isSmiley ? w : Math.round(w * 0.55);
+      var x = rand(4, 88), y = rand(5, 82);
+      var rot = rand(-20, 20).toFixed(1);
+      var inner = isSmiley
         ? smileySVG(SMILEY_COLORS[Math.floor(Math.random() * SMILEY_COLORS.length)],
                     SMILEY_VARIANTS[Math.floor(Math.random() * SMILEY_VARIANTS.length)])
-        : '<div class="decor-brick" style="background:' + SMILEY_COLORS[Math.floor(Math.random() * 4)] + ';border-radius:12px"></div>';
+        : '<div class="decor-brick" style="background:' + SMILEY_COLORS[Math.floor(Math.random() * 4)] + '"></div>';
       html += '<div class="smiley" style="left:' + x.toFixed(1) + "%;top:" + y.toFixed(1) +
-        "%;width:" + size.toFixed(0) + "px;height:" + size.toFixed(0) + "px;--rot:" + rot +
-        "deg;--d:" + rand(0, 0.5).toFixed(2) + "s;--d2:" + rand(0, 0.38).toFixed(2) + 's">' + inner + "</div>";
+        "%;width:" + w.toFixed(0) + "px;height:" + h.toFixed(0) + "px;--rot:" + rot +
+        "deg;--d:" + rand(0, 0.35).toFixed(2) + "s;--d2:" + rand(0, 0.25).toFixed(2) + 's">' + inner + "</div>";
     }
     host.innerHTML = html;
   }
 
-  /* ============================================================
-     页面背景装饰（淡色漂浮积木/笑脸 + 滚动视差）
-     ============================================================ */
   var decorItems = [];
   function initDecor() {
-    var palette = ["#FFC400", "#E30613", "#006DB7", "#00A651", "#0B2A5B", "#7EC8FF"];
+    var palette = ["#FFCA1A", "#E62432", "#1273C4", "#10AC5E"];
     $$(".section").forEach(function (sec, si) {
-      var count = si === 0 ? 4 : 3;
+      if (si === 0) return;
+      var count = 2;
       for (var i = 0; i < count; i++) {
         var wrap = document.createElement("div");
         wrap.className = "decor";
-        var speed = rand(0.03, 0.1);
+        var speed = rand(0.025, 0.065);
         wrap.setAttribute("data-speed", speed.toFixed(3));
-        var right = Math.random() > 0.5;
-        wrap.style.top = rand(4, 82).toFixed(1) + "%";
-        if (right) { wrap.style.right = rand(1.5, 9).toFixed(1) + "%"; }
-        else { wrap.style.left = rand(1.5, 9).toFixed(1) + "%"; }
-        var size = rand(38, 86);
-        wrap.style.width = size.toFixed(0) + "px";
-        wrap.style.height = size.toFixed(0) + "px";
-        wrap.style.opacity = rand(0.16, 0.34).toFixed(2);
+        var right = i % 2 === 0;
+        wrap.style.top = (i === 0 ? rand(10, 32) : rand(60, 82)).toFixed(1) + "%";
+        if (right) { wrap.style.right = rand(1.2, 4.0).toFixed(1) + "%"; }
+        else { wrap.style.left = rand(1.2, 4.0).toFixed(1) + "%"; }
+        var isSmiley = Math.random() < 0.4;
+        var w = isSmiley ? rand(38, 54) : rand(48, 66);
+        var h = isSmiley ? w : Math.round(w * 0.54);
+        wrap.style.width = w.toFixed(0) + "px";
+        wrap.style.height = h.toFixed(0) + "px";
+        wrap.style.opacity = rand(0.11, 0.18).toFixed(2);
         var inner = document.createElement("div");
         inner.className = "decor-inner";
-        inner.style.setProperty("--r", rand(-14, 14).toFixed(1) + "deg");
-        // 与小人 3s 呼吸同拍：背景只用 6/9/12s 倍频，人和背景不再各飘各的
+        inner.style.setProperty("--r", rand(-10, 10).toFixed(1) + "deg");
         inner.style.setProperty("--dur", [6, 9, 12][Math.floor(Math.random() * 3)] + "s");
         inner.style.setProperty("--dd", (Math.floor(rand(0, 4)) * 0.75).toFixed(2) + "s");
-        if (Math.random() < 0.5) {
+        if (isSmiley) {
           inner.innerHTML = smileySVG(palette[Math.floor(Math.random() * palette.length)],
             SMILEY_VARIANTS[Math.floor(Math.random() * SMILEY_VARIANTS.length)]);
         } else {
@@ -453,16 +683,16 @@
   }
 
   /* ============================================================
-     积木过场跳转（每个章节专属动画 + 标题卡）
+     全屏章节切换积木过场加载动画（支持所有导航、按钮、亮点块跳转）
      ============================================================ */
   var jumpStyles = {
-    hero:       { anim: "rain",    label: "首页",     c1: "#0B2A5B", c2: "#FFC400" },
-    about:      { anim: "wave",    label: "关于我",   c1: "#FFC400", c2: "#E30613" },
-    experience: { anim: "rows",    label: "工作经历", c1: "#0B2A5B", c2: "#006DB7" },
-    skills:     { anim: "diag",    label: "技能",     c1: "#00A651", c2: "#FFC400" },
-    projects:   { anim: "grid",    label: "作品集",   c1: "#006DB7", c2: "#0B2A5B" },
-    education:  { anim: "core",    label: "教育背景", c1: "#123A78", c2: "#FFC400" },
-    contact:    { anim: "curtain", label: "联系方式", c1: "#E30613", c2: "#FFC400" }
+    hero:       { anim: "rain",    stage: "MODULE 01 / 07", label: "首页 · HOME",          sub: "正在构建乐高主基地...",       c1: "#0B2A5B", c2: "#FFCA1A" },
+    about:      { anim: "wave",    stage: "MODULE 02 / 07", label: "关于我 · ABOUT",        sub: "正在装载个人核心积木...",     c1: "#FFCA1A", c2: "#E62432" },
+    experience: { anim: "rows",    stage: "MODULE 03 / 07", label: "工作经历 · EXPERIENCE", sub: "正在拼装算法研发时间线...",   c1: "#0B2A5B", c2: "#1273C4" },
+    skills:     { anim: "diag",    stage: "MODULE 04 / 07", label: "技能矩阵 · SKILLS",     sub: "正在充能全栈技术积木槽...",   c1: "#10AC5E", c2: "#FFCA1A" },
+    projects:   { anim: "grid",    stage: "MODULE 05 / 07", label: "作品集 · PROJECTS",     sub: "正在渲染 6 大核心工程模型...", c1: "#1273C4", c2: "#0B2A5B" },
+    education:  { anim: "core",    stage: "MODULE 06 / 07", label: "教育背景 · EDUCATION",  sub: "正在展开本硕学术档案...",     c1: "#163E7A", c2: "#FFCA1A" },
+    contact:    { anim: "curtain", stage: "MODULE 07 / 07", label: "联系方式 · CONTACT",    sub: "正在连通站长通讯频道...",     c1: "#E62432", c2: "#FFCA1A" }
   };
   var transitioning = false;
   function brickJumpTo(targetId, navEl) {
@@ -473,12 +703,20 @@
 
     var js = jumpStyles[targetId] || jumpStyles.hero;
     var bt = $("#brickTransition");
+    var fill = $("#btProgressFill");
+    if (fill) {
+      fill.style.transition = "none";
+      fill.style.width = "0%";
+    }
     bt.className = "brick-transition anim-" + js.anim;
     bt.style.setProperty("--bt-c1", js.c1);
     bt.style.setProperty("--bt-c2", js.c2);
+    if ($("#btStageTag")) $("#btStageTag").textContent = js.stage;
     $("#btLabelText").textContent = js.label;
-    spawnTransitionDecor(); // 每次随机构图的笑脸群
-    void bt.offsetWidth; // 强制重排以重启动画
+    if ($("#btSubText")) $("#btSubText").textContent = js.sub;
+    spawnTransitionDecor();
+    void bt.offsetWidth;
+    if (fill) fill.style.transition = "";
     bt.classList.add("in");
 
     if (navEl) {
@@ -487,33 +725,32 @@
       navEl.classList.add("jump");
     }
 
-    // 小火车“鸣笛”：跳转期间烟雾加速、投影加深
     var trackEl = $("#trainTrack");
     if (trackEl) {
       trackEl.classList.add("express");
-      setTimeout(function () { trackEl.classList.remove("express"); }, 2300);
+      setTimeout(function () { trackEl.classList.remove("express"); }, 1900);
     }
 
-    // 节奏：盖屏 ~1.05s → 落位 → 揭幕 ~1s（缓动连续，总时长更短更顺）
     setTimeout(function () {
-      window.scrollTo({ top: target.offsetTop - 70, behavior: "instant" });
+      window.scrollTo({ top: Math.max(0, target.offsetTop - 62), behavior: "instant" });
       bt.classList.remove("in");
       bt.classList.add("out");
 
       target.classList.remove("pop");
       void target.offsetWidth;
       target.classList.add("pop");
+      replaySectionReveal(target);
 
       setTimeout(function () {
         bt.classList.remove("out");
         target.classList.remove("pop");
         transitioning = false;
-      }, 1250);
-    }, 1100);
+      }, 950);
+    }, 880);
   }
 
   /* ============================================================
-     导航高亮
+     导航高亮与全站点击过场绑定
      ============================================================ */
   function initNav() {
     var links = $$(".nav-brick");
@@ -532,19 +769,29 @@
       }, { threshold: 0.12, rootMargin: "-25% 0px -55% 0px" });
       sections.forEach(function (s) { navObs.observe(s); });
     }
-    // 侧边栏导航 + 页内锚点按钮 → 积木过场
     document.addEventListener("click", function (e) {
       var link = e.target.closest('a[href^="#"]');
-      if (!link) return;
-      var id = link.getAttribute("href").slice(1);
-      if (!id) return;
-      e.preventDefault();
-      brickJumpTo(id, link.classList.contains("nav-brick") ? link : null);
+      if (link) {
+        var id = link.getAttribute("href").slice(1);
+        if (!id) return;
+        e.preventDefault();
+        setActive(id);
+        brickJumpTo(id, link.classList.contains("nav-brick") ? link : null);
+        return;
+      }
+      var jumpCard = e.target.closest("[data-jump]");
+      if (jumpCard) {
+        var jid = jumpCard.getAttribute("data-jump");
+        if (jid) {
+          setActive(jid);
+          brickJumpTo(jid, $('.nav-brick[data-target="' + jid + '"]'));
+        }
+      }
     });
   }
 
   /* ============================================================
-     留言表单（mailto）
+     留言表单
      ============================================================ */
   function initForm() {
     $("#messageForm").addEventListener("submit", function (e) {
@@ -555,32 +802,44 @@
       var mail = C && C.contact ? C.contact.email : "";
       var subject = encodeURIComponent("【简历网站留言】来自 " + name);
       var text = encodeURIComponent("称呼: " + name + "\n联系方式: " + contact + "\n\n" + body);
+      var tip = $("#formTip");
+      if (tip) {
+        tip.textContent = "✅ 已为你唤起邮件客户端，收件人：" + mail;
+        tip.style.color = "var(--green)";
+      }
       window.location.href = "mailto:" + mail + "?subject=" + subject + "&body=" + text;
     });
     $("#openAdmin").addEventListener("click", function () {
-      window.location.href = "admin.html";
+      if (typeof window.__openAdminModal === "function") {
+        window.__openAdminModal();
+      } else {
+        window.location.href = "admin.html";
+      }
     });
   }
 
-  /* ============================================================
-     启动
-     ============================================================ */
+  function startWithData(data) {
+    render(data);
+    initFigures();
+    initDecor();
+    initWelcome();
+    initReveal();
+    initTrain();
+    initNav();
+    initForm();
+  }
+
   function boot() {
+    if (window.__INLINE_CONTENT_JSON) {
+      startWithData(window.__INLINE_CONTENT_JSON);
+      return;
+    }
     fetch("data/content.json")
       .then(function (r) {
         if (!r.ok) throw new Error("content.json 加载失败");
         return r.json();
       })
-      .then(function (data) {
-        render(data);
-        initFigures();
-        initDecor();
-        initWelcome();
-        initReveal();
-        initTrain();
-        initNav();
-        initForm();
-      })
+      .then(startWithData)
       .catch(function (err) {
         console.error(err);
         document.body.innerHTML =
