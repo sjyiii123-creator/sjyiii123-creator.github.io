@@ -1,49 +1,126 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
 <defs>
-<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-  <stop offset="0%" stop-color="#1A1F4E"/><stop offset="100%" stop-color="#7C3AED" stop-opacity="0.55"/>
-</linearGradient>
-<linearGradient id="g2" x1="0" y1="1" x2="0" y2="0">
-  <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#F472B6"/>
-</linearGradient>
-<radialGradient id="glow" cx="0.85" cy="0.15" r="0.8">
-  <stop offset="0%" stop-color="#F472B6" stop-opacity="0.5"/><stop offset="100%" stop-color="#F472B6" stop-opacity="0"/>
-</radialGradient>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#FFFBF0"/>
+    <stop offset="100%" stop-color="#F7EBD2"/>
+  </linearGradient>
+  <radialGradient id="ambient" cx="0.78" cy="0.22" r="0.65">
+    <stop offset="0%" stop-color="#FFD438" stop-opacity="0.22"/>
+    <stop offset="100%" stop-color="#FFD438" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="softShadow" x="-12%" y="-10%" width="124%" height="128%">
+    <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0B2A5B" flood-opacity="0.12"/>
+    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0B2A5B" flood-opacity="0.08"/>
+  </filter>
+  <filter id="studShadow" x="-20%" y="-20%" width="140%" height="150%">
+    <feDropShadow dx="0" dy="2" stdDeviation="1.5" flood-color="#0B2A5B" flood-opacity="0.14"/>
+  </filter>
+  <pattern id="baseStuds" width="44" height="44" patternUnits="userSpaceOnUse">
+    <circle cx="22" cy="23" r="8" fill="#0B2A5B" opacity="0.045"/>
+    <circle cx="22" cy="21" r="8" fill="#FFFFFF" opacity="0.55"/>
+    <circle cx="22" cy="21" r="6.5" fill="none" stroke="#0B2A5B" stroke-opacity="0.05" stroke-width="1"/>
+  </pattern>
+  <!-- Studio ABS plastic gradients -->
+  <linearGradient id="redBody" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#F43642"/><stop offset="100%" stop-color="#D61F2C"/>
+  </linearGradient>
+  <linearGradient id="yelBody" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#FFD438"/><stop offset="100%" stop-color="#F2B600"/>
+  </linearGradient>
+  <linearGradient id="bluBody" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#1E88E5"/><stop offset="100%" stop-color="#0D62B3"/>
+  </linearGradient>
+  <linearGradient id="grnBody" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#18B96B"/><stop offset="100%" stop-color="#09924F"/>
+  </linearGradient>
+  <linearGradient id="nvyBody" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#1B4688"/><stop offset="100%" stop-color="#0E2B5C"/>
+  </linearGradient>
+  <linearGradient id="whtBody" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#EDF3FA"/>
+  </linearGradient>
 </defs>
 <rect width="800" height="500" fill="url(#bg)"/>
-<rect width="800" height="500" fill="url(#glow)"/>
-<line x1="0" y1="0" x2="0" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="80" y1="0" x2="80" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="160" y1="0" x2="160" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="240" y1="0" x2="240" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="320" y1="0" x2="320" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="400" y1="0" x2="400" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="480" y1="0" x2="480" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="560" y1="0" x2="560" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="640" y1="0" x2="640" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="720" y1="0" x2="720" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="800" y1="0" x2="800" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="0" y1="0" x2="800" y2="0" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="0" y1="83" x2="800" y2="83" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="0" y1="167" x2="800" y2="167" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="0" y1="250" x2="800" y2="250" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="0" y1="333" x2="800" y2="333" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="0" y1="417" x2="800" y2="417" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<line x1="0" y1="500" x2="800" y2="500" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
-<rect x="90" y="336" width="34" height="94" rx="10" fill="url(#g2)" opacity="0.86"/>
-<rect x="146" y="116" width="34" height="314" rx="10" fill="url(#g2)" opacity="0.84"/>
-<rect x="202" y="136" width="34" height="294" rx="10" fill="url(#g2)" opacity="0.82"/>
-<rect x="258" y="313" width="34" height="117" rx="10" fill="url(#g2)" opacity="0.84"/>
-<rect x="314" y="131" width="34" height="299" rx="10" fill="url(#g2)" opacity="0.86"/>
-<rect x="370" y="159" width="34" height="271" rx="10" fill="url(#g2)" opacity="0.52"/>
-<rect x="426" y="282" width="34" height="148" rx="10" fill="url(#g2)" opacity="0.61"/>
-<rect x="482" y="98" width="34" height="332" rx="10" fill="url(#g2)" opacity="0.76"/>
-<rect x="538" y="205" width="34" height="225" rx="10" fill="url(#g2)" opacity="0.56"/>
-<rect x="594" y="247" width="34" height="183" rx="10" fill="url(#g2)" opacity="0.94"/>
-<rect x="650" y="90" width="34" height="340" rx="10" fill="url(#g2)" opacity="0.91"/>
-<rect x="706" y="224" width="34" height="206" rx="10" fill="url(#g2)" opacity="0.71"/>
-<path d="M90 340 C 220 300, 300 360, 420 260 S 620 190, 720 130" stroke="#F472B6" stroke-width="5" fill="none" stroke-linecap="round"/>
-<circle cx="720" cy="130" r="12" fill="#F472B6"/>
-<rect x="0" y="440" width="800" height="60" fill="#000000" opacity="0.18"/>
-<text x="40" y="478" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#FFFFFF" opacity="0.9">实时推荐系统</text>
+<rect width="800" height="500" fill="url(#baseStuds)"/>
+<rect width="800" height="500" fill="url(#ambient)"/>
+
+<g filter="url(#softShadow)">
+  <rect x="117.0" y="75.0" width="26.0" height="9" rx="3.5" fill="url(#nvyBody)"/>
+  <rect x="119.5" y="76.5" width="21.0" height="2.2" rx="1.1" fill="#5E8CD1" opacity="0.75"/>
+  <rect x="176.0" y="75.0" width="26.0" height="9" rx="3.5" fill="url(#nvyBody)"/>
+  <rect x="178.5" y="76.5" width="21.0" height="2.2" rx="1.1" fill="#5E8CD1" opacity="0.75"/>
+  <rect x="235.0" y="75.0" width="26.0" height="9" rx="3.5" fill="url(#nvyBody)"/>
+  <rect x="237.5" y="76.5" width="21.0" height="2.2" rx="1.1" fill="#5E8CD1" opacity="0.75"/>
+  <rect x="84" y="86" width="210" height="56" rx="10" fill="#081C3D"/>
+  <rect x="84" y="82" width="210" height="56" rx="10" fill="url(#nvyBody)"/>
+  <rect x="90" y="85.5" width="198" height="3" rx="1.5" fill="#5E8CD1" opacity="0.65"/>
+  <text x="189.0" y="112.0" font-family="Nunito,PingFang SC,sans-serif" font-weight="800" font-size="16" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.8">CTR +18% · 10M+ DAU</text>
+</g>
+<g filter="url(#softShadow)">
+  <rect x="109.3" y="287.0" width="20.0" height="9" rx="3.5" fill="url(#bluBody)"/>
+  <rect x="111.8" y="288.5" width="15.0" height="2.2" rx="1.1" fill="#7CC4FF" opacity="0.75"/>
+  <rect x="146.7" y="287.0" width="20.0" height="9" rx="3.5" fill="url(#bluBody)"/>
+  <rect x="149.2" y="288.5" width="15.0" height="2.2" rx="1.1" fill="#7CC4FF" opacity="0.75"/>
+  <rect x="92" y="298" width="92" height="74" rx="10" fill="#084987"/>
+  <rect x="92" y="294" width="92" height="74" rx="10" fill="url(#bluBody)"/>
+  <rect x="98" y="297.5" width="80" height="3" rx="1.5" fill="#7CC4FF" opacity="0.65"/>
+  <text x="138.0" y="333.0" font-family="Nunito,PingFang SC,sans-serif" font-weight="800" font-size="16" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.8">召回</text>
+</g>
+<g filter="url(#softShadow)">
+  <rect x="233.3" y="243.0" width="20.0" height="9" rx="3.5" fill="url(#grnBody)"/>
+  <rect x="235.8" y="244.5" width="15.0" height="2.2" rx="1.1" fill="#7CE8B2" opacity="0.75"/>
+  <rect x="270.7" y="243.0" width="20.0" height="9" rx="3.5" fill="url(#grnBody)"/>
+  <rect x="273.2" y="244.5" width="15.0" height="2.2" rx="1.1" fill="#7CE8B2" opacity="0.75"/>
+  <rect x="216" y="254" width="92" height="118" rx="10" fill="#066E3A"/>
+  <rect x="216" y="250" width="92" height="118" rx="10" fill="url(#grnBody)"/>
+  <rect x="222" y="253.5" width="80" height="3" rx="1.5" fill="#7CE8B2" opacity="0.65"/>
+  <text x="262.0" y="311.0" font-family="Nunito,PingFang SC,sans-serif" font-weight="800" font-size="16" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.8">粗排</text>
+</g>
+<g filter="url(#softShadow)">
+  <rect x="357.3" y="199.0" width="20.0" height="9" rx="3.5" fill="url(#yelBody)"/>
+  <rect x="359.8" y="200.5" width="15.0" height="2.2" rx="1.1" fill="#FFF0A6" opacity="0.75"/>
+  <rect x="394.7" y="199.0" width="20.0" height="9" rx="3.5" fill="url(#yelBody)"/>
+  <rect x="397.2" y="200.5" width="15.0" height="2.2" rx="1.1" fill="#FFF0A6" opacity="0.75"/>
+  <rect x="340" y="210" width="92" height="162" rx="10" fill="#C99300"/>
+  <rect x="340" y="206" width="92" height="162" rx="10" fill="url(#yelBody)"/>
+  <rect x="346" y="209.5" width="80" height="3" rx="1.5" fill="#FFF0A6" opacity="0.65"/>
+  <text x="386.0" y="289.0" font-family="Nunito,PingFang SC,sans-serif" font-weight="800" font-size="16" fill="#0B2A5B" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.8">精排</text>
+</g>
+<g filter="url(#softShadow)">
+  <rect x="481.3" y="151.0" width="20.0" height="9" rx="3.5" fill="url(#redBody)"/>
+  <rect x="483.8" y="152.5" width="15.0" height="2.2" rx="1.1" fill="#FF8A92" opacity="0.75"/>
+  <rect x="518.7" y="151.0" width="20.0" height="9" rx="3.5" fill="url(#redBody)"/>
+  <rect x="521.2" y="152.5" width="15.0" height="2.2" rx="1.1" fill="#FF8A92" opacity="0.75"/>
+  <rect x="464" y="162" width="92" height="210" rx="10" fill="#B51420"/>
+  <rect x="464" y="158" width="92" height="210" rx="10" fill="url(#redBody)"/>
+  <rect x="470" y="161.5" width="80" height="3" rx="1.5" fill="#FF8A92" opacity="0.65"/>
+  <text x="510.0" y="265.0" font-family="Nunito,PingFang SC,sans-serif" font-weight="800" font-size="16" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.8">重排</text>
+</g>
+<g filter="url(#softShadow)">
+  <rect x="608.0" y="105.0" width="25.0" height="9" rx="3.5" fill="url(#nvyBody)"/>
+  <rect x="610.5" y="106.5" width="20.0" height="2.2" rx="1.1" fill="#5E8CD1" opacity="0.75"/>
+  <rect x="653.0" y="105.0" width="25.0" height="9" rx="3.5" fill="url(#nvyBody)"/>
+  <rect x="655.5" y="106.5" width="20.0" height="2.2" rx="1.1" fill="#5E8CD1" opacity="0.75"/>
+  <rect x="588" y="116" width="110" height="256" rx="10" fill="#081C3D"/>
+  <rect x="588" y="112" width="110" height="256" rx="10" fill="url(#nvyBody)"/>
+  <rect x="594" y="115.5" width="98" height="3" rx="1.5" fill="#5E8CD1" opacity="0.65"/>
+  <text x="643.0" y="236.0" font-family="Nunito,PingFang SC,sans-serif" font-weight="800" font-size="16" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.8">实时融合</text>
+  <text x="643.0" y="255.0" font-family="Nunito,PingFang SC,sans-serif" font-weight="700" font-size="11.5" fill="#FFFFFF" opacity="0.82" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.5">Duration +12%</text>
+</g>
+<path d="M138 258 C210 236, 280 200, 386 168 S540 112, 643 76" fill="none" stroke="#F43642" stroke-width="5" stroke-linecap="round"/>
+<circle cx="138" cy="258" r="8" fill="#FFFFFF" stroke="#1E88E5" stroke-width="4" filter="url(#studShadow)"/>
+<circle cx="262" cy="212" r="8" fill="#FFFFFF" stroke="#18B96B" stroke-width="4" filter="url(#studShadow)"/>
+<circle cx="386" cy="168" r="8" fill="#FFFFFF" stroke="#F2B600" stroke-width="4" filter="url(#studShadow)"/>
+<circle cx="510" cy="122" r="8" fill="#FFFFFF" stroke="#F43642" stroke-width="4" filter="url(#studShadow)"/>
+<circle cx="643" cy="76" r="10" fill="#FFD438" stroke="#F43642" stroke-width="4" filter="url(#studShadow)"/>
+<g>
+  <rect x="28" y="424" width="744" height="52" rx="14" fill="#FFFFFF" fill-opacity="0.88" filter="url(#softShadow)"/>
+  <rect x="40" y="434" width="102" height="32" rx="8" fill="url(#redBody)"/>
+  <text x="91" y="451" font-family="Nunito,sans-serif" font-weight="900" font-size="13" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle" letter-spacing="1">REC · RANK</text>
+  <text x="158" y="451" font-family="Nunito,PingFang SC,Microsoft YaHei,sans-serif" font-weight="800" font-size="17" fill="#0B2A5B" dominant-baseline="middle" letter-spacing="1">千万级实时推荐系统 · 多路召回与精排融合</text>
+  <circle cx="732" cy="450" r="6" fill="#F43642"/>
+  <circle cx="712" cy="450" r="6" fill="#FFD438"/>
+  <circle cx="692" cy="450" r="6" fill="#1E88E5"/>
+  <circle cx="672" cy="450" r="6" fill="#18B96B"/>
+</g>
 </svg>
