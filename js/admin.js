@@ -199,7 +199,7 @@
 
   function renderSettings() {
     var token = localStorage.getItem(LS.token) || "";
-    var repo = localStorage.getItem(LS.repo) || "";
+    var repo = localStorage.getItem(LS.repo) || "sjyiii123-creator/sjyiii123-creator.github.io";
     $("#p-settings").innerHTML = card(null,
       '<div class="grid">' +
       '<div class="field full"><label>GitHub Token（只保存在本浏览器，不会上传）</label>' +
