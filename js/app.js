@@ -283,6 +283,12 @@
     avEl.textContent = avTxt;
     avEl.style.fontSize = avTxt.length >= 3 ? "32px" : (avTxt.length === 2 ? "38px" : "44px");
 
+    var savedPhoto = null;
+    try { savedPhoto = localStorage.getItem("lego_custom_photo"); } catch (e) {}
+    var photoSrc = savedPhoto || data.profile.photo || "assets/avatar-placeholder.svg";
+    var heroPhotoEl = $("#heroPhotoImg");
+    if (heroPhotoEl) heroPhotoEl.src = photoSrc;
+
     $("#heroName").textContent = data.profile.name;
     $("#heroRoleText").textContent = data.profile.title;
     $("#heroMotto").textContent = "\u201C" + (data.profile.motto || "") + "\u201D";
@@ -816,6 +822,39 @@
         window.location.href = "admin.html";
       }
     });
+
+    // 城堡相框点击上传/更换个人照片（带城门栅栏开合过场动画）
+    var castleVp = $("#castleViewport");
+    var castleBtn = $("#castleUploadBtn");
+    var photoInput = $("#heroPhotoInput");
+    var shutter = $("#castleGateShutter");
+    var heroPhotoEl = $("#heroPhotoImg");
+    function triggerPhotoSelect() {
+      if (photoInput) photoInput.click();
+    }
+    if (castleVp) castleVp.addEventListener("click", triggerPhotoSelect);
+    if (castleBtn) castleBtn.addEventListener("click", triggerPhotoSelect);
+    if (photoInput) {
+      photoInput.addEventListener("change", function (ev) {
+        var file = ev.target.files && ev.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          var dataUrl = reader.result;
+          if (shutter) shutter.classList.add("closing");
+          setTimeout(function () {
+            if (heroPhotoEl) heroPhotoEl.src = dataUrl;
+            if (C && C.profile) C.profile.photo = dataUrl;
+            try { localStorage.setItem("lego_custom_photo", dataUrl); } catch (e) {}
+            if (typeof window.__onCustomPhotoUploaded === "function") {
+              window.__onCustomPhotoUploaded(dataUrl);
+            }
+            if (shutter) shutter.classList.remove("closing");
+          }, 420);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
   }
 
   function startWithData(data) {
