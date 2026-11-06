@@ -8,12 +8,12 @@
 <link rel="icon" href="assets/brick.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.min.css?v=8e030e8b">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.min.css?v=f62241c8">
 </head>
 <body>
 
-<!-- ============ 章节跳转积木过场（多变体） ============ -->
+<!-- ============ 全屏章节切换 · 乐高积木拼装过场加载动画 ============ -->
 <div class="brick-transition anim-rain" id="brickTransition" aria-hidden="true">
   <div class="bt-layer bt-cols">
     <div class="bt-col" style="--i:0"></div><div class="bt-col" style="--i:1"></div>
@@ -38,40 +38,83 @@
   </div>
   <div class="bt-layer bt-core"><div class="bt-core-box"></div></div>
   <div class="bt-layer bt-smileys" id="btSmileys"></div>
-  <div class="bt-label" id="btLabel"><span class="bt-label-brick"></span><span id="btLabelText">首页</span></div>
+
+  <!-- 乐高积木拼装加载中心卡 -->
+  <div class="bt-label" id="btLabel">
+    <div class="bt-card-studs"><i></i><i></i><i></i><i></i></div>
+    <div class="bt-stage-tag" id="btStageTag">MODULE 01 / 07</div>
+    <div class="bt-main-row">
+      <div class="bt-loader-stack" aria-hidden="true">
+        <span class="lb b-red"></span>
+        <span class="lb b-yellow"></span>
+        <span class="lb b-blue"></span>
+        <span class="lb b-green"></span>
+      </div>
+      <div class="bt-title-wrap">
+        <span id="btLabelText">首页</span>
+        <small id="btSubText">正在拼装积木模块...</small>
+      </div>
+    </div>
+    <div class="bt-progress-track">
+      <div class="bt-progress-fill" id="btProgressFill"></div>
+    </div>
+  </div>
 </div>
 
-<!-- ============ 乐高小火车进度条 ============ -->
+<!-- ============ 乐高小火车进度条（车头朝右领跑，柔和工作室投影无溢出） ============ -->
 <div class="train-track" id="trainTrack" aria-hidden="true">
   <div class="train-rail"></div>
   <div class="rail-fill" id="railFill"></div>
   <div class="train-ties"></div>
   <div class="lego-train" id="legoTrain">
-    <svg viewBox="0 0 150 56" class="train-svg">
-      <!-- 烟囱烟雾 -->
+    <svg viewBox="0 0 168 56" class="train-svg">
+      <defs>
+        <linearGradient id="trRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F43642"/><stop offset="100%" stop-color="#C81924"/></linearGradient>
+        <linearGradient id="trYel" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFD642"/><stop offset="100%" stop-color="#E5A800"/></linearGradient>
+        <linearGradient id="trGrn" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1CC472"/><stop offset="100%" stop-color="#0A8F4C"/></linearGradient>
+      </defs>
+      <!-- 烟囱烟雾（从右侧车头烟囱向左上柔和飘散） -->
       <g class="smoke">
-        <circle cx="20" cy="8" r="4"/><circle cx="29" cy="4" r="3"/><circle cx="36" cy="1" r="2.2"/>
+        <circle cx="130" cy="8" r="3.8"/><circle cx="120" cy="5" r="3"/><circle cx="111" cy="3" r="2.2"/>
       </g>
-      <!-- 车头 -->
-      <rect x="14" y="16" width="44" height="22" rx="3" fill="#E30613" stroke="#8B0000" stroke-width="2"/>
-      <rect x="22" y="8" width="12" height="10" rx="2" fill="#E30613" stroke="#8B0000" stroke-width="2"/>
-      <rect x="10" y="20" width="8" height="14" rx="2" fill="#FFC400" stroke="#B8860B" stroke-width="2"/>
-      <rect x="40" y="21" width="12" height="10" rx="2" fill="#7EC8FF" stroke="#2A6FA8" stroke-width="2"/>
-      <!-- 车厢1 -->
-      <rect x="62" y="20" width="36" height="18" rx="3" fill="#FFC400" stroke="#B8860B" stroke-width="2"/>
-      <circle cx="72" cy="29" r="3.6" fill="#fff" stroke="#B8860B" stroke-width="1.6"/>
-      <circle cx="82" cy="29" r="3.6" fill="#fff" stroke="#B8860B" stroke-width="1.6"/>
-      <circle cx="92" cy="29" r="3.6" fill="#fff" stroke="#B8860B" stroke-width="1.6"/>
-      <!-- 车厢2 -->
-      <rect x="102" y="22" width="34" height="16" rx="3" fill="#00A651" stroke="#00622E" stroke-width="2"/>
-      <circle cx="112" cy="30" r="3.2" fill="#fff" stroke="#00622E" stroke-width="1.6"/>
-      <circle cx="122" cy="30" r="3.2" fill="#fff" stroke="#00622E" stroke-width="1.6"/>
-      <circle cx="132" cy="30" r="3.2" fill="#fff" stroke="#00622E" stroke-width="1.6"/>
+      <!-- 车厢挂钩 -->
+      <rect x="40" y="31" width="10" height="3.5" rx="1.5" fill="#3B5278"/>
+      <rect x="84" y="31" width="10" height="3.5" rx="1.5" fill="#3B5278"/>
+      <!-- 车厢2（后车厢 · 绿色乐高积木） -->
+      <rect x="10" y="18.5" width="7" height="4" rx="1.5" fill="url(#trGrn)"/>
+      <rect x="20" y="18.5" width="7" height="4" rx="1.5" fill="url(#trGrn)"/>
+      <rect x="30" y="18.5" width="7" height="4" rx="1.5" fill="url(#trGrn)"/>
+      <rect x="6" y="22" width="36" height="17" rx="4" fill="url(#trGrn)"/>
+      <rect x="8" y="23.5" width="32" height="2" rx="1" fill="#FFF" opacity="0.35"/>
+      <circle cx="14" cy="30.5" r="3.1" fill="#F4F8FF"/>
+      <circle cx="24" cy="30.5" r="3.1" fill="#F4F8FF"/>
+      <circle cx="34" cy="30.5" r="3.1" fill="#F4F8FF"/>
+      <!-- 车厢1（中车厢 · 黄色乐高积木） -->
+      <rect x="52" y="16.5" width="8" height="4" rx="1.5" fill="url(#trYel)"/>
+      <rect x="63" y="16.5" width="8" height="4" rx="1.5" fill="url(#trYel)"/>
+      <rect x="74" y="16.5" width="8" height="4" rx="1.5" fill="url(#trYel)"/>
+      <rect x="48" y="20" width="38" height="19" rx="4" fill="url(#trYel)"/>
+      <rect x="50" y="21.5" width="34" height="2" rx="1" fill="#FFF" opacity="0.45"/>
+      <circle cx="57" cy="29.5" r="3.4" fill="#FFF"/>
+      <circle cx="67" cy="29.5" r="3.4" fill="#FFF"/>
+      <circle cx="77" cy="29.5" r="3.4" fill="#FFF"/>
+      <!-- 车头（最前方 · 红色乐高蒸汽机车，朝右行驶） -->
+      <rect x="95" y="11" width="14" height="5" rx="2" fill="url(#trYel)"/>
+      <rect x="92" y="15" width="46" height="24" rx="4.5" fill="url(#trRed)"/>
+      <rect x="94" y="16.5" width="42" height="2.2" rx="1" fill="#FFF" opacity="0.35"/>
+      <!-- 驾驶室车窗 -->
+      <rect x="96" y="19.5" width="14" height="10.5" rx="2.5" fill="#90D5FF"/>
+      <!-- 蒸汽烟囱 -->
+      <rect x="123" y="8" width="10" height="8" rx="2" fill="url(#trRed)"/>
+      <rect x="121.5" y="6" width="13" height="3.5" rx="1.5" fill="url(#trYel)"/>
+      <!-- 车头前大灯与排障器 -->
+      <rect x="138" y="20.5" width="7" height="14" rx="2" fill="url(#trYel)"/>
+      <polygon points="145,34 152,39 145,39" fill="url(#trRed)"/>
       <!-- 车轮 -->
       <g class="wheels">
-        <circle class="wheel" cx="24" cy="43" r="7"/><circle class="wheel" cx="48" cy="43" r="7"/>
-        <circle class="wheel" cx="76" cy="43" r="6"/><circle class="wheel" cx="94" cy="43" r="6"/>
-        <circle class="wheel" cx="116" cy="43" r="5.6"/><circle class="wheel" cx="132" cy="43" r="5.6"/>
+        <circle class="wheel" cx="15" cy="43" r="5.4"/><circle class="wheel" cx="33" cy="43" r="5.4"/>
+        <circle class="wheel" cx="57" cy="43" r="5.8"/><circle class="wheel" cx="77" cy="43" r="5.8"/>
+        <circle class="wheel" cx="104" cy="43" r="6.6"/><circle class="wheel" cx="128" cy="43" r="6.6"/>
       </g>
     </svg>
     <div class="train-percent" id="trainPercent">0%</div>
@@ -99,7 +142,7 @@
   <div class="sidebar-inner">
     <div class="avatar-brick">
       <div class="avatar-studs"><i></i><i></i></div>
-      <div class="avatar-face" id="avatarText">李</div>
+      <div class="avatar-face" id="avatarText">Lee</div>
     </div>
     <h2 class="side-name" id="sideName">李正淼</h2>
     <p class="side-title" id="sideTitle">算法工程师</p>
@@ -116,7 +159,7 @@
     </nav>
 
     <div class="side-links" id="sideLinks"></div>
-    <button class="side-edit-btn" id="openAdmin" title="仅站长可编辑">🔧 站长入口</button>
+    <button class="side-edit-btn" id="openAdmin" title="站长编辑器与GitHub一键推送">🚀 站长入口 / 推送 GitHub</button>
     <p class="side-hint">访客只读 · 可留言联系</p>
   </div>
 </aside>
@@ -137,9 +180,14 @@
       <div class="fig-slot" data-fig="heroBuild"></div>
     </div>
     <div class="hero-body">
-      <p class="hero-eyebrow reveal">HELLO, I'M</p>
+      <p class="hero-eyebrow reveal"><span class="eyebrow-dot"></span>HELLO, I'M</p>
       <h1 class="hero-name reveal" id="heroName">李正淼</h1>
-      <h2 class="hero-role reveal" id="heroRole">算法工程师</h2>
+      <div class="hero-role-wrap reveal">
+        <h2 class="hero-role" id="heroRole">
+          <span class="role-studs" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span id="heroRoleText">算法工程师</span>
+        </h2>
+      </div>
       <p class="hero-motto reveal" id="heroMotto">"把复杂的模型，拼成简单的积木"</p>
       <div class="hero-cta reveal">
         <a href="#projects" class="btn btn-yellow"><span class="btn-studs"><i></i><i></i><i></i><i></i></span>看看作品</a>
@@ -153,13 +201,13 @@
   <section class="section" id="about">
     <div class="section-head reveal">
       <span class="brick-icon red"></span>
-      <h2>关于我</h2>
+      <h2 id="aboutTitle">关于我</h2>
       <span class="head-line"></span>
     </div>
     <div class="about-grid">
-      <div class="brick-card about-card reveal">
+      <div class="brick-card about-card tone-blue reveal">
         <div class="card-studs"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <p class="about-text" id="aboutText"></p>
+        <div class="about-text" id="aboutText"></div>
       </div>
       <div class="about-highlights" id="aboutHighlights"></div>
     </div>
@@ -172,7 +220,14 @@
       <h2>工作经历</h2>
       <span class="head-line"></span>
     </div>
-    <div class="timeline" id="timeline"></div>
+    <div class="sub-tabs reveal" id="expTabs" role="tablist" aria-label="工作经历筛选"></div>
+    <div class="section-stage" id="expStage">
+      <div class="stage-loader" id="expLoader" aria-hidden="true">
+        <div class="loader-bricks"><i></i><i></i><i></i><i></i></div>
+        <span>正在拼装履历积木模块...</span>
+      </div>
+      <div class="timeline" id="timeline"></div>
+    </div>
   </section>
 
   <!-- 技能 -->
@@ -182,7 +237,14 @@
       <h2>技能</h2>
       <span class="head-line"></span>
     </div>
-    <div class="skills-grid" id="skillsGrid"></div>
+    <div class="sub-tabs reveal" id="skillTabs" role="tablist" aria-label="技能分组切换"></div>
+    <div class="section-stage" id="skillStage">
+      <div class="stage-loader" id="skillLoader" aria-hidden="true">
+        <div class="loader-bricks"><i></i><i></i><i></i><i></i></div>
+        <span>正在充能技能积木矩阵...</span>
+      </div>
+      <div class="skills-grid" id="skillsGrid"></div>
+    </div>
   </section>
 
   <!-- 作品集 -->
@@ -192,8 +254,15 @@
       <h2>作品集</h2>
       <span class="head-line"></span>
     </div>
-    <p class="section-sub reveal">6 个用积木拼出来的项目 · 悬停查看</p>
-    <div class="projects-grid" id="projectsGrid"></div>
+    <p class="section-sub reveal">6 个用乐高积木拼出来的核心算法工程项目 · 点击分类切换或点击卡片查看说明书</p>
+    <div class="sub-tabs reveal" id="projTabs" role="tablist" aria-label="作品集分类切换"></div>
+    <div class="section-stage" id="projStage">
+      <div class="stage-loader" id="projLoader" aria-hidden="true">
+        <div class="loader-bricks"><i></i><i></i><i></i><i></i></div>
+        <span>正在拼装作品集积木模型...</span>
+      </div>
+      <div class="projects-grid" id="projectsGrid"></div>
+    </div>
   </section>
 
   <!-- 小人游行 -->
@@ -201,11 +270,11 @@
     <div class="parade-sun"></div>
     <div class="parade-ground"></div>
     <div class="fig-slot" data-fig="walk1"></div>
-    <div class="parade-brick" style="background:#E30613;box-shadow:0 5px 0 #A80009"></div>
+    <div class="parade-brick pb-red"></div>
     <div class="fig-slot" data-fig="walk2"></div>
-    <div class="parade-brick" style="background:#FFC400;box-shadow:0 5px 0 #D9A400"></div>
+    <div class="parade-brick pb-yellow"></div>
     <div class="fig-slot" data-fig="walk3"></div>
-    <div class="parade-brick" style="background:#00A651;box-shadow:0 5px 0 #00702F"></div>
+    <div class="parade-brick pb-green"></div>
     <div class="fig-slot" data-fig="walk4"></div>
   </div>
 
@@ -216,7 +285,14 @@
       <h2>教育背景</h2>
       <span class="head-line"></span>
     </div>
-    <div class="edu-grid" id="eduGrid"></div>
+    <div class="sub-tabs reveal" id="eduTabs" role="tablist" aria-label="教育阶段切换"></div>
+    <div class="section-stage" id="eduStage">
+      <div class="stage-loader" id="eduLoader" aria-hidden="true">
+        <div class="loader-bricks"><i></i><i></i><i></i><i></i></div>
+        <span>正在加载学术积木档案...</span>
+      </div>
+      <div class="edu-grid" id="eduGrid"></div>
+    </div>
   </section>
 
   <!-- 联系方式 -->
@@ -227,26 +303,26 @@
       <span class="head-line"></span>
     </div>
     <div class="contact-wrap">
-      <div class="brick-card contact-card reveal">
+      <div class="brick-card contact-card tone-yellow reveal">
         <div class="card-studs"><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <p class="contact-note" id="contactNote"></p>
         <ul class="contact-list" id="contactList"></ul>
         <p class="contact-readonly">🔒 本站为只读展示，内容仅站长可修改</p>
       </div>
-      <form class="brick-card message-card reveal" id="messageForm">
+      <form class="brick-card message-card tone-red reveal" id="messageForm">
         <div class="card-studs"><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <h3>给我留言</h3>
         <label>你的称呼<input type="text" id="msgName" placeholder="怎么称呼你？" required></label>
         <label>联系方式<input type="text" id="msgContact" placeholder="邮箱 / 微信 / 电话" required></label>
         <label>留言内容<textarea id="msgBody" rows="4" placeholder="想聊点什么？" required></textarea></label>
         <button type="submit" class="btn btn-red"><span class="btn-studs"><i></i><i></i><i></i><i></i></span>发送留言</button>
-        <p class="form-tip">点击后将调用你的邮件客户端发送给站长 📮</p>
+        <p class="form-tip" id="formTip">点击后将调用你的邮件客户端发送给站长 📮</p>
       </form>
     </div>
   </section>
 
   <footer class="footer">
-    <div class="footer-bricks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="footer-bricks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div class="footer-figs" aria-hidden="true">
       <div class="fig-slot" data-fig="foot1"></div>
       <div class="fig-slot" data-fig="foot2"></div>
@@ -255,6 +331,26 @@
   </footer>
 </main>
 
-<script src="js/app.min.js?v=0a9beca8"></script>
+<!-- ============ 作品集 · 乐高拼装说明书详情弹窗 ============ -->
+<div class="project-modal-backdrop" id="projModalBackdrop" aria-hidden="true">
+  <div class="project-modal" id="projModal">
+    <div class="card-studs"><i></i><i></i><i></i><i></i><i></i></div>
+    <button type="button" class="pm-close" id="pmClose" aria-label="关闭">✕</button>
+    <div class="pm-loader" id="pmLoader">
+      <div class="loader-bricks"><i></i><i></i><i></i><i></i></div>
+      <span>正在展开乐高项目工程说明书...</span>
+    </div>
+    <div class="pm-content" id="pmContent">
+      <div class="pm-img-wrap"><img id="pmImg" src="assets/brick.svg" alt=""><span class="pm-set" id="pmSet">SET #10261</span></div>
+      <div class="pm-body">
+        <h3 id="pmTitle">项目名称</h3>
+        <p id="pmDesc"></p>
+        <div class="tag-row" id="pmTags"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.min.js?v=25f659ff"></script>
 </body>
 </html>
