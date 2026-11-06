@@ -151,14 +151,16 @@
     field.appendChild(frag);
 
     function enter() {
+      if (enter._done) return;
+      enter._done = true;
       overlay.classList.add("out");
       document.body.style.overflow = "";
       setTimeout(function () {
         overlay.classList.add("hidden");
         overlay.style.display = "none";
       }, 900);
-      // 触发首屏动画
-      revealAll();
+      // 只播放首屏入场，其余板块交给滚动渐进显示（保留下滑时的过场体验）
+      revealHero();
     }
 
     $("#welcomeBtn").addEventListener("click", enter);
@@ -166,12 +168,22 @@
     overlay.addEventListener("click", function (e) {
       if (e.target === overlay || e.target === field) enter();
     });
+    // “下滑开始探索”：滚轮 / 触摸 / 键盘都能真正进入（修复提示与行为不一致的 bug）
+    overlay.addEventListener("wheel", enter, { passive: true });
+    overlay.addEventListener("touchstart", enter, { passive: true });
+    var keyEnter = function (e) {
+      if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown" || e.key === "PageDown" || e.key === "Spacebar") {
+        enter();
+        document.removeEventListener("keydown", keyEnter);
+      }
+    };
+    document.addEventListener("keydown", keyEnter);
 
     document.body.style.overflow = "hidden";
-    // 12 秒后自动放行，避免卡住
+    // 9 秒后自动放行，避免卡住
     setTimeout(function () {
       if (!overlay.classList.contains("out")) enter();
-    }, 12000);
+    }, 9000);
   }
 
   /* ============================================================
@@ -196,6 +208,15 @@
   }
   function revealAll() {
     $$(".reveal").forEach(function (el) {
+      el.classList.add("in");
+      $$(".skill-fill", el).forEach(function (f) {
+        f.style.width = (f.getAttribute("data-level") || 0) + "%";
+      });
+    });
+  }
+  // 只揭示首屏（保留其余板块的滚动渐进动画）
+  function revealHero() {
+    $$(".hero .reveal").forEach(function (el) {
       el.classList.add("in");
       $$(".skill-fill", el).forEach(function (f) {
         f.style.width = (f.getAttribute("data-level") || 0) + "%";
@@ -403,8 +424,9 @@
         var inner = document.createElement("div");
         inner.className = "decor-inner";
         inner.style.setProperty("--r", rand(-14, 14).toFixed(1) + "deg");
-        inner.style.setProperty("--dur", rand(7, 12).toFixed(1) + "s");
-        inner.style.setProperty("--dd", rand(0, 3).toFixed(1) + "s");
+        // 与小人 3s 呼吸同拍：背景只用 6/9/12s 倍频，人和背景不再各飘各的
+        inner.style.setProperty("--dur", [6, 9, 12][Math.floor(Math.random() * 3)] + "s");
+        inner.style.setProperty("--dd", (Math.floor(rand(0, 4)) * 0.75).toFixed(2) + "s");
         if (Math.random() < 0.5) {
           inner.innerHTML = smileySVG(palette[Math.floor(Math.random() * palette.length)],
             SMILEY_VARIANTS[Math.floor(Math.random() * SMILEY_VARIANTS.length)]);
@@ -463,6 +485,13 @@
       navEl.classList.remove("jump");
       void navEl.offsetWidth;
       navEl.classList.add("jump");
+    }
+
+    // 小火车“鸣笛”：跳转期间烟雾加速、投影加深
+    var trackEl = $("#trainTrack");
+    if (trackEl) {
+      trackEl.classList.add("express");
+      setTimeout(function () { trackEl.classList.remove("express"); }, 2300);
     }
 
     // 节奏：盖屏 ~1.05s → 落位 → 揭幕 ~1s（缓动连续，总时长更短更顺）

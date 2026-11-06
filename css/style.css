@@ -185,7 +185,7 @@ a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 5 5
   background:linear-gradient(160deg,var(--yellow),#FFB300);
   border-radius:18px;display:flex;align-items:center;justify-content:center;
   box-shadow:0 8px 0 var(--yellow-dark),0 18px 30px rgba(0,0,0,.32);
-  animation:floaty 5s ease-in-out infinite;
+  animation:floaty 6s ease-in-out infinite;
 }
 .avatar-studs{position:absolute;top:-12px;left:50%;transform:translateX(-50%);display:flex;gap:18px}
 .avatar-studs i{width:26px;height:13px;border-radius:8px 8px 4px 4px;background:var(--yellow);box-shadow:0 -3px 0 var(--yellow-dark)}
@@ -254,6 +254,15 @@ a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 5 5
 .brick-icon.green{background:var(--green)}
 .brick-icon.blue{background:var(--blue)}
 .brick-icon.navy{background:var(--navy)}
+/* 章节标题积木过场：小砖弹入 + 导轨滑出（轻量立体） */
+.brick-icon{transform:scale(.35) rotate(-14deg);opacity:0;transition:transform .55s cubic-bezier(.34,1.56,.64,1),opacity .35s linear}
+.reveal.in .brick-icon{transform:none;opacity:1}
+.head-line{transform:scaleX(0);transform-origin:left;transition:transform .9s cubic-bezier(.2,.8,.3,1) .18s}
+.reveal.in .head-line{transform:scaleX(1)}
+/* 章节跳转时小火车鸣笛加速 */
+.train-track.express .smoke circle{animation-duration:.8s}
+.train-track.express .lego-train{filter:drop-shadow(0 12px 18px rgba(11,42,91,.34))}
+.train-track .lego-train{transition:filter .4s ease}
 .section-sub{color:var(--ink-soft);margin:-16px 0 30px;font-size:15px}
 
 /* ---------- 通用积木卡片 ---------- */
@@ -358,11 +367,11 @@ a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 5 5
 }
 .float-brick::before{left:14px}
 .float-brick::after{right:14px}
-.b1{width:110px;height:56px;background:var(--yellow);top:12%;right:24%;animation:floatBrick 7s ease-in-out infinite}
-.b2{width:78px;height:46px;background:var(--red);top:30%;right:8%;animation:floatBrick 9s .6s ease-in-out infinite}
-.b3{width:92px;height:50px;background:var(--blue);bottom:22%;right:20%;animation:floatBrick 8s .3s ease-in-out infinite}
-.b4{width:64px;height:40px;background:var(--green);bottom:12%;right:6%;animation:floatBrick 10s .9s ease-in-out infinite}
-.b5{width:70px;height:42px;background:var(--navy);top:56%;right:38%;opacity:.25;animation:floatBrick 11s .2s ease-in-out infinite}
+.b1{width:110px;height:56px;background:var(--yellow);top:12%;right:24%;animation:floatBrick 6s ease-in-out infinite}
+.b2{width:78px;height:46px;background:var(--red);top:30%;right:8%;animation:floatBrick 9s .75s ease-in-out infinite}
+.b3{width:92px;height:50px;background:var(--blue);bottom:22%;right:20%;animation:floatBrick 12s 1.5s ease-in-out infinite}
+.b4{width:64px;height:40px;background:var(--green);bottom:12%;right:6%;animation:floatBrick 9s .75s ease-in-out infinite}
+.b5{width:70px;height:42px;background:var(--navy);top:56%;right:38%;opacity:.25;animation:floatBrick 6s ease-in-out infinite}
 @keyframes floatBrick{
   0%,100%{transform:translateY(0) rotate(-3deg)}
   50%{transform:translateY(-26px) rotate(4deg)}
@@ -704,20 +713,20 @@ a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 5 5
 .minifig .hand-l{transform-origin:5px 58px}
 .minifig .hand-r{transform-origin:59px 58px}
 
-/* — 待机身：呼吸周期 + 手腕微摆（--fig-delay 让整只小人同步相位）— */
+/* — 待机身：呼吸周期 + 手腕微摆（全部 3s 同拍，肢体不漂移）— */
 .minifig.bob{animation:figBob 3s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
 .minifig.bob .fig-head{animation:headBob 3s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
 .minifig.bob .arm-l{animation:armIdleL 3s ease-in-out infinite;animation-delay:calc(var(--fig-delay,0s) + .12s)}
 .minifig.bob .arm-r{animation:armIdleR 3s ease-in-out infinite;animation-delay:calc(var(--fig-delay,0s) + .12s)}
-.minifig.bob .hand-l{animation:handIdleL 3.6s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
-.minifig.bob .hand-r{animation:handIdleR 3.6s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
-/* — 挥手：举臂 + 手腕摆动 + 头部微倾，节奏像真人招手 — */
-.minifig.bob.wave .arm-r{animation:waveArm 3.4s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
-.minifig.bob.wave .hand-r{animation:waveHand 3.4s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
-.minifig.bob.wave .fig-head{animation:headWave 3.4s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
-.minifig.bob.wave-left .arm-l{animation:waveArmL 3.4s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
-.minifig.bob.wave-left .hand-l{animation:waveHandL 3.4s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
-.minifig.bob.wave-left .fig-head{animation:headWaveL 3.4s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
+.minifig.bob .hand-l{animation:handIdleL 3s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
+.minifig.bob .hand-r{animation:handIdleR 3s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
+/* — 挥手：与身体同拍 3s，头/臂/手不再各走各的 — */
+.minifig.bob.wave .arm-r{animation:waveArm 3s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
+.minifig.bob.wave .hand-r{animation:waveHand 3s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
+.minifig.bob.wave .fig-head{animation:headWave 3s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
+.minifig.bob.wave-left .arm-l{animation:waveArmL 3s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
+.minifig.bob.wave-left .hand-l{animation:waveHandL 3s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
+.minifig.bob.wave-left .fig-head{animation:headWaveL 3s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
 @keyframes figBob{0%,100%{transform:translateY(0) rotate(-.5deg)}50%{transform:translateY(-6px) rotate(.5deg)}}
 @keyframes headBob{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(2.2deg)}}
 @keyframes armIdleL{0%,100%{transform:rotate(4.5deg)}50%{transform:rotate(-4.5deg)}}
@@ -761,15 +770,15 @@ a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 5 5
 }
 @keyframes headWaveL{0%,100%{transform:rotate(1.5deg)}30%,74%{transform:rotate(-3.5deg)}}
 
-/* — 行走：真实步态（对侧手脚反相 · 身体每步两次起伏 · 手臂滞后 .07s）— */
-.minifig.walk{animation:walkBob 1.2s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
-.minifig.walk .leg-l{animation:walkLegL 1.2s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
-.minifig.walk .leg-r{animation:walkLegR 1.2s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
-.minifig.walk .arm-l{animation:walkArmL 1.2s ease-in-out infinite;animation-delay:calc(var(--fig-delay,0s) + .07s)}
-.minifig.walk .arm-r{animation:walkArmR 1.2s ease-in-out infinite;animation-delay:calc(var(--fig-delay,0s) + .07s)}
-.minifig.walk .hand-l{animation:walkHand 1.2s ease-in-out infinite;animation-delay:calc(var(--fig-delay,0s) + .12s)}
-.minifig.walk .hand-r{animation:walkHand 1.2s ease-in-out infinite;animation-delay:calc(var(--fig-delay,0s) + .12s)}
-.minifig.walk .fig-head{animation:walkHead 1.2s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
+/* — 行走：真实步态（1.5s = 待机的一半拍，与背景呼吸同频）— */
+.minifig.walk{animation:walkBob 1.5s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
+.minifig.walk .leg-l{animation:walkLegL 1.5s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
+.minifig.walk .leg-r{animation:walkLegR 1.5s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
+.minifig.walk .arm-l{animation:walkArmL 1.5s ease-in-out infinite;animation-delay:calc(var(--fig-delay,0s) + .07s)}
+.minifig.walk .arm-r{animation:walkArmR 1.5s ease-in-out infinite;animation-delay:calc(var(--fig-delay,0s) + .07s)}
+.minifig.walk .hand-l{animation:walkHand 1.5s ease-in-out infinite;animation-delay:calc(var(--fig-delay,0s) + .12s)}
+.minifig.walk .hand-r{animation:walkHand 1.5s ease-in-out infinite;animation-delay:calc(var(--fig-delay,0s) + .12s)}
+.minifig.walk .fig-head{animation:walkHead 1.5s ease-in-out infinite;animation-delay:var(--fig-delay,0s)}
 @keyframes walkLegL{0%,100%{transform:rotate(24deg)}50%{transform:rotate(-24deg)}}
 @keyframes walkLegR{0%,100%{transform:rotate(-24deg)}50%{transform:rotate(24deg)}}
 @keyframes walkArmL{0%,100%{transform:rotate(-19deg)}50%{transform:rotate(19deg)}}
@@ -894,7 +903,6 @@ a,button,input,textarea,label,select{cursor:url("../assets/cursor-hand.svg") 5 5
   opacity:0;transform:translateY(38px) rotate(-.8deg);
   transition:opacity .8s cubic-bezier(.2,.8,.3,1),transform .8s cubic-bezier(.2,1.05,.3,1);
   transition-delay:var(--d,0s);
-  will-change:opacity,transform;
 }
 .reveal.in{opacity:1;transform:translateY(0) rotate(0deg)}
 .project-card.reveal{transform:translateY(52px) scale(.94) rotate(-1.2deg)}
