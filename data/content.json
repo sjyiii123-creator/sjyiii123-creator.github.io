@@ -76,31 +76,31 @@
   ],
   "skills": [
     {
-      "group": "算法与机器学习",
+      "group": "机器学习",
       "items": [
         {
-          "name": "Python / NumPy / Pandas",
-          "level": 95
+          "name": "CNN",
+          "level": 92
         },
         {
           "name": "PyTorch / TensorFlow",
           "level": 90
         },
         {
-          "name": "推荐系统 / 排序学习",
-          "level": 92
+          "name": "相机模型与位姿估计",
+          "level": 90
         },
         {
-          "name": "特征工程 / 树模型",
-          "level": 88
+          "name": "时序建模与序列预测",
+          "level": 90
         }
       ]
     },
     {
-      "group": "大模型与 NLP",
+      "group": "深度学习与强化学习",
       "items": [
         {
-          "name": "Transformer / BERT / GPT",
+          "name": "卷积神经网络（CNN）",
           "level": 90
         },
         {
