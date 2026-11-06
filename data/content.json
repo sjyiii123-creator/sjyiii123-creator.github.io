@@ -1,16 +1,16 @@
 {
   "profile": {
     "name": "李正淼",
-    "title": "算法工程师",
+    "title": "算法研究生",
     "motto": "用算法把复杂的世界，变成可计算的问题",
     "avatarText": "Lee",
-    "sidebarSlogan": "Algorithm Engineer · LEGO Builder"
+    "sidebarSlogan": "Algorithm Engineer ·"
   },
   "welcome": {
     "eyebrow": "WELCOME TO MY LEGO WORLD",
     "title": "你好，我是李正淼",
-    "subtitle": "一名热爱创造的算法工程师。我专注于推荐系统、大模型应用与机器学习工程化落地。喜欢把论文里的公式，变成线上真实跑着的服务；也喜欢把复杂的问题，拆成可以迭代验证的小步骤。 下滑开始探索 →",
-    "button": "开始探索吧"
+    "subtitle": "欢迎访问我的个人简历网站。我是一名专注于三维视觉与世界模型的电子信息硕士， 习惯将论文中的想法，变成实际中需要的实物，有着天马行空的Ideal！这里记录我的项目、实验与思考还有各种幻想，欢迎交流。Wellcome My World  →",
+    "button": "一起来探索吧"
   },
   "about": {
     "title": "关于我",
