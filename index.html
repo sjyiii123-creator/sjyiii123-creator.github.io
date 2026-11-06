@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.min.css?v=f62241c8">
+<link rel="stylesheet" href="css/style.min.css?v=4ff7f633">
 </head>
 <body>
 
@@ -179,21 +179,177 @@
       <div class="brick-prop"></div>
       <div class="fig-slot" data-fig="heroBuild"></div>
     </div>
-    <div class="hero-body">
-      <p class="hero-eyebrow reveal"><span class="eyebrow-dot"></span>HELLO, I'M</p>
-      <h1 class="hero-name reveal" id="heroName">李正淼</h1>
-      <div class="hero-role-wrap reveal">
-        <h2 class="hero-role" id="heroRole">
-          <span class="role-studs" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span id="heroRoleText">算法工程师</span>
-        </h2>
+    <div class="hero-grid">
+      <div class="hero-body">
+        <p class="hero-eyebrow reveal"><span class="eyebrow-dot"></span>HELLO, I'M</p>
+        <h1 class="hero-name reveal" id="heroName">李正淼</h1>
+        <div class="hero-role-wrap reveal">
+          <h2 class="hero-role" id="heroRole">
+            <span class="role-studs" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span id="heroRoleText">算法工程师</span>
+          </h2>
+        </div>
+        <p class="hero-motto reveal" id="heroMotto">"把复杂的模型，拼成简单的积木"</p>
+        <div class="hero-cta reveal">
+          <a href="#projects" class="btn btn-yellow"><span class="btn-studs"><i></i><i></i><i></i><i></i></span>看看作品</a>
+          <a href="#contact" class="btn btn-navy"><span class="btn-studs"><i></i><i></i><i></i><i></i></span>联系我</a>
+        </div>
+        <div class="hero-stats reveal" id="heroStats"></div>
       </div>
-      <p class="hero-motto reveal" id="heroMotto">"把复杂的模型，拼成简单的积木"</p>
-      <div class="hero-cta reveal">
-        <a href="#projects" class="btn btn-yellow"><span class="btn-studs"><i></i><i></i><i></i><i></i></span>看看作品</a>
-        <a href="#contact" class="btn btn-navy"><span class="btn-studs"><i></i><i></i><i></i><i></i></span>联系我</a>
+
+      <!-- ============ 动态 LEGO 城堡风格个人照片相框 ============ -->
+      <div class="castle-stage reveal" id="castleStage">
+        <!-- 悬浮护卫积木装饰 -->
+        <div class="castle-orb orb-1" aria-hidden="true"></div>
+        <div class="castle-orb orb-2" aria-hidden="true"></div>
+
+        <div class="castle-frame" id="castleFrame">
+          <!-- 顶部双子塔尖、动态飘扬乐高皇家旗帜与城墙垛口 SVG -->
+          <svg class="castle-crown-svg" viewBox="0 0 380 96" aria-hidden="true">
+            <defs>
+              <linearGradient id="cStone" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1E4B8F"/><stop offset="100%" stop-color="#0B2A5B"/>
+              </linearGradient>
+              <linearGradient id="cGold" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#FFE680"/><stop offset="55%" stop-color="#FFCA1A"/><stop offset="100%" stop-color="#D49B00"/>
+              </linearGradient>
+              <linearGradient id="cRed" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#F63E4C"/><stop offset="100%" stop-color="#C81624"/>
+              </linearGradient>
+              <linearGradient id="cSlate" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#E2EBF8"/><stop offset="100%" stop-color="#C4D4EC"/>
+              </linearGradient>
+            </defs>
+
+            <!-- 左塔旗杆与动态飘扬旗帜 -->
+            <line x1="44" y1="6" x2="44" y2="34" stroke="#0B2A5B" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="44" cy="6" r="3.5" fill="url(#cGold)"/>
+            <g class="castle-flag flag-l">
+              <path d="M45 8 Q62 4 78 13 Q62 21 45 18 Z" fill="url(#cRed)"/>
+              <circle cx="56" cy="13" r="2.5" fill="#FFCA1A"/>
+            </g>
+
+            <!-- 右塔旗杆与动态飘扬旗帜 -->
+            <line x1="336" y1="6" x2="336" y2="34" stroke="#0B2A5B" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="336" cy="6" r="3.5" fill="url(#cGold)"/>
+            <g class="castle-flag flag-r">
+              <path d="M337 8 Q354 4 370 13 Q354 21 337 18 Z" fill="url(#cGold)"/>
+              <circle cx="348" cy="13" r="2.5" fill="#E62432"/>
+            </g>
+
+            <!-- 左角楼塔顶（阶梯式乐高锥顶） -->
+            <rect x="28" y="30" width="32" height="8" rx="2.5" fill="url(#cRed)"/>
+            <rect x="20" y="38" width="48" height="10" rx="3" fill="url(#cRed)"/>
+            <rect x="14" y="48" width="60" height="48" rx="4" fill="url(#cStone)"/>
+            <rect x="22" y="54" width="18" height="8" rx="2" fill="url(#cSlate)" opacity="0.28"/>
+            <rect x="46" y="66" width="18" height="8" rx="2" fill="url(#cSlate)" opacity="0.22"/>
+            <!-- 左角楼垛口凸点 -->
+            <rect x="18" y="43" width="12" height="5" rx="2" fill="url(#cGold)"/>
+            <rect x="38" y="43" width="12" height="5" rx="2" fill="url(#cGold)"/>
+            <rect x="58" y="43" width="12" height="5" rx="2" fill="url(#cGold)"/>
+
+            <!-- 右角楼塔顶（阶梯式乐高锥顶） -->
+            <rect x="320" y="30" width="32" height="8" rx="2.5" fill="url(#cRed)"/>
+            <rect x="312" y="38" width="48" height="10" rx="3" fill="url(#cRed)"/>
+            <rect x="306" y="48" width="60" height="48" rx="4" fill="url(#cStone)"/>
+            <rect x="340" y="54" width="18" height="8" rx="2" fill="url(#cSlate)" opacity="0.28"/>
+            <rect x="316" y="66" width="18" height="8" rx="2" fill="url(#cSlate)" opacity="0.22"/>
+            <!-- 右角楼垛口凸点 -->
+            <rect x="310" y="43" width="12" height="5" rx="2" fill="url(#cGold)"/>
+            <rect x="330" y="43" width="12" height="5" rx="2" fill="url(#cGold)"/>
+            <rect x="350" y="43" width="12" height="5" rx="2" fill="url(#cGold)"/>
+
+            <!-- 中央城墙垛口（Merlons & Crenels） -->
+            <rect x="74" y="62" width="232" height="34" fill="url(#cStone)"/>
+            <!-- 5 座乐高城垛方块 + 顶部金色凸点 -->
+            <g class="castle-merlons">
+              <rect x="82" y="46" width="32" height="18" rx="3" fill="url(#cSlate)"/>
+              <rect x="90" y="40" width="16" height="6" rx="2" fill="url(#cGold)"/>
+
+              <rect x="128" y="46" width="32" height="18" rx="3" fill="url(#cSlate)"/>
+              <rect x="136" y="40" width="16" height="6" rx="2" fill="url(#cRed)"/>
+
+              <rect x="174" y="42" width="32" height="22" rx="3" fill="url(#cGold)"/>
+              <rect x="182" y="36" width="16" height="6" rx="2" fill="url(#cRed)"/>
+
+              <rect x="220" y="46" width="32" height="18" rx="3" fill="url(#cSlate)"/>
+              <rect x="228" y="40" width="16" height="6" rx="2" fill="url(#cRed)"/>
+
+              <rect x="266" y="46" width="32" height="18" rx="3" fill="url(#cSlate)"/>
+              <rect x="274" y="40" width="16" height="6" rx="2" fill="url(#cGold)"/>
+            </g>
+
+            <!-- 中央皇家乐高盾牌徽章 -->
+            <path d="M175 56 L205 56 L205 74 C205 84 190 91 190 91 C190 91 175 84 175 74 Z" fill="url(#cRed)" stroke="#FFCA1A" stroke-width="2.2"/>
+            <polygon points="190,62 193,69 200,69 194.5,73 196.5,80 190,75.5 183.5,80 185.5,73 180,69 187,69" fill="#FFCA1A"/>
+          </svg>
+
+          <!-- 城墙中部：左右积木立柱 + 动态火把 + 中央拱门个人照片槽 -->
+          <div class="castle-body">
+            <!-- 左侧城墙立柱与动态火把 -->
+            <div class="castle-pillar pillar-l" aria-hidden="true">
+              <span class="wall-brick b-slate"></span>
+              <span class="wall-brick b-navy"></span>
+              <span class="wall-brick b-gold"></span>
+              <span class="wall-brick b-slate"></span>
+              <span class="wall-brick b-navy"></span>
+              <span class="wall-brick b-slate"></span>
+              <div class="castle-torch">
+                <div class="torch-flame"><i></i><i></i></div>
+                <div class="torch-holder"></div>
+              </div>
+            </div>
+
+            <!-- 城堡拱门相框核心区 -->
+            <div class="castle-viewport" id="castleViewport" title="点击上传或更换个人照片">
+              <!-- 城门开合过场栅栏 -->
+              <div class="castle-gate-shutter" id="castleGateShutter" aria-hidden="true"></div>
+              <img id="heroPhotoImg" src="assets/avatar-placeholder.svg" alt="李正淼个人照片">
+              <div class="castle-photo-overlay">
+                <span>📷 点击更换个人照片</span>
+              </div>
+            </div>
+
+            <!-- 右侧城墙立柱与动态火把 -->
+            <div class="castle-pillar pillar-r" aria-hidden="true">
+              <span class="wall-brick b-slate"></span>
+              <span class="wall-brick b-navy"></span>
+              <span class="wall-brick b-gold"></span>
+              <span class="wall-brick b-slate"></span>
+              <span class="wall-brick b-navy"></span>
+              <span class="wall-brick b-slate"></span>
+              <div class="castle-torch">
+                <div class="torch-flame"><i></i><i></i></div>
+                <div class="torch-holder"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 城堡底座：动态旋转乐高机械齿轮 + 铭牌与上传按钮 -->
+          <div class="castle-base">
+            <div class="castle-base-studs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <!-- 左旋转齿轮 -->
+            <svg class="castle-gear gear-l" viewBox="0 0 36 36" aria-hidden="true">
+              <circle cx="18" cy="18" r="11" fill="#FFCA1A" stroke="#0B2A5B" stroke-width="2"/>
+              <circle cx="18" cy="18" r="14" fill="none" stroke="#FFCA1A" stroke-width="4" stroke-dasharray="5 4"/>
+              <circle cx="18" cy="18" r="4.5" fill="#0B2A5B"/>
+            </svg>
+
+            <div class="castle-base-info">
+              <span class="castle-tag">🧱 LEGO CASTLE PORTRAIT</span>
+              <button type="button" class="castle-upload-btn" id="castleUploadBtn">📷 上传/更换照片</button>
+              <input type="file" id="heroPhotoInput" accept="image/*" hidden>
+            </div>
+
+            <!-- 右旋转齿轮 -->
+            <svg class="castle-gear gear-r" viewBox="0 0 36 36" aria-hidden="true">
+              <circle cx="18" cy="18" r="11" fill="#FFCA1A" stroke="#0B2A5B" stroke-width="2"/>
+              <circle cx="18" cy="18" r="14" fill="none" stroke="#FFCA1A" stroke-width="4" stroke-dasharray="5 4"/>
+              <circle cx="18" cy="18" r="4.5" fill="#0B2A5B"/>
+            </svg>
+          </div>
+        </div>
       </div>
-      <div class="hero-stats reveal" id="heroStats"></div>
     </div>
   </section>
 
@@ -351,6 +507,6 @@
   </div>
 </div>
 
-<script src="js/app.min.js?v=25f659ff"></script>
+<script src="js/app.min.js?v=e83861f2"></script>
 </body>
 </html>
