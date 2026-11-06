@@ -76,6 +76,7 @@
      各面板渲染
      ============================================================ */
   function renderProfile() {
+    var pImg = getPath(state, "profile.photo") || "assets/avatar-placeholder.svg";
     $("#p-profile").innerHTML = card(null,
       '<div class="grid">' +
       field("姓名", "profile.name") +
@@ -83,6 +84,11 @@
       field("座右铭", "profile.motto", { full: true }) +
       field("侧边栏署名（英文）", "profile.sidebarSlogan") +
       field("头像文字（1-2 字）", "profile.avatarText") +
+      '<div class="img-row field full" style="margin-top:8px">' +
+      '<img class="img-preview" src="' + esc(pImg) + '" alt="个人照片预览" style="width:110px;height:130px;object-fit:cover">' +
+      '<div class="field" style="flex:1;min-width:220px"><label>个人照片（首屏动态 LEGO 城堡相框 · 可直接上传本地照片或填链接）</label>' +
+      '<input type="file" accept="image/*" data-upload="profile.photo">' +
+      '<input type="text" data-path="profile.photo" value="' + esc(pImg) + '" style="margin-top:8px"></div></div>' +
       field("页脚文字", "footer", { full: true }) +
       "</div>");
   }
