@@ -1,24 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <!-- 乐高小人手爪光标：C 型爪口朝左上（点击热点 5,5），手臂斜向右下 -->
   <defs>
-    <linearGradient id="armG" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#FFE58A"/>
-      <stop offset=".45" stop-color="#FFC400"/>
-      <stop offset="1" stop-color="#D9A400"/>
+    <filter id="cShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.2" flood-color="#0B2A5B" flood-opacity="0.28"/>
+    </filter>
+    <linearGradient id="cGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFE885"/>
+      <stop offset="50%" stop-color="#FFCA1A"/>
+      <stop offset="100%" stop-color="#DF9F00"/>
     </linearGradient>
-    <linearGradient id="ringG" x1="1" y1="1" x2="0" y2="0">
-      <stop offset="0" stop-color="#D9A400"/>
-      <stop offset=".5" stop-color="#FFC400"/>
-      <stop offset="1" stop-color="#FFE58A"/>
+    <linearGradient id="cSleeve" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1E4E96"/>
+      <stop offset="100%" stop-color="#0B2A5B"/>
     </linearGradient>
   </defs>
-  <!-- 手臂（圆柱，斜 45° 接入爪环外缘） -->
-  <path d="M18 18 L27 27" stroke="#B8860B" stroke-width="10.6" stroke-linecap="round" fill="none"/>
-  <path d="M18 18 L27 27" stroke="url(#armG)" stroke-width="8" stroke-linecap="round" fill="none"/>
-  <!-- C 型爪环：260° 圆弧，开口 100° 朝左上，圆端收口 -->
-  <path d="M13.1 5.63 A6.9 6.9 0 1 1 5.63 13.1" stroke="#B8860B" stroke-width="7.2" stroke-linecap="round" fill="none"/>
-  <path d="M13.1 5.63 A6.9 6.9 0 1 1 5.63 13.1" stroke="url(#ringG)" stroke-width="4.6" stroke-linecap="round" fill="none"/>
-  <!-- 高光 -->
-  <path d="M12.2 7.6 A5.4 5.4 0 0 1 16.4 11.2" stroke="#FFF3C4" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".85"/>
-  <path d="M20.4 20.4 L24.8 24.8" stroke="#FFF3C4" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".7"/>
+  <g filter="url(#cShadow)">
+    <!-- 袖口 -->
+    <path d="M21 25 L26 30 L30 26 L25 21 Z" fill="url(#cSleeve)" stroke="#091E40" stroke-width="1" stroke-linejoin="round"/>
+    <!-- 手腕圆柱 -->
+    <path d="M16.5 16.5 L23 23" stroke="#C88D00" stroke-width="6.4" stroke-linecap="round"/>
+    <path d="M16.5 16.5 L23 23" stroke="url(#cGold)" stroke-width="4.8" stroke-linecap="round"/>
+    <!-- C型乐高夹爪（开口朝左上热点 6,6） -->
+    <path d="M13.5 5.2 A7.2 7.2 0 1 1 5.2 13.5" fill="none" stroke="#C88D00" stroke-width="5.8" stroke-linecap="round"/>
+    <path d="M13.5 5.2 A7.2 7.2 0 1 1 5.2 13.5" fill="none" stroke="url(#cGold)" stroke-width="4.2" stroke-linecap="round"/>
+    <!-- 柔和反光 -->
+    <path d="M13.2 7.2 A5.4 5.4 0 0 1 17.2 12.5" fill="none" stroke="#FFF9DB" stroke-width="1.3" stroke-linecap="round" opacity="0.85"/>
+  </g>
 </svg>
