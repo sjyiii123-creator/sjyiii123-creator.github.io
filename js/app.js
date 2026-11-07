@@ -857,34 +857,142 @@
     }
   }
 
+  var initialized = false;
   function startWithData(data) {
     render(data);
-    initFigures();
-    initDecor();
-    initWelcome();
-    initReveal();
-    initTrain();
-    initNav();
-    initForm();
+    if (!initialized) {
+      initialized = true;
+      initFigures();
+      initDecor();
+      initWelcome();
+      initReveal();
+      initTrain();
+      initNav();
+      initForm();
+    } else {
+      revealAll();
+    }
   }
 
+  function b64decodeUtf8(b64) {
+    var clean = String(b64 || "").replace(/\s+/g, "");
+    var bin = atob(clean);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder("utf-8").decode(bytes);
+  }
+
+  /* 监听后台实时修改/发布广播（同浏览器打开时 0ms 无刷新实时热更新！） */
+  function initRealtimeListeners() {
+    try {
+      if ("BroadcastChannel" in window) {
+        var bc = new BroadcastChannel("lego_resume_sync");
+        bc.onmessage = function (ev) {
+          if (ev.data && ev.data.type === "CONTENT_UPDATED" && ev.data.data) {
+            startWithData(ev.data.data);
+          }
+        };
+      }
+      window.addEventListener("storage", function (ev) {
+        if ((ev.key === "lego_live_content" || ev.key === "lego_draft") && ev.newValue) {
+          try {
+            var newData = JSON.parse(ev.newValue);
+            if (newData && newData.profile) startWithData(newData);
+          } catch (err) {}
+        }
+      });
+    } catch (e) {}
+  }
+
+  /* 优先直连 GitHub 实时 API + 时间戳防缓存拉取，彻底解决 GitHub Pages CDN 缓存不更新问题 */
   function boot() {
+    initRealtimeListeners();
+
+    var localLive = null;
+    try {
+      var raw = localStorage.getItem("lego_live_content") || localStorage.getItem("lego_draft");
+      if (raw) localLive = JSON.parse(raw);
+    } catch (e) {}
+
     if (window.__INLINE_CONTENT_JSON) {
-      startWithData(window.__INLINE_CONTENT_JSON);
+      var baseData = window.__INLINE_CONTENT_JSON;
+      if (localLive && (localLive._updatedAt || 0) >= (baseData._updatedAt || 0)) {
+        startWithData(localLive);
+      } else {
+        startWithData(baseData);
+      }
+      // 后台异步拉取 GitHub 实时最新数据并自动热更新
+      fetchFromGitHubAPI().then(function (remoteData) {
+        if (remoteData && (!C || (remoteData._updatedAt || 0) >= (C._updatedAt || 0))) {
+          startWithData(remoteData);
+        }
+      }).catch(function () {});
       return;
     }
-    fetch("data/content.json")
-      .then(function (r) {
-        if (!r.ok) throw new Error("content.json 加载失败");
-        return r.json();
+
+    if (localLive && localLive.profile) {
+      startWithData(localLive);
+    }
+
+    // 同时发起 GitHub API 实时查询与防缓存静态 JSON 请求
+    fetchFromGitHubAPI()
+      .then(function (apiData) {
+        if (apiData && apiData.profile) {
+          if (!localLive || (apiData._updatedAt || 0) >= (localLive._updatedAt || 0)) {
+            startWithData(apiData);
+          }
+          return;
+        }
+        throw new Error("fallback to static json");
       })
-      .then(startWithData)
+      .catch(function () {
+        return fetch("data/content.json?t=" + Date.now(), {
+          cache: "no-store",
+          headers: { "Pragma": "no-cache", "Cache-Control": "no-cache" }
+        })
+          .then(function (r) {
+            if (!r.ok) throw new Error("content.json 加载失败");
+            return r.json();
+          })
+          .then(function (staticData) {
+            if (!localLive || (staticData._updatedAt || 0) >= (localLive._updatedAt || 0)) {
+              startWithData(staticData);
+            }
+          });
+      })
       .catch(function (err) {
-        console.error(err);
-        document.body.innerHTML =
-          '<div style="padding:60px;font-family:sans-serif;text-align:center">' +
-          "<h2>内容加载失败</h2><p>请通过 HTTP 服务访问本站（如 GitHub Pages），而非直接双击打开文件。</p></div>";
+        if (!initialized) {
+          console.error(err);
+          document.body.innerHTML =
+            '<div style="padding:60px;font-family:sans-serif;text-align:center">' +
+            "<h2>内容加载失败</h2><p>请通过 HTTP 服务访问本站（如 GitHub Pages），而非直接双击打开文件。</p></div>";
+        }
       });
+  }
+
+  function fetchFromGitHubAPI() {
+    var repo = "sjyiii123-creator/sjyiii123-creator.github.io";
+    try {
+      var savedRepo = localStorage.getItem("lego_gh_repo");
+      if (savedRepo && /^[^/]+\/[^/]+$/.test(savedRepo.trim())) repo = savedRepo.trim();
+    } catch (e) {}
+    var headers = { Accept: "application/vnd.github+json" };
+    try {
+      var tk = localStorage.getItem("lego_gh_token");
+      if (tk && tk.trim()) headers.Authorization = "Bearer " + tk.trim();
+    } catch (e) {}
+    return fetch("https://api.github.com/repos/" + repo + "/contents/data/content.json?t=" + Date.now(), {
+      cache: "no-store",
+      headers: headers
+    }).then(function (r) {
+      if (!r.ok) throw new Error("API status " + r.status);
+      return r.json();
+    }).then(function (meta) {
+      if (meta && meta.content) {
+        return JSON.parse(b64decodeUtf8(meta.content));
+      }
+      throw new Error("Empty content");
+    });
   }
 
   if (document.readyState === "loading") {
