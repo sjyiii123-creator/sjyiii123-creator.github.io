@@ -86,7 +86,7 @@
         },
         {
           "name": "自监督与预训练范式 ",
-          "level": 90
+          "level": 86
         },
         {
           "name": "特征工程 / 树模型",
@@ -231,5 +231,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724088797
+  "_updatedAt": 1794724091824
 }
