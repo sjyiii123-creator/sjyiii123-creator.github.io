@@ -48,7 +48,8 @@
       "tags": [
         "光电参数分析",
         "端到端联调验证",
-        "Minitab / JMP"
+        "Minitab / JMP",
+        "跨部门协同"
       ]
     },
     {
@@ -247,5 +248,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794722843242
+  "_updatedAt": 1794722849452
 }
