@@ -131,8 +131,8 @@
           "level": 88
         },
         {
-          "name": "新技能",
-          "level": 80
+          "name": "高斯基元的语义属性扩展",
+          "level": 88
         }
       ]
     }
@@ -231,5 +231,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724305158
+  "_updatedAt": 1794724318128
 }
