@@ -67,7 +67,8 @@
       "tags": [
         "骨架识别（ST-GCN）",
         "关键点检测（HRNet/OpenPose）",
-        "注意力机制"
+        "注意力机制",
+        "Vision Transformer"
       ]
     },
     {
@@ -247,5 +248,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794723063562
+  "_updatedAt": 1794723073105
 }
