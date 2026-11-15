@@ -34,8 +34,8 @@
   "experience": [
     {
       "company": "海信视像科技股份有限公司",
-      "role": "高级算法工程师 / 算法小组负责人",
-      "period": "2022.07 — 至今",
+      "role": "测试工程师",
+      "period": "202.07 — 至今",
       "location": "北京",
       "desc": "负责大模型应用与推荐算法方向，带领 5 人算法小组，支撑公司核心业务的智能化升级。",
       "bullets": [
@@ -248,5 +248,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794722669549
+  "_updatedAt": 1794722680365
 }
