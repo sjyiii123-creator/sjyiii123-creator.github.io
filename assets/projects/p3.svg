@@ -20,7 +20,6 @@
     <circle cx="22" cy="21" r="8" fill="#FFFFFF" opacity="0.55"/>
     <circle cx="22" cy="21" r="6.5" fill="none" stroke="#0B2A5B" stroke-opacity="0.05" stroke-width="1"/>
   </pattern>
-  <!-- Studio ABS plastic gradients -->
   <linearGradient id="redBody" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0%" stop-color="#F43642"/><stop offset="100%" stop-color="#D61F2C"/>
   </linearGradient>
