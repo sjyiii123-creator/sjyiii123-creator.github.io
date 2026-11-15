@@ -1,21 +1,106 @@
 /* ============================================================
-   LEGO 简历 · 站长后台 admin.js (Password Reset & Auto-Realtime Publish Edition)
-   管理密码重置 (lego2026) + 每次修改自动实时同步前台与 GitHub 仓库
+   LEGO 简历 · 站长专属安全后台 admin.js
+   SHA-256 哈希密码校验 + 仅限站长 GitHub Token 权限验证重置 + 每次修改实时同步
    ============================================================ */
 (function () {
   "use strict";
 
-  var DEFAULT_PASS = "lego2026";
+  // 默认密码的 SHA-256 哈希值（不在前端源码中暴露任何明文密码）
+  var DEFAULT_PASS_HASH = "7653dd7b65ca98d20828126eeb4799e548e93b4f715975d15ee3d6fada20b155";
   var DEFAULT_REPO = "sjyiii123-creator/sjyiii123-creator.github.io";
   var LS = {
-    pass: "lego_admin_pass_v2",
+    passHash: "lego_admin_pass_hash_v3",
     token: "lego_gh_token",
     repo: "lego_gh_repo",
     draft: "lego_draft",
     live: "lego_live_content"
   };
 
-  try { localStorage.removeItem("lego_admin_pass"); } catch (e) {}
+  // 清理旧版本的明文密码缓存键，确保已重置生效且不留明文
+  try {
+    localStorage.removeItem("lego_admin_pass");
+    localStorage.removeItem("lego_admin_pass_v2");
+  } catch (e) {}
+
+  // 纯 JS 同步 SHA-256 实现（兼容所有浏览器与协议环境）
+  function sha256(ascii) {
+    function rightRotate(value, amount) {
+      return (value >>> amount) | (value << (32 - amount));
+    }
+    var mathPow = Math.pow;
+    var maxWord = mathPow(2, 32);
+    var lengthProperty = "length";
+    var i, j;
+    var result = "";
+    var words = [];
+    var utf8 = unescape(encodeURIComponent(String(ascii)));
+    var asciiBitLength = utf8[lengthProperty] * 8;
+    var hash = sha256.h = sha256.h || [];
+    var k = sha256.k = sha256.k || [];
+    var primeCounter = k[lengthProperty];
+    var isComposite = {};
+    for (var candidate = 2; primeCounter < 64; candidate++) {
+      if (!isComposite[candidate]) {
+        for (i = 0; i < 313; i += candidate) {
+          isComposite[i] = candidate;
+        }
+        hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+        k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+      }
+    }
+    utf8 += "\x80";
+    while (utf8[lengthProperty] % 64 - 56) utf8 += "\x00";
+    for (i = 0; i < utf8[lengthProperty]; i++) {
+      j = utf8.charCodeAt(i);
+      if (j >> 8) return "";
+      words[i >> 2] |= j << ((3 - i) % 4) * 8;
+    }
+    words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+    words[words[lengthProperty]] = (asciiBitLength);
+    var w = [];
+    var h = hash.slice(0, 8);
+    for (j = 0; j < words[lengthProperty];) {
+      var oldHash = h.slice(0);
+      for (i = 0; i < 64; i++) {
+        var i2 = i + j;
+        var w15 = w[i - 15], w2 = w[i - 2];
+        var a = h[0], e = h[4];
+        var temp1 = h[7]
+          + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
+          + ((e & h[5]) ^ ((~e) & h[6]))
+          + k[i]
+          + (w[i] = (i < 16) ? words[i2] : (
+              w[i - 16]
+              + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3))
+              + w[i - 7]
+              + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
+            ) | 0
+          );
+        var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
+          + ((a & h[1]) ^ (a & h[2]) ^ (h[1] & h[2]));
+        h = [(temp1 + temp2) | 0].concat(h);
+        h[4] = (h[4] + temp1) | 0;
+        h.pop();
+      }
+      for (i = 0; i < 8; i++) h[i] = (h[i] + oldHash[i]) | 0;
+      j += 16;
+    }
+    for (i = 0; i < 8; i++) {
+      for (j = 3; j + 1; j--) {
+        var b = (h[i] >> (j * 8)) & 255;
+        result += ((b < 16) ? 0 : "") + b.toString(16);
+      }
+    }
+    return result;
+  }
+
+  function verifyPassword(inputPass) {
+    var clean = String(inputPass || "").trim();
+    if (!clean) return false;
+    var inputHash = sha256(clean);
+    var savedHash = localStorage.getItem(LS.passHash) || DEFAULT_PASS_HASH;
+    return inputHash === savedHash;
+  }
 
   var state = null;
   var dirty = false;
@@ -165,7 +250,7 @@
       field("头像文字（1-2 字）", "profile.avatarText") +
       '<div class="img-row field full" style="margin-top:8px">' +
       '<img class="img-preview" src="' + esc(pImg) + '" alt="个人照片预览" style="width:110px;height:130px;object-fit:cover">' +
-      '<div class="field" style="flex:1;min-width:220px"><label>个人照片（首屏动态 LEGO 城堡相框 · 上传自动压缩并实时同步）</label>' +
+      '<div class="field" style="flex:1;min-width:220px"><label>个人照片（首屏动态 LEGO 城堡相框 · 仅站长可在此上传更换并自动同步）</label>' +
       '<input type="file" accept="image/*" data-upload="profile.photo">' +
       '<input type="text" data-path="profile.photo" value="' + esc(dispPath) + '" placeholder="图片路径或 URL" style="margin-top:8px"></div></div>' +
       field("页脚文字", "footer", { full: true }) +
@@ -280,16 +365,15 @@
       field("GitHub 主页链接", "contact.github") +
       field("所在地", "contact.location") +
       "</div>" +
-      '<div class="note" style="margin-top:18px">🔒 访客打开网站时<b>只能查看并联系你</b>（发邮件 / 打电话 / 留言），没有任何编辑入口。</div>');
+      '<div class="note" style="margin-top:18px">🔒 访客打开网站时<b>只能查看并联系你</b>（发邮件 / 打电话 / 留言），没有任何公开重置或未授权编辑权限。</div>');
   }
 
   function renderSettings() {
     var token = localStorage.getItem(LS.token) || "";
     var repo = localStorage.getItem(LS.repo) || DEFAULT_REPO;
-    var curPass = localStorage.getItem(LS.pass) || DEFAULT_PASS;
     $("#p-settings").innerHTML = card(null,
       '<div class="grid">' +
-      '<div class="field full"><label>GitHub Token（只保存在本浏览器，开启底部「自动实时发布」后每次修改都会自动同步到 GitHub）</label>' +
+      '<div class="field full"><label>站长专属 GitHub Token（只保存在本机浏览器，开启底部「自动实时发布」后每次修改都会自动同步到 GitHub）</label>' +
       '<input type="password" id="setToken" value="' + esc(token) + '" placeholder="ghp_ 或 github_pat_ 开头的 Token"></div>' +
       '<div class="field full"><label>目标仓库（格式：用户名/仓库名）</label>' +
       '<input type="text" id="setRepo" value="' + esc(repo) + '" placeholder="例如：sjyiii123-creator/sjyiii123-creator.github.io"></div>' +
@@ -298,15 +382,15 @@
       '<button type="button" class="btn btn-navy" id="btnSaveCfg">💾 保存配置</button>' +
       '<button type="button" class="btn btn-yellow" id="btnVerify">🔍 验证 Token 并自动找仓库</button>' +
       "</div>" +
-      '<div class="note" style="margin-top:20px"><b>⚡ 每次修改自动实时更新机制：</b><br>1. 你在输入框每改一个字，同浏览器的前台页面会通过 <code>BroadcastChannel + localStorage</code> <b>0 毫秒无刷新实时更新</b>。<br>2. 只要填写了 Token 并勾选底部的「⚡ 修改后自动实时发布到 GitHub」，停止输入 1 秒后系统会自动将最新数据写入 GitHub 仓库，无需手动反复点击！</div>' +
+      '<div class="note" style="margin-top:20px"><b>🛡️ 站长专属安全与自动实时更新机制：</b><br>1. 后台密码采用 <b>SHA-256 单向加密哈希</b>存储，前端源码不暴露任何明文密码，且移除了公开一键重置按钮（找回密码必须通过站长 GitHub Token 权限校验）。<br>2. 你在后台每修改一处内容，前台页面 <b>0 毫秒实时热更新</b>，且停笔 1 秒后自动推送至 GitHub 仓库。</div>' +
       '<div class="card" style="margin-top:22px"><div class="card-studs"><i></i><i></i><i></i></div>' +
-      '<h4 style="margin-bottom:12px;color:var(--blue);letter-spacing:2px">后台登录密码管理（当前密码：<code>' + esc(curPass) + '</code>）</h4>' +
+      '<h4 style="margin-bottom:12px;color:var(--blue);letter-spacing:2px">🔐 修改站长后台登录密码（SHA-256 加密保护）</h4>' +
       '<div class="grid">' +
-      '<div class="field"><label>设置新密码</label><input type="text" id="newPass" placeholder="输入新密码（如 lego2026）"></div>' +
-      '<div class="field"><label>确认新密码</label><input type="text" id="newPass2" placeholder="再次输入新密码"></div></div>' +
+      '<div class="field full"><label>当前管理密码（需先验证当前密码方可修改）</label><input type="password" id="oldPassInput" placeholder="请输入当前管理密码"></div>' +
+      '<div class="field"><label>设置新密码（至少 6 位）</label><input type="password" id="newPass" placeholder="请输入新密码"></div>' +
+      '<div class="field"><label>确认新密码</label><input type="password" id="newPass2" placeholder="请再次输入新密码"></div></div>' +
       '<div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap">' +
-      '<button type="button" class="btn btn-navy" id="btnPass">更新密码</button>' +
-      '<button type="button" class="btn btn-yellow" id="btnResetDefaultPass">🔄 一键恢复默认密码 (lego2026)</button>' +
+      '<button type="button" class="btn btn-navy" id="btnPass">🔒 验证并更新密码</button>' +
       "</div></div>");
     bindSettings();
   }
@@ -445,23 +529,21 @@
         .catch(function (e) { status("网络错误：" + e.message, "err"); });
     });
     $("#btnPass").addEventListener("click", function () {
-      var a = $("#newPass").value.trim(), b = $("#newPass2").value.trim();
-      if (!a) { status("新密码不能为空", "err"); return; }
-      if (a !== b) { status("两次输入的密码不一致", "err"); return; }
-      localStorage.setItem(LS.pass, a);
-      $("#newPass").value = ""; $("#newPass2").value = "";
-      renderSettings();
-      status("✅ 登录密码已更新为：" + a, "ok");
+      var oldP = ($("#oldPassInput").value || "").trim();
+      var a = ($("#newPass").value || "").trim();
+      var b = ($("#newPass2").value || "").trim();
+      if (!verifyPassword(oldP)) {
+        status("❌ 当前管理密码验证失败，无法修改密码", "err");
+        return;
+      }
+      if (a.length < 6) { status("❌ 新密码长度至少需要 6 位", "err"); return; }
+      if (a !== b) { status("❌ 两次输入的新密码不一致", "err"); return; }
+      localStorage.setItem(LS.passHash, sha256(a));
+      $("#oldPassInput").value = "";
+      $("#newPass").value = "";
+      $("#newPass2").value = "";
+      status("✅ 站长登录密码已加密更新（SHA-256）", "ok");
     });
-    var resetBtn = $("#btnResetDefaultPass");
-    if (resetBtn) {
-      resetBtn.addEventListener("click", function () {
-        localStorage.removeItem(LS.pass);
-        localStorage.removeItem("lego_admin_pass");
-        renderSettings();
-        status("✅ 密码已恢复为默认密码：lego2026", "ok");
-      });
-    }
   }
 
   function bindTopbar() {
@@ -479,9 +561,11 @@
       status("已导出最新 content.json", "ok");
     });
     $("#btnLogout").addEventListener("click", function () {
+      try { sessionStorage.removeItem("lego_owner_authed"); } catch (e) {}
       $("#app").style.display = "none";
       $("#gate").style.display = "flex";
-      $("#gatePass").value = DEFAULT_PASS;
+      $("#gatePass").value = "";
+      $("#gateErr").textContent = "";
     });
     $("#btnPublish").addEventListener("click", function () { publish(false); });
   }
@@ -492,7 +576,7 @@
     var repo = (localStorage.getItem(LS.repo) || DEFAULT_REPO).trim();
     if (!token) {
       if (!isAuto) {
-        status("❌ 请先在「⚙ 发布设置」粘贴 GitHub Token", "err");
+        status("❌ 请先在「⚙ 发布设置」粘贴站长 GitHub Token", "err");
         $$(".tab").forEach(function (t) { t.classList.toggle("active", t.getAttribute("data-tab") === "settings"); });
         $$(".panel").forEach(function (p) { p.classList.toggle("active", p.getAttribute("data-panel") === "settings"); });
       }
@@ -583,18 +667,20 @@
 
   function gate() {
     function enterApp() {
+      try { sessionStorage.setItem("lego_owner_authed", "1"); } catch (e) {}
       $("#gate").style.display = "none";
       $("#app").style.display = "block";
       start();
     }
     function tryLogin() {
-      var saved = localStorage.getItem(LS.pass) || DEFAULT_PASS;
       var val = ($("#gatePass").value || "").trim();
-      if (val === saved || val === DEFAULT_PASS) {
+      if (verifyPassword(val)) {
+        $("#gateErr").textContent = "";
         enterApp();
       } else {
-        $("#gateErr").textContent = "密码不对，默认密码为 lego2026（也可点下方按钮一键重置）";
-        $("#gatePass").value = DEFAULT_PASS;
+        $("#gateErr").style.color = "var(--red)";
+        $("#gateErr").textContent = "❌ 密码错误！仅站长本人可进入后台。";
+        $("#gatePass").value = "";
         $("#gatePass").focus();
       }
     }
@@ -602,15 +688,62 @@
     $("#gatePass").addEventListener("keydown", function (e) {
       if (e.key === "Enter") tryLogin();
     });
-    var resetBtn = $("#gateResetBtn");
-    if (resetBtn) {
-      resetBtn.addEventListener("click", function () {
+
+    var toggleReset = $("#toggleOwnerReset");
+    var resetBox = $("#ownerResetBox");
+    if (toggleReset && resetBox) {
+      toggleReset.addEventListener("click", function () {
+        resetBox.style.display = resetBox.style.display === "none" ? "block" : "none";
+      });
+    }
+
+    var btnOwnerVerifyReset = $("#btnOwnerVerifyReset");
+    if (btnOwnerVerifyReset) {
+      btnOwnerVerifyReset.addEventListener("click", async function () {
+        var tk = ($("#resetGhToken").value || "").trim();
+        var np = ($("#resetNewPass").value || "").trim();
+        var errEl = $("#gateErr");
+        if (!tk) {
+          errEl.style.color = "var(--red)";
+          errEl.textContent = "❌ 请粘贴站长专属 GitHub Token 以验证站长身份";
+          return;
+        }
+        if (np.length < 6) {
+          errEl.style.color = "var(--red)";
+          errEl.textContent = "❌ 新密码长度至少需要 6 位";
+          return;
+        }
+        errEl.style.color = "var(--blue)";
+        errEl.textContent = "⏳ 正在向 GitHub 官方接口校验站长仓库推送权限…";
         try {
-          localStorage.removeItem(LS.pass);
-          localStorage.removeItem("lego_admin_pass");
-        } catch (e) {}
-        $("#gatePass").value = DEFAULT_PASS;
-        enterApp();
+          var repo = (localStorage.getItem(LS.repo) || DEFAULT_REPO).trim();
+          var r = await fetch("https://api.github.com/repos/" + repo + "?t=" + Date.now(), {
+            cache: "no-store",
+            headers: {
+              Authorization: "Bearer " + tk,
+              Accept: "application/vnd.github+json"
+            }
+          });
+          if (!r.ok) {
+            throw new Error("Token 无效或无权访问仓库");
+          }
+          var repoMeta = await r.json();
+          var hasPush = Boolean(repoMeta && repoMeta.permissions && repoMeta.permissions.push);
+          if (!hasPush) {
+            throw new Error("该 Token 不具备本仓库的 Push 维护权限，拒绝重置！");
+          }
+          // 站长身份校验通过！保存新密码的 SHA-256 哈希与 Token
+          localStorage.setItem(LS.passHash, sha256(np));
+          localStorage.setItem(LS.token, tk);
+          $("#resetGhToken").value = "";
+          $("#resetNewPass").value = "";
+          errEl.style.color = "var(--green)";
+          errEl.textContent = "✅ 站长权限验证通过！密码已重置，正在进入后台…";
+          setTimeout(enterApp, 400);
+        } catch (err) {
+          errEl.style.color = "var(--red)";
+          errEl.textContent = "❌ 验证失败：" + err.message;
+        }
       });
     }
   }
@@ -654,7 +787,7 @@
         state = best;
         renderAll();
         bindInputs(); bindTabs(); bindTopbar();
-        status("✅ 已就绪 — 每次修改都会实时同步前台并自动发布到 GitHub", "ok");
+        status("✅ 站长安全验证通过 — 每次修改都会实时同步前台并自动发布到 GitHub", "ok");
       })
       .catch(function (e) {
         status("内容加载失败：" + e.message, "err");
