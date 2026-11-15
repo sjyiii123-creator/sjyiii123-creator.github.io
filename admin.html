@@ -173,16 +173,26 @@ code{background:var(--paper);border-radius:6px;padding:2px 7px;font-size:12px;co
 </head>
 <body>
 
-<!-- 锁屏（已重置默认密码为 lego2026，支持一键重置解锁） -->
+<!-- 锁屏（仅限站长本人密码登录，找回密码需验证站长 GitHub 仓库推送权限 Token） -->
 <div id="gate">
   <div class="gate-card">
     <div class="studs"><i></i><i></i><i></i><i></i></div>
-    <h1>🔐 站长专用后台</h1>
-    <p>默认管理密码已重置为：<code>lego2026</code></p>
-    <input type="password" id="gatePass" value="lego2026" placeholder="请输入访问密码（默认 lego2026）" maxlength="32">
+    <h1>🔐 站长专用维护后台</h1>
+    <p>此入口仅限站长本人维护，访客无权查看或重置</p>
+    <input type="password" id="gatePass" placeholder="请输入站长管理密码" maxlength="64" autocomplete="current-password">
     <div class="gate-err" id="gateErr"></div>
-    <button type="button" class="btn btn-yellow" id="gateBtn" style="width:100%;justify-content:center">🔓 立即进入后台</button>
-    <button type="button" class="btn btn-navy" id="gateResetBtn" style="width:100%;justify-content:center;margin-top:10px;font-size:12.5px">🔄 忘记密码？一键重置为 lego2026 并进入</button>
+    <button type="button" class="btn btn-yellow" id="gateBtn" style="width:100%;justify-content:center">🔓 验证密码并进入后台</button>
+    <div style="margin-top:14px;border-top:1px dashed #E2E8F0;padding-top:12px">
+      <a href="javascript:void(0)" id="toggleOwnerReset" style="font-size:12px;color:#64748B;text-decoration:none;font-weight:700">🛡️ 站长忘记密码？通过 GitHub Token 权限验证重置</a>
+      <div id="ownerResetBox" style="display:none;margin-top:12px;text-align:left;background:#F8FAFC;padding:12px;border-radius:10px;border:1px solid #E2E8F0">
+        <div style="font-size:11.5px;color:#475569;margin-bottom:8px;line-height:1.5">
+          🔒 <b>安全校验：</b>请输入拥有 <code>sjyiii123-creator.github.io</code> 仓库推送权限的站长 GitHub Token，验证通过后方可设置新密码（外人无 Token 无法重置）：
+        </div>
+        <input type="password" id="resetGhToken" placeholder="粘贴站长 GitHub Token (ghp_...)" style="margin-bottom:8px;padding:9px 12px;font-size:12.5px">
+        <input type="password" id="resetNewPass" placeholder="设置新的站长管理密码（至少 6 位）" style="margin-bottom:8px;padding:9px 12px;font-size:12.5px">
+        <button type="button" class="btn btn-navy" id="btnOwnerVerifyReset" style="width:100%;justify-content:center;padding:9px 14px;font-size:12.5px">✅ 验证站长 GitHub 权限并重置密码</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -242,6 +252,6 @@ code{background:var(--paper);border-radius:6px;padding:2px 7px;font-size:12px;co
   </div>
 </div>
 
-<script src="js/admin.min.js?v=67ea96b9"></script>
+<script src="js/admin.min.js?v=caf4e890"></script>
 </body>
 </html>
