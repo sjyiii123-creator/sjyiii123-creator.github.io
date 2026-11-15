@@ -112,7 +112,7 @@
       ]
     },
     {
-      "group": "工程与部署",
+      "group": "传统视觉占据感知",
       "items": [
         {
           "name": "SQL / Spark / 数据仓库",
@@ -227,5 +227,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724230932
+  "_updatedAt": 1794724246782
 }
