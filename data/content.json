@@ -65,7 +65,8 @@
         "优化模型推理性能，通过量化与缓存策略将 P99 延迟由 180ms 降至 65ms"
       ],
       "tags": [
-        "骨架识别（ST-GCN）"
+        "骨架识别（ST-GCN）",
+        "关键点检测（HRNet/OpenPose）"
       ]
     },
     {
@@ -245,5 +246,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794723030798
+  "_updatedAt": 1794723058021
 }
