@@ -112,7 +112,7 @@
       ]
     },
     {
-      "group": "传统视觉占据感知",
+      "group": "传统视觉占据感知与Gaussian Occupancy",
       "items": [
         {
           "name": "占据栅格表示（Occupancy Grid / Voxel）",
@@ -227,5 +227,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724275335
+  "_updatedAt": 1794724288524
 }
