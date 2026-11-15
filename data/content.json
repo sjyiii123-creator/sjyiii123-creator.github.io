@@ -55,7 +55,7 @@
     {
       "company": "山东师范大学",
       "role": "算法工程师",
-      "period": "2020.03 — 2022.06",
+      "period": "2026.03 — 2022.06",
       "location": "北京",
       "desc": "从事人体姿态估计与骨架识别方向的算法研究，完成 HRNet、OpenPose、ST-GCN 等主流算法在 COCO/MPII 上的复现调优与对比实验，聚焦遮挡与密集场景下的关键点检测优化。",
       "bullets": [
@@ -248,5 +248,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794722896232
+  "_updatedAt": 1794722900991
 }
