@@ -161,7 +161,7 @@
   "projects": [
     {
       "title": "田间智检-基于YOLOv26农作物病虫害的检测APP",
-      "desc": "项目基于YOLOv26",
+      "desc": "采用现代化 TypeScript 全栈架构",
       "image": "assets/projects/p1.svg",
       "tags": [
         "LLM",
@@ -252,5 +252,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724684555
+  "_updatedAt": 1794724724398
 }
