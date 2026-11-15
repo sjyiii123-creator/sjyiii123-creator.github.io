@@ -137,7 +137,7 @@
       ]
     },
     {
-      "group": "3D-GS",
+      "group": "3D 高斯泼溅（3DGS）场景表示",
       "items": [
         {
           "name": "新技能",
@@ -240,5 +240,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724337530
+  "_updatedAt": 1794724342942
 }
