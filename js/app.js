@@ -1,6 +1,6 @@
 /* ============================================================
-   LEGO-style Resume · app.js (Studio ABS Lighting & Transition Edition)
-   真实乐高小人手部关节 + 全章节/子分类积木拼装过场加载动画
+   LEGO-style Resume · app.js (Studio ABS Lighting, Castle Frame & Realtime Sync)
+   真实乐高小人手部关节 + 动态城堡相框 + 三层零延迟实时同步引擎
    ============================================================ */
 (function () {
   "use strict";
@@ -45,7 +45,6 @@
     }).join("") + "</ul>";
   }
 
-  /* ---------- 通用局部拼装过场加载器（切换子标签时触发） ---------- */
   function runStageLoader(loaderId, hostId, renderFn) {
     var loader = document.getElementById(loaderId);
     var host = document.getElementById(hostId);
@@ -74,9 +73,6 @@
     }, 360);
   }
 
-  /* ============================================================
-     各章节渲染与子模块交互
-     ============================================================ */
   function renderExperienceList(filterIdx) {
     var list = (C.experience || []).filter(function (_, i) {
       return filterIdx === -1 || i === filterIdx;
@@ -167,8 +163,8 @@
     }).join("");
   }
 
+  var subTabsBound = false;
   function initSubTabs() {
-    // 1. 工作经历子切换栏
     var expTabsEl = $("#expTabs");
     if (expTabsEl && C.experience) {
       var expHtml = '<button type="button" class="sub-tab active" data-exp="-1">全部履历 (' + C.experience.length + ')</button>';
@@ -176,6 +172,39 @@
         expHtml += '<button type="button" class="sub-tab" data-exp="' + i + '">' + esc(e.company) + "</button>";
       });
       expTabsEl.innerHTML = expHtml;
+    }
+
+    var skillTabsEl = $("#skillTabs");
+    if (skillTabsEl && C.skills) {
+      var skHtml = '<button type="button" class="sub-tab active" data-sk="-1">全栈技能总览</button>';
+      C.skills.forEach(function (g, i) {
+        skHtml += '<button type="button" class="sub-tab" data-sk="' + i + '">' + esc(g.group) + "</button>";
+      });
+      skillTabsEl.innerHTML = skHtml;
+    }
+
+    var projTabsEl = $("#projTabs");
+    if (projTabsEl && C.projects) {
+      projTabsEl.innerHTML =
+        '<button type="button" class="sub-tab active" data-cat="all">全部作品 (' + C.projects.length + ')</button>' +
+        '<button type="button" class="sub-tab" data-cat="llm">大模型与多模态</button>' +
+        '<button type="button" class="sub-tab" data-cat="rec">推荐与搜索排序</button>' +
+        '<button type="button" class="sub-tab" data-cat="data">时序预测与数据平台</button>';
+    }
+
+    var eduTabsEl = $("#eduTabs");
+    if (eduTabsEl && C.education) {
+      var eduHtml = '<button type="button" class="sub-tab active" data-edu="-1">本硕完整学历 (' + C.education.length + ')</button>';
+      C.education.forEach(function (e, i) {
+        eduHtml += '<button type="button" class="sub-tab" data-edu="' + i + '">' + esc(e.degree + " · " + e.school) + "</button>";
+      });
+      eduTabsEl.innerHTML = eduHtml;
+    }
+
+    if (subTabsBound) return;
+    subTabsBound = true;
+
+    if (expTabsEl) {
       expTabsEl.addEventListener("click", function (ev) {
         var btn = ev.target.closest(".sub-tab");
         if (!btn) return;
@@ -184,15 +213,7 @@
         runStageLoader("expLoader", "timeline", function () { renderExperienceList(idx); });
       });
     }
-
-    // 2. 技能分组子切换栏
-    var skillTabsEl = $("#skillTabs");
-    if (skillTabsEl && C.skills) {
-      var skHtml = '<button type="button" class="sub-tab active" data-sk="-1">全栈技能总览</button>';
-      C.skills.forEach(function (g, i) {
-        skHtml += '<button type="button" class="sub-tab" data-sk="' + i + '">' + esc(g.group) + "</button>";
-      });
-      skillTabsEl.innerHTML = skHtml;
+    if (skillTabsEl) {
       skillTabsEl.addEventListener("click", function (ev) {
         var btn = ev.target.closest(".sub-tab");
         if (!btn) return;
@@ -201,15 +222,7 @@
         runStageLoader("skillLoader", "skillsGrid", function () { renderSkillsList(idx); });
       });
     }
-
-    // 3. 作品集分类子切换栏
-    var projTabsEl = $("#projTabs");
-    if (projTabsEl && C.projects) {
-      projTabsEl.innerHTML =
-        '<button type="button" class="sub-tab active" data-cat="all">全部作品 (' + C.projects.length + ')</button>' +
-        '<button type="button" class="sub-tab" data-cat="llm">大模型与多模态</button>' +
-        '<button type="button" class="sub-tab" data-cat="rec">推荐与搜索排序</button>' +
-        '<button type="button" class="sub-tab" data-cat="data">时序预测与数据平台</button>';
+    if (projTabsEl) {
       projTabsEl.addEventListener("click", function (ev) {
         var btn = ev.target.closest(".sub-tab");
         if (!btn) return;
@@ -218,15 +231,7 @@
         runStageLoader("projLoader", "projectsGrid", function () { renderProjectsList(cat); });
       });
     }
-
-    // 4. 教育背景子切换栏
-    var eduTabsEl = $("#eduTabs");
-    if (eduTabsEl && C.education) {
-      var eduHtml = '<button type="button" class="sub-tab active" data-edu="-1">本硕完整学历 (' + C.education.length + ')</button>';
-      C.education.forEach(function (e, i) {
-        eduHtml += '<button type="button" class="sub-tab" data-edu="' + i + '">' + esc(e.degree + " · " + e.school) + "</button>";
-      });
-      eduTabsEl.innerHTML = eduHtml;
+    if (eduTabsEl) {
       eduTabsEl.addEventListener("click", function (ev) {
         var btn = ev.target.closest(".sub-tab");
         if (!btn) return;
@@ -236,7 +241,6 @@
       });
     }
 
-    // 5. 点击作品卡片打开“乐高工程说明书”加载过场弹窗
     var projGrid = $("#projectsGrid");
     var pmBackdrop = $("#projModalBackdrop");
     var pmClose = $("#pmClose");
@@ -285,7 +289,7 @@
 
     var savedPhoto = null;
     try { savedPhoto = localStorage.getItem("lego_custom_photo"); } catch (e) {}
-    var photoSrc = savedPhoto || data.profile.photo || "assets/avatar-placeholder.svg";
+    var photoSrc = (data.profile && data.profile.photo) || savedPhoto || "assets/avatar-placeholder.svg";
     var heroPhotoEl = $("#heroPhotoImg");
     if (heroPhotoEl) heroPhotoEl.src = photoSrc;
 
@@ -353,9 +357,6 @@
       '<a href="tel:' + esc(String(data.contact.phone).replace(/-/g, "")) + '" title="电话">☏</a>';
   }
 
-  /* ============================================================
-     欢迎过场
-     ============================================================ */
   function initWelcome() {
     var overlay = $("#welcomeOverlay");
     var field = $("#brickField");
@@ -407,9 +408,6 @@
     }, 7500);
   }
 
-  /* ============================================================
-     滚动显现与章节重播动效
-     ============================================================ */
   var observer = null;
   function initReveal() {
     if (!("IntersectionObserver" in window)) { revealAll(); return; }
@@ -439,7 +437,6 @@
     });
   }
 
-  /* 每次通过导航切换到目标章节时，重播该章节内部卡片与能量条的拼装入场动画 */
   function replaySectionReveal(sectionEl) {
     if (!sectionEl) return;
     var items = $$(".reveal", sectionEl);
@@ -462,9 +459,6 @@
     });
   }
 
-  /* ============================================================
-     小火车进度条
-     ============================================================ */
   function initTrain() {
     var train = $("#legoTrain");
     var percent = $("#trainPercent");
@@ -495,16 +489,12 @@
     update();
   }
 
-  /* ============================================================
-     真实比例乐高小人生成器（手腕圆柱插销 + 开口朝下内倾 C 型手爪 + 无溢出视图框）
-     ============================================================ */
   var figUid = 0;
   function shade(hex, amt) {
     var n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
     function f(v) { return Math.round(Math.min(255, Math.max(0, v + 255 * amt))); }
     return "#" + ((1 << 24) + (f(r) << 16) + (f(g) << 8) + f(b)).toString(16).slice(1);
   }
-  /* 标准 C 型乐高夹爪：264° 圆弧，开口朝向 gapDeg（左手约 76° 朝下偏右，右手约 104° 朝下偏左） */
   function clawPath(cx, cy, r, gapDeg) {
     var a1 = (gapDeg + 48) * Math.PI / 180;
     var a2 = (gapDeg + 312) * Math.PI / 180;
@@ -523,7 +513,6 @@
     }
     var clawL = clawPath(9.4, 64.8, 4.3, 76);
     var clawR = clawPath(54.6, 64.8, 4.3, 104);
-    /* viewBox="-14 -10 92 140" 留足挥手和投影边界，绝不裁切或溢出 */
     return '<svg class="minifig ' + (opt.cls || "") + '"' +
       (opt.delay ? ' style="--fig-delay:' + opt.delay + '"' : "") +
       ' viewBox="-14 -10 92 140" aria-hidden="true"><defs>' +
@@ -532,7 +521,6 @@
       grad("l" + uid, lL, l, lD) +
       '</defs>' +
       '<ellipse cx="32" cy="122" rx="18" ry="4" fill="#0B2A5B" opacity=".14"/>' +
-      // 腿部与髋部
       '<g stroke="#172234" stroke-width="1.4" stroke-linejoin="round">' +
       '<rect x="13" y="61" width="38" height="12" rx="3.5" fill="url(#l' + uid + ')"/>' +
       '<g class="leg-l">' +
@@ -541,9 +529,7 @@
       '<g class="leg-r">' +
       '<rect x="35" y="70" width="15.5" height="37" rx="4.5" fill="url(#l' + uid + ')"/>' +
       '<rect x="33.5" y="100" width="20" height="12" rx="2.5" fill="url(#l' + uid + ')"/></g></g>' +
-      // 颈柱
       '<rect x="26.5" y="28" width="11" height="7" rx="2" fill="#E5AE00" stroke="#A67B00" stroke-width="1.2"/>' +
-      // 左手臂（先绘制手臂底层或与躯干自然衔接，带塑形袖口、手腕插销与朝下 C 型夹爪）
       '<g class="arm-l">' +
       '<path d="M17.5 34.5 C11.5 35.5 7.8 42.5 6.2 55.2 L14.4 57.2 L18 42 Z" fill="url(#t' + uid + ')" stroke="#172234" stroke-width="1.4" stroke-linejoin="round"/>' +
       '<g class="hand-l">' +
@@ -551,7 +537,6 @@
       '<path d="' + clawL + '" fill="none" stroke="#A67B00" stroke-width="4.5" stroke-linecap="round"/>' +
       '<path d="' + clawL + '" fill="none" stroke="url(#h' + uid + ')" stroke-width="3.1" stroke-linecap="round"/>' +
       '</g></g>' +
-      // 右手臂（带塑形袖口、手腕插销与朝下 C 型夹爪）
       '<g class="arm-r">' +
       '<path d="M46.5 34.5 C52.5 35.5 56.2 42.5 57.8 55.2 L49.6 57.2 L46 42 Z" fill="url(#t' + uid + ')" stroke="#172234" stroke-width="1.4" stroke-linejoin="round"/>' +
       '<g class="hand-r">' +
@@ -559,10 +544,8 @@
       '<path d="' + clawR + '" fill="none" stroke="#A67B00" stroke-width="4.5" stroke-linecap="round"/>' +
       '<path d="' + clawR + '" fill="none" stroke="url(#h' + uid + ')" stroke-width="3.1" stroke-linecap="round"/>' +
       '</g></g>' +
-      // 躯干（置于双臂肩部内侧之上，使肩部转轴自然贴合）
       '<path d="M13.5 38 q0-7 7-7 h23 q7 0 7 7 l-2 25 q-.4 3.8-4 3.8 h-23 q-3.6 0-4-3.8 z" fill="url(#t' + uid + ')" stroke="#172234" stroke-width="1.5" stroke-linejoin="round"/>' +
       '<rect x="17.5" y="34.5" width="3.5" height="24" rx="1.7" fill="#fff" opacity=".32"/>' +
-      // 头部
       '<g class="fig-head">' +
       '<rect x="26.5" y="0.5" width="11" height="7.5" rx="2.2" fill="url(#h' + uid + ')" stroke="#A67B00" stroke-width="1.3"/>' +
       '<rect x="16.5" y="7" width="31" height="26.5" rx="7" fill="url(#h' + uid + ')" stroke="#A67B00" stroke-width="1.4"/>' +
@@ -593,9 +576,6 @@
     });
   }
 
-  /* ============================================================
-     乐高笑脸生成器与背景微装饰
-     ============================================================ */
   function smileySVG(color, variant) {
     var dark = shade(color, -0.22);
     var eyes;
@@ -688,9 +668,6 @@
     }
   }
 
-  /* ============================================================
-     全屏章节切换积木过场加载动画（支持所有导航、按钮、亮点块跳转）
-     ============================================================ */
   var jumpStyles = {
     hero:       { anim: "rain",    stage: "MODULE 01 / 07", label: "首页 · HOME",          sub: "正在构建乐高主基地...",       c1: "#0B2A5B", c2: "#FFCA1A" },
     about:      { anim: "wave",    stage: "MODULE 02 / 07", label: "关于我 · ABOUT",        sub: "正在装载个人核心积木...",     c1: "#FFCA1A", c2: "#E62432" },
@@ -755,9 +732,6 @@
     }, 880);
   }
 
-  /* ============================================================
-     导航高亮与全站点击过场绑定
-     ============================================================ */
   function initNav() {
     var links = $$(".nav-brick");
     var sections = links.map(function (l) { return document.getElementById(l.dataset.target); }).filter(Boolean);
@@ -796,9 +770,6 @@
     });
   }
 
-  /* ============================================================
-     留言表单
-     ============================================================ */
   function initForm() {
     $("#messageForm").addEventListener("submit", function (e) {
       e.preventDefault();
@@ -823,7 +794,6 @@
       }
     });
 
-    // 城堡相框点击上传/更换个人照片（带城门栅栏开合过场动画）
     var castleVp = $("#castleViewport");
     var castleBtn = $("#castleUploadBtn");
     var photoInput = $("#heroPhotoInput");
@@ -840,17 +810,38 @@
         if (!file) return;
         var reader = new FileReader();
         reader.onload = function () {
-          var dataUrl = reader.result;
-          if (shutter) shutter.classList.add("closing");
-          setTimeout(function () {
-            if (heroPhotoEl) heroPhotoEl.src = dataUrl;
-            if (C && C.profile) C.profile.photo = dataUrl;
-            try { localStorage.setItem("lego_custom_photo", dataUrl); } catch (e) {}
-            if (typeof window.__onCustomPhotoUploaded === "function") {
-              window.__onCustomPhotoUploaded(dataUrl);
+          var img = new Image();
+          img.onload = function () {
+            var maxSide = 800;
+            var w = img.width || 400;
+            var h = img.height || 400;
+            if (w > maxSide || h > maxSide) {
+              if (w > h) { h = Math.round(h * maxSide / w); w = maxSide; }
+              else { w = Math.round(w * maxSide / h); h = maxSide; }
             }
-            if (shutter) shutter.classList.remove("closing");
-          }, 420);
+            var canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+            var dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+            if (shutter) shutter.classList.add("closing");
+            setTimeout(function () {
+              if (heroPhotoEl) heroPhotoEl.src = dataUrl;
+              if (C && C.profile) {
+                C.profile.photo = dataUrl;
+                C._updatedAt = Date.now();
+              }
+              try {
+                localStorage.setItem("lego_custom_photo", dataUrl);
+                if (C) localStorage.setItem("lego_live_content", JSON.stringify(C));
+              } catch (e) {}
+              if (typeof window.__onCustomPhotoUploaded === "function") {
+                window.__onCustomPhotoUploaded(dataUrl);
+              }
+              if (shutter) shutter.classList.remove("closing");
+            }, 420);
+          };
+          img.src = reader.result;
         };
         reader.readAsDataURL(file);
       });
@@ -882,7 +873,6 @@
     return new TextDecoder("utf-8").decode(bytes);
   }
 
-  /* 监听后台实时修改/发布广播（同浏览器打开时 0ms 无刷新实时热更新！） */
   function initRealtimeListeners() {
     try {
       if ("BroadcastChannel" in window) {
@@ -901,10 +891,56 @@
           } catch (err) {}
         }
       });
+      function checkOnFocus() {
+        try {
+          var raw = localStorage.getItem("lego_live_content") || localStorage.getItem("lego_draft");
+          if (raw) {
+            var localData = JSON.parse(raw);
+            if (localData && localData.profile && (!C || (localData._updatedAt || 0) > (C._updatedAt || 0))) {
+              startWithData(localData);
+            }
+          }
+        } catch (e) {}
+        fetchFromGitHubAPI().then(function (remoteData) {
+          if (remoteData && remoteData.profile && (!C || (remoteData._updatedAt || 0) > (C._updatedAt || 0))) {
+            startWithData(remoteData);
+          }
+        }).catch(function () {});
+      }
+      window.addEventListener("focus", checkOnFocus);
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) checkOnFocus();
+      });
     } catch (e) {}
   }
 
-  /* 优先直连 GitHub 实时 API + 时间戳防缓存拉取，彻底解决 GitHub Pages CDN 缓存不更新问题 */
+  async function fetchFromGitHubAPI() {
+    try {
+      var repo = "sjyiii123-creator/sjyiii123-creator.github.io";
+      try {
+        var savedRepo = localStorage.getItem("lego_gh_repo");
+        if (savedRepo && /^[^/]+\/[^/]+$/.test(savedRepo.trim())) repo = savedRepo.trim();
+      } catch (e) {}
+      var headers = { Accept: "application/vnd.github+json" };
+      try {
+        var tk = localStorage.getItem("lego_gh_token");
+        if (tk && tk.trim()) headers.Authorization = "Bearer " + tk.trim();
+      } catch (e) {}
+      var r = await fetch("https://api.github.com/repos/" + repo + "/contents/data/content.json?t=" + Date.now(), {
+        cache: "no-store",
+        headers: headers
+      });
+      if (!r.ok) return null;
+      var meta = await r.json();
+      if (meta && meta.content) {
+        return JSON.parse(b64decodeUtf8(meta.content));
+      }
+      return null;
+    } catch (err) {
+      return null;
+    }
+  }
+
   function boot() {
     initRealtimeListeners();
 
@@ -921,7 +957,6 @@
       } else {
         startWithData(baseData);
       }
-      // 后台异步拉取 GitHub 实时最新数据并自动热更新
       fetchFromGitHubAPI().then(function (remoteData) {
         if (remoteData && (!C || (remoteData._updatedAt || 0) >= (C._updatedAt || 0))) {
           startWithData(remoteData);
@@ -934,7 +969,6 @@
       startWithData(localLive);
     }
 
-    // 同时发起 GitHub API 实时查询与防缓存静态 JSON 请求
     fetchFromGitHubAPI()
       .then(function (apiData) {
         if (apiData && apiData.profile) {
@@ -968,31 +1002,6 @@
             "<h2>内容加载失败</h2><p>请通过 HTTP 服务访问本站（如 GitHub Pages），而非直接双击打开文件。</p></div>";
         }
       });
-  }
-
-  function fetchFromGitHubAPI() {
-    var repo = "sjyiii123-creator/sjyiii123-creator.github.io";
-    try {
-      var savedRepo = localStorage.getItem("lego_gh_repo");
-      if (savedRepo && /^[^/]+\/[^/]+$/.test(savedRepo.trim())) repo = savedRepo.trim();
-    } catch (e) {}
-    var headers = { Accept: "application/vnd.github+json" };
-    try {
-      var tk = localStorage.getItem("lego_gh_token");
-      if (tk && tk.trim()) headers.Authorization = "Bearer " + tk.trim();
-    } catch (e) {}
-    return fetch("https://api.github.com/repos/" + repo + "/contents/data/content.json?t=" + Date.now(), {
-      cache: "no-store",
-      headers: headers
-    }).then(function (r) {
-      if (!r.ok) throw new Error("API status " + r.status);
-      return r.json();
-    }).then(function (meta) {
-      if (meta && meta.content) {
-        return JSON.parse(b64decodeUtf8(meta.content));
-      }
-      throw new Error("Empty content");
-    });
   }
 
   if (document.readyState === "loading") {
