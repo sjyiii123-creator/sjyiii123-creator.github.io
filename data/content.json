@@ -85,8 +85,8 @@
           "level": 90
         },
         {
-          "name": "推荐系统 / 排序学习",
-          "level": 92
+          "name": "自监督与预训练范式 ",
+          "level": 85
         },
         {
           "name": "特征工程 / 树模型",
@@ -231,5 +231,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724065242
+  "_updatedAt": 1794724082899
 }
