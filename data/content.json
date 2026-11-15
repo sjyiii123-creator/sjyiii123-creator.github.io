@@ -161,7 +161,7 @@
   "projects": [
     {
       "title": "田间智检-基于YOLOv26农作物病虫害的检测APP",
-      "desc": "采用现代化 TypeScript 全栈架构与轻量级数据持久化方案（Drizzle ORM）",
+      "desc": "采用现代化 TypeScript 全栈架构与轻量级数据持久化方案（Drizzle ORM）引入drizzle.config.ts 管理数据层，相比传统重型 ORM，Drizzle 具备零运行时开销、对 Serverless/Edge 环境友好以及纯 TypeScript Schema 定义的优势，非常适合轻量化移动端后台与边缘端数据同步场景。端到端闭环验证（视觉标注 + 后端 JSON 测试 + APK 交付）工程不仅包含前后端代码配置，形成了“图像输入 -> 模型推理标注 -> 后端接口返回->移动端 APK的完整交付证据链。",
       "image": "assets/projects/p1.svg",
       "tags": [
         "LLM",
@@ -252,5 +252,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724733892
+  "_updatedAt": 1794724780288
 }
