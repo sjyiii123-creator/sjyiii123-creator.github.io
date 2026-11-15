@@ -120,7 +120,7 @@
         },
         {
           "name": "占据感知的评估指标 ",
-          "level": 80
+          "level": 84
         },
         {
           "name": "模型服务化（FastAPI / Triton）",
@@ -227,5 +227,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724265164
+  "_updatedAt": 1794724268830
 }
