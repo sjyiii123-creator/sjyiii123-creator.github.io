@@ -95,7 +95,7 @@
       ]
     },
     {
-      "group": "大模型与 NLP",
+      "group": "生成式模型",
       "items": [
         {
           "name": "Transformer / BERT / GPT",
@@ -231,5 +231,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724100569
+  "_updatedAt": 1794724126836
 }
