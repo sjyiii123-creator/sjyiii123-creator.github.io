@@ -203,28 +203,6 @@
         "BERT"
       ],
       "link": ""
-    },
-    {
-      "title": "销量时序预测与智能补货",
-      "desc": "混合专家结构的时序预测模型，融合节假日与促销因素，预测误差降低 21%，支撑自动化补货决策。",
-      "image": "assets/projects/p5.svg",
-      "tags": [
-        "时序预测",
-        "机器学习",
-        "供应链"
-      ],
-      "link": ""
-    },
-    {
-      "title": "自动化特征工程平台",
-      "desc": "一站式特征生产、存储与监控平台，特征复用率提升 60%，实验迭代周期由 3 天缩短至 0.5 天。",
-      "image": "assets/projects/p6.svg",
-      "tags": [
-        "MLOps",
-        "数据平台",
-        "效率工具"
-      ],
-      "link": ""
     }
   ],
   "education": [
@@ -253,5 +231,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794725879778
+  "_updatedAt": 1794725920229
 }
