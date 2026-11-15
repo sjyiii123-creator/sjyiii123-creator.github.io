@@ -100,7 +100,7 @@ input,textarea{cursor:text}
   margin-bottom:22px;position:relative;
 }
 .card .card-studs{position:absolute;top:-11px;left:24px;display:flex;gap:16px}
-.card{border:1px solid rgba(11,42,91,.10);box-shadow:0 4px 0 #DAE3F0,0 12px 28px -6px rgba(11,42,91,.10)}.card .card-studs{top:-10px}.card .card-studs i{width:24px;height:10px;border-radius:5px 5px 1px 1px;background:linear-gradient(90deg,#FFFFFF,#F2F6FC 55%,#DCE5F2);border:1px solid rgba(11,42,91,.13);border-bottom:none;box-shadow:inset 0 2px 0 rgba(255,255,255,.9)}.card .card-studs i:first-child{background:linear-gradient(90deg,#FFE57F,var(--yellow) 55%,#D49B00)}
+.card{border:1px solid rgba(11,42,91,.10);box-shadow:0 4px 0 #DAE3F0,0 12px 28px -6px rgba(11,42,91,.10)}.card .card-studs{top:-10px}.card .card-studs i{width:22px;height:10px;border-radius:5px 5px 1px 1px;background:linear-gradient(90deg,#FFE57F,var(--yellow) 55%,#D49B00);border:1px solid rgba(11,42,91,.16);border-bottom:none;box-shadow:inset 0 2px 0 rgba(255,255,255,.65)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
 .field{display:flex;flex-direction:column;gap:6px}
 .field.full{grid-column:1/-1}
@@ -173,15 +173,16 @@ code{background:var(--paper);border-radius:6px;padding:2px 7px;font-size:12px;co
 </head>
 <body>
 
-<!-- 锁屏 -->
+<!-- 锁屏（已重置默认密码为 lego2026，支持一键重置解锁） -->
 <div id="gate">
   <div class="gate-card">
     <div class="studs"><i></i><i></i><i></i><i></i></div>
     <h1>🔐 站长专用后台</h1>
-    <p>此入口仅限站长编辑内容，访客无法修改</p>
-    <input type="password" id="gatePass" placeholder="请输入访问密码" maxlength="32">
+    <p>默认管理密码已重置为：<code>lego2026</code></p>
+    <input type="password" id="gatePass" value="lego2026" placeholder="请输入访问密码（默认 lego2026）" maxlength="32">
     <div class="gate-err" id="gateErr"></div>
-    <button class="btn btn-yellow" id="gateBtn" style="width:100%;justify-content:center">进入编辑器</button>
+    <button type="button" class="btn btn-yellow" id="gateBtn" style="width:100%;justify-content:center">🔓 立即进入后台</button>
+    <button type="button" class="btn btn-navy" id="gateResetBtn" style="width:100%;justify-content:center;margin-top:10px;font-size:12.5px">🔄 忘记密码？一键重置为 lego2026 并进入</button>
   </div>
 </div>
 
@@ -231,12 +232,16 @@ code{background:var(--paper);border-radius:6px;padding:2px 7px;font-size:12px;co
   </div>
 
   <div class="publish-bar">
-    <div class="status info" id="statusBar">✅ 就绪 — 修改后点击「发布」同步到线上</div>
-    <button class="btn btn-navy" id="btnDraft">💾 保存草稿</button>
-    <button class="btn btn-green" id="btnPublish">🚀 发布到 GitHub</button>
+    <div class="status info" id="statusBar">✅ 就绪 — 每次修改均会自动实时同步</div>
+    <label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;color:var(--navy);background:var(--paper);padding:8px 12px;border-radius:10px">
+      <input type="checkbox" id="autoPublishToggle" checked style="width:15px;height:15px">
+      ⚡ 修改后自动实时发布到 GitHub
+    </label>
+    <button type="button" class="btn btn-navy" id="btnDraft">💾 立即保存</button>
+    <button type="button" class="btn btn-green" id="btnPublish">🚀 立即发布到 GitHub</button>
   </div>
 </div>
 
-<script src="js/admin.min.js?v=fe12bcd4"></script>
+<script src="js/admin.min.js?v=67ea96b9"></script>
 </body>
 </html>
