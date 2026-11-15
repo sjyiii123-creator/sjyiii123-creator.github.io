@@ -168,7 +168,7 @@
         "RAG",
         "向量检索"
       ],
-      "link": ""
+      "link": "https://github.com/sjyiii123-creator/tianjianzhijian2026"
     },
     {
       "title": "千万级实时推荐系统",
@@ -252,5 +252,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724906099
+  "_updatedAt": 1794724931415
 }
