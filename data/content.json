@@ -103,10 +103,10 @@
         },
         {
           "name": "流匹配与自回归生成 (Flow Matching、掩码自回归)",
-          "level": 92
+          "level": 91
         },
         {
-          "name": "LLM 微调（LoRA / SFT）",
+          "name": "变分自编码器（VAE）",
           "level": 85
         },
         {
@@ -231,5 +231,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724201592
+  "_updatedAt": 1794724222939
 }
