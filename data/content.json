@@ -98,7 +98,7 @@
       "group": "生成式模型",
       "items": [
         {
-          "name": "Transformer / BERT / GPT",
+          "name": "扩散模型（Diffusion Model",
           "level": 90
         },
         {
@@ -231,5 +231,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724126836
+  "_updatedAt": 1794724181364
 }
