@@ -149,7 +149,7 @@
         },
         {
           "name": "感知-渲染联合优化",
-          "level": 80
+          "level": 84
         }
       ]
     }
@@ -248,5 +248,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724368275
+  "_updatedAt": 1794724371464
 }
