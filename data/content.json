@@ -133,6 +133,10 @@
         {
           "name": "高斯基元的语义属性扩展",
           "level": 88
+        },
+        {
+          "name": "新技能",
+          "level": 80
         }
       ]
     },
@@ -156,7 +160,7 @@
   ],
   "projects": [
     {
-      "title": "基于大模型的企业智能问答系统",
+      "title": "",
       "desc": "面向企业内部知识库的 RAG 问答系统，支持多轮对话、引用溯源与权限隔离，准确率 92%，日均 10 万+ 调用。",
       "image": "assets/projects/p1.svg",
       "tags": [
@@ -248,5 +252,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724376131
+  "_updatedAt": 1794724441787
 }
