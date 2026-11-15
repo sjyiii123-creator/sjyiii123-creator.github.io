@@ -160,7 +160,7 @@
   ],
   "projects": [
     {
-      "title": "",
+      "title": "田间z",
       "desc": "面向企业内部知识库的 RAG 问答系统，支持多轮对话、引用溯源与权限隔离，准确率 92%，日均 10 万+ 调用。",
       "image": "assets/projects/p1.svg",
       "tags": [
@@ -252,5 +252,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724443406
+  "_updatedAt": 1794724473695
 }
