@@ -123,8 +123,8 @@
           "level": 84
         },
         {
-          "name": "模型服务化（FastAPI / Triton）",
-          "level": 86
+          "name": "多相机 BEV 感知 ",
+          "level": 80
         },
         {
           "name": "Linux / Git / CI-CD",
@@ -227,5 +227,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724268830
+  "_updatedAt": 1794724275335
 }
