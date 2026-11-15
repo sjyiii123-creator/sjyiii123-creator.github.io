@@ -78,7 +78,7 @@
       "items": [
         {
           "name": "优化器原理与学习率调度 ",
-          "level": 96
+          "level": 90
         },
         {
           "name": "PyTorch / TensorFlow",
@@ -231,5 +231,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724062541
+  "_updatedAt": 1794724065242
 }
