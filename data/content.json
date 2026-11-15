@@ -142,6 +142,10 @@
         {
           "name": "3D 高斯基元表示 ",
           "level": 90
+        },
+        {
+          "name": "3DGS vs. 体素表示的互补性",
+          "level": 80
         }
       ]
     }
@@ -240,5 +244,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794724350227
+  "_updatedAt": 1794724356443
 }
