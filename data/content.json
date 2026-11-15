@@ -35,7 +35,7 @@
     {
       "company": "海信视像科技股份有限公司",
       "role": "测试工程师",
-      "period": "2020.07 — 至今",
+      "period": "2020.03 — 至今",
       "location": "北京",
       "desc": "负责大模型应用与推荐算法方向，带领 5 人算法小组，支撑公司核心业务的智能化升级。",
       "bullets": [
@@ -248,5 +248,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1794722686001
+  "_updatedAt": 1794722696457
 }
