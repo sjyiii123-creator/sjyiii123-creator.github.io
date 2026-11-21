@@ -172,7 +172,7 @@
       "link": "https://github.com/sjyiii123-creator/tianjianzhijian2026"
     },
     {
-      "title": "G",
+      "title": "",
       "desc": "多路召回 + 精排融合的推荐架构，引入实时特征与用户兴趣标签体系，核心场景 CTR 相对提升 18%。",
       "image": "assets/projects/p2.svg",
       "tags": [
@@ -231,5 +231,5 @@
     "location": "辽宁-大连"
   },
   "footer": "© 2026 李正淼 · 用心写代码，用算法创造价值。 · LEGO-style Resume by MozzieLee",
-  "_updatedAt": 1795233517050
+  "_updatedAt": 1795233522130
 }
